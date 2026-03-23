@@ -1,0 +1,19 @@
+{
+  "name": "lovia-cron",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev":    "wrangler dev src/index.ts",
+    "build":  "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "test:cron": "wrangler dev src/index.ts --test-scheduled"
+  },
+  "dependencies": {
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250705.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^3.78.0"
+  }
+}

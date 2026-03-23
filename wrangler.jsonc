@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lovia",
+  "compatibility_date": "2026-02-21",
+  "pages_build_output_dir": "./dist",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lovia-production",
+      "database_id": "f5b21c38-1188-43e5-8d1f-5531f3aba8b1"
+    }
+  ]
+}
