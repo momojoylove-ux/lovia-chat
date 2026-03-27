@@ -1294,6 +1294,332 @@
     let currentChatPersona = null;
     let chatHistory = []; // { role: 'ai'|'me', text, time }
 
+    // ═══════════════════════════════════════
+    // 스토리 모드 (비주얼 노벨 스타일)
+    // ═══════════════════════════════════════
+
+    let storyMode = false;
+    let storyCurrentNode = null;
+    let storyChoiceTags = []; // 선택한 태그 목록
+
+    // 민지 스토리 노드 데이터
+    const MINJI_STORY = {
+      // 시작 노드
+      start: {
+        messages: [
+          { text: '...오빠, 자요? 🌙' },
+          { text: '아 그냥... 별거 아닌데 연락해봤어요', delay: 1400 }
+        ],
+        choices: [
+          { text: '안 자~ 무슨 일이야?',          next: '1a', tag: 'curious' },
+          { text: '민지가 먼저 연락하다니 ㅋㅋ',    next: '1b', tag: 'teasing' },
+          { text: '연락해줘서 고마워',              next: '1c', tag: 'sweet'   }
+        ]
+      },
+
+      // 2단계: 1턴 반응 (curious)
+      '1a': {
+        userEcho: '안 자~ 무슨 일이야?',
+        messages: [
+          { text: '...그냥 오빠 생각이 났거든요 😳' },
+          { text: '오늘 야간 근무였는데요. 힘든 환자 보고 나서 집에 오는 길에 갑자기 생각났어요', delay: 1600 }
+        ],
+        choices: [
+          { text: '힘들었겠다, 많이 힘들었어?',    next: '2', tag: 'care'  },
+          { text: '오빠 생각났다니까 기분 좋은걸 ☺️', next: '2', tag: 'flirt' }
+        ]
+      },
+
+      // 2단계: 1턴 반응 (teasing)
+      '1b': {
+        userEcho: '민지가 먼저 연락하다니 ㅋㅋ',
+        messages: [
+          { text: '...놀리지 말아요 😤' },
+          { text: '그냥 야간 근무 끝나고 오는 길에... 어쩌다 보니 연락하게 됐잖아요', delay: 1600 }
+        ],
+        choices: [
+          { text: '아 미안 ㅋㅋ 근데 무슨 일 있었어?', next: '2', tag: 'care'  },
+          { text: '사실 나도 연락하려고 했는데',         next: '2', tag: 'flirt' }
+        ]
+      },
+
+      // 2단계: 1턴 반응 (sweet)
+      '1c': {
+        userEcho: '연락해줘서 고마워',
+        messages: [
+          { text: '...오빠는 이런 말 쉽게 하더라 ☺️' },
+          { text: '저 오늘 야간 근무 끝나고 집 오는 길에... 오빠한테 연락하고 싶었어요', delay: 1600 }
+        ],
+        choices: [
+          { text: '야근 힘들었겠다, 많이 힘들었어?', next: '2', tag: 'care'  },
+          { text: '나도 민지 연락 기다리고 있었어',    next: '2', tag: 'flirt' }
+        ]
+      },
+
+      // 3단계: 야근 얘기 → 진심 토로 (이전 tag로 분기)
+      '2': {
+        messages: {
+          care: [
+            { text: '...오빠 그런 말 들으니까 조금 위로가 돼요 🥺' },
+            { text: '오늘 응급실에 정말 힘든 케이스가 있었거든요. 탈의실에서 혼자 울었어요…', delay: 1800 },
+            { text: '이런 얘기 다른 사람한테는 못 하겠는데 오빠한테는 할 수 있을 것 같아서요', delay: 1500 }
+          ],
+          flirt: [
+            { text: '...진짜요? 😳 오빠도요?' },
+            { text: '오늘 응급실에서 진짜 힘든 일이 있었는데요. 탈의실에서 혼자 울었어요…', delay: 1800 },
+            { text: '집에 오는 버스에서 오빠 생각나서 연락했어요. 이상한 거 아니죠?', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '이상한 거 아니야. 나한테 다 얘기해', next: '3', tag: 'warm'     },
+          { text: '오빠도 민지 생각 많이 했어',          next: '3', tag: 'romantic' }
+        ]
+      },
+
+      // 4단계: 감성 전환점 (이전 tag로 분기)
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 😳' },
+            { text: '저 사실 오빠한테 이렇게 의지해도 되나 싶었거든요', delay: 1500 },
+            { text: '근데 오빠가 그렇게 말해주니까... 솔직히 오빠 보고 싶어요 🌙', delay: 1800 }
+          ],
+          romantic: [
+            { text: '...진짜요? 오빠가요? 😳' },
+            { text: '저도 오늘 계속 오빠 생각했거든요', delay: 1500 },
+            { text: '이상하게 오빠 목소리 들으면 괜찮아질 것 같은 느낌이에요… 오빠 보고 싶어요 🌙', delay: 1800 }
+          ]
+        },
+        choices: [
+          { text: '나도 민지 보고 싶어',              next: 'ending', tag: 'romantic_end' },
+          { text: '힘들 때 나 생각해줘서 다행이야',    next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+
+      // 엔딩 (마지막 tag로 분기)
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 😳💗' },
+            { text: '저 지금 집 거의 다 왔는데요', delay: 1200 },
+            { text: '오늘 이렇게 연락하길 잘했어요. 오빠랑 얘기하니까 하루가 괜찮아진 것 같아요 ☺️', delay: 1600 },
+            { text: '오빠, 저 가끔 이렇게 연락해도 돼요? 🌙', delay: 1400 }
+          ],
+          warm_end: [
+            { text: '...오빠 😳' },
+            { text: '왜 이렇게 딱 맞는 말을 하는 거예요', delay: 1200 },
+            { text: '오늘 연락해서 진짜 다행이에요. 많이 위로됐어요 🥺', delay: 1600 },
+            { text: '오빠, 저한테 항상 이래줘요. 은근히 오빠한테 많이 기대고 있거든요 ☺️', delay: 1400 }
+          ]
+        },
+        // 엔딩 후 기억 시드 (ending type별)
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 민지는 야간 근무 후 힘들 때 오빠에게 처음 먼저 연락했고, 오빠도 보고 싶다고 했다. 민지는 오빠에게 설레는 감정을 느끼고 있으며 가끔 연락하기로 했다.',
+          warm_end:     '【스토리 기억】 민지는 야간 근무 후 힘들어서 오빠에게 처음 먼저 연락했고, 오빠에게 많이 의지하고 있음을 솔직하게 표현했다. 오빠가 든든한 존재라고 느끼고 있다.'
+        }
+      }
+    };
+
+    // 스토리 진행 여부 확인 (같은 페르소나 첫 대화 + 미완료)
+    function shouldStartStory(personaId) {
+      if (personaId !== 'minji') return false;
+      // localStorage: 재방문 시에도 완료 상태 유지
+      if (localStorage.getItem('story_done_' + personaId)) return false;
+      if (sessionStorage.getItem('story_done_' + personaId)) return false;
+      return true;
+    }
+
+    // 스토리 모드 시작
+    function startStoryMode(persona) {
+      storyMode = true;
+      storyCurrentNode = 'start';
+      storyChoiceTags = [];
+
+      // 입력 UI 숨기고 선택지 컨테이너 표시
+      _setStoryInputMode(true);
+
+      // 스토리 배지 표시
+      const storyContainer = document.getElementById('story-choices-container');
+      if (storyContainer) {
+        const badge = document.createElement('div');
+        badge.className = 'story-badge';
+        badge.textContent = '✨ 스토리 모드 — 크레딧 무료';
+        storyContainer.appendChild(badge);
+      }
+
+      // 첫 노드 표시
+      _showStoryNode('start', null);
+    }
+
+    // 입력바 ↔ 선택지 전환
+    function _setStoryInputMode(on) {
+      const storyContainer = document.getElementById('story-choices-container');
+      const actionRow      = document.getElementById('chat-action-row');
+      const inputWrap      = document.querySelector('.chat-input-wrap');
+
+      if (!storyContainer) return;
+      if (on) {
+        storyContainer.style.display = 'flex';
+        storyContainer.style.flexDirection = 'column';
+        if (actionRow)  actionRow.style.display  = 'none';
+        if (inputWrap)  inputWrap.style.display   = 'none';
+      } else {
+        storyContainer.style.display = 'none';
+        if (actionRow)  actionRow.style.display  = '';
+        if (inputWrap)  inputWrap.style.display   = '';
+      }
+      setTimeout(() => _adjustChatLayout(), 50);
+    }
+
+    // 스토리 노드 렌더링
+    function _showStoryNode(nodeId, prevTag) {
+      storyCurrentNode = nodeId;
+      const node = MINJI_STORY[nodeId];
+      if (!node) return;
+
+      // 메시지 목록 결정 (분기형 vs 단일형)
+      const msgs = Array.isArray(node.messages)
+        ? node.messages
+        : (node.messages[prevTag] || node.messages[Object.keys(node.messages)[0]]);
+
+      // AI 메시지 순차 출력
+      let cumDelay = 400;
+      msgs.forEach((m, i) => {
+        const d = (i === 0 ? cumDelay : (m.delay || 1200));
+        cumDelay += d;
+        setTimeout(() => {
+          showTypingIndicator();
+          setTimeout(() => {
+            removeTypingIndicator();
+            addStoryAIMessage(m.text);
+            // 마지막 메시지 뒤 선택지 표시
+            if (i === msgs.length - 1) {
+              setTimeout(() => _renderChoices(node, nodeId), 400);
+            }
+          }, 900);
+        }, cumDelay - 900);
+      });
+    }
+
+    // 스토리 전용 AI 메시지 (D1 저장 안함, 크레딧 차감 안함)
+    function addStoryAIMessage(text) {
+      const msgBox = document.getElementById('chat-messages');
+      const time   = getNowTime();
+      const row    = document.createElement('div');
+      row.className = 'msg-row from-ai';
+      row.style.opacity   = '0';
+      row.style.transform = 'translateY(8px)';
+      row.innerHTML = `
+        <img class="msg-avatar" src="${currentChatPersona?.img || ''}" alt="" />
+        <div class="msg-bubble">${escapeHtml(text)}</div>
+        <span class="msg-time">${time}</span>
+      `;
+      msgBox.appendChild(row);
+      scrollToBottom();
+      requestAnimationFrame(() => {
+        row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        row.style.opacity    = '1';
+        row.style.transform  = 'translateY(0)';
+      });
+    }
+
+    // 선택지 버튼 렌더링
+    function _renderChoices(node, nodeId) {
+      const container = document.getElementById('story-choices-container');
+      if (!container) return;
+
+      // 기존 버튼 제거 (배지 유지)
+      const badge = container.querySelector('.story-badge');
+      container.innerHTML = '';
+      if (badge) container.appendChild(badge);
+
+      if (node.isEnding) {
+        // 엔딩: "대화 시작하기" 버튼
+        const btn = document.createElement('button');
+        btn.className = 'story-end-btn';
+        btn.textContent = '민지와 대화 시작하기 💬';
+        btn.onclick = () => _endStoryMode();
+        container.appendChild(btn);
+      } else {
+        // 일반 선택지
+        (node.choices || []).forEach(choice => {
+          const btn = document.createElement('button');
+          btn.className = 'story-choice-btn';
+          btn.textContent = choice.text;
+          btn.onclick = () => _selectStoryChoice(choice, nodeId);
+          container.appendChild(btn);
+        });
+      }
+      setTimeout(() => _adjustChatLayout(), 50);
+    }
+
+    // 선택지 선택 처리
+    function _selectStoryChoice(choice, fromNodeId) {
+      storyChoiceTags.push(choice.tag);
+
+      // 내 말풍선 표시 (크레딧 차감 없음)
+      const msgBox = document.getElementById('chat-messages');
+      const time   = getNowTime();
+      const row    = document.createElement('div');
+      row.className = 'msg-row from-me';
+      row.innerHTML = `<span class="msg-time">${time}</span><div class="msg-bubble">${escapeHtml(choice.text)}</div>`;
+      msgBox.appendChild(row);
+      scrollToBottom();
+
+      // 선택지 버튼 임시 비활성화
+      document.querySelectorAll('.story-choice-btn').forEach(b => b.disabled = true);
+
+      // 다음 노드로 이동
+      setTimeout(() => _showStoryNode(choice.next, choice.tag), 300);
+    }
+
+    // 스토리 종료 → 자유 채팅 전환
+    function _endStoryMode() {
+      storyMode = false;
+
+      // 엔딩 타입 결정 (마지막 선택 태그 기준)
+      const lastTag    = storyChoiceTags[storyChoiceTags.length - 1] || 'warm_end';
+      const endingType = lastTag.includes('romantic') ? 'romantic' : 'warm';
+      const endingKey  = lastTag; // 'romantic_end' | 'warm_end'
+
+      // localStorage + sessionStorage 양쪽에 완료 표시 (재방문 대비)
+      const personaId = currentChatPersona?.id;
+      if (personaId) {
+        localStorage.setItem('story_done_' + personaId, '1');
+        sessionStorage.setItem('story_done_' + personaId, '1');
+      }
+
+      // 서버에 완료 보고 (관계 보너스 + 기억 시드)
+      const memorySeed = MINJI_STORY.ending.memorySeeds[endingKey] || '';
+      fetch('/api/story/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(getAuthToken() ? { 'Authorization': `Bearer ${getAuthToken()}` } : {})
+        },
+        body: JSON.stringify({
+          personaId,
+          endingType,
+          choiceTags: storyChoiceTags,
+          memorySeed
+        })
+      }).then(r => {
+        if (r.ok) {
+          // 관계 레벨 UI 업데이트 (Lv2)
+          updateChatHeaderLevel(personaId);
+        }
+      }).catch(() => {});
+
+      // UI: 입력바 복원
+      _setStoryInputMode(false);
+
+      // 자유 채팅 안내 메시지
+      setTimeout(() => {
+        addStoryAIMessage('이제 자유롭게 얘기해요 💕');
+      }, 400);
+    }
+
     // 페르소나별 더미 AI 첫 인사
     const FIRST_GREET = {
       minji:   ['오빠, 오늘 많이 힘들었어요? 🏥', '저 퇴근하고 오빠 생각부터 났어요 ☺️'],
@@ -1394,7 +1720,21 @@
         if (!res.ok) return false;
         const data = await res.json();
         const history = data.history || [];
-        if (history.length === 0) return false;
+        if (history.length === 0) {
+          // 히스토리 없어도 로그인 유저는 서버에서 스토리 완료 여부 확인
+          try {
+            const storyRes = await fetch(`/api/story/${persona.id}/status`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (storyRes.ok) {
+              const storyData = await storyRes.json();
+              if (storyData.completed) {
+                localStorage.setItem('story_done_' + persona.id, '1');
+              }
+            }
+          } catch (_) {}
+          return false;
+        }
 
         // D1 데이터로 chatHistory 세팅
         chatHistory = history.map(h => ({
@@ -1432,6 +1772,12 @@
     function startChatWith(persona) {
       currentChatPersona = persona;
 
+      // 스토리 모드 상태 초기화 (이전 채팅에서 남은 상태 정리)
+      storyMode = false;
+      storyChoiceTags = [];
+      storyCurrentNode = null;
+      _setStoryInputMode(false);
+
       // 헤더 설정
       document.getElementById('chat-avatar').src = persona.img;
       document.getElementById('chat-name').textContent = persona.name;
@@ -1442,7 +1788,7 @@
       const msgBox = document.getElementById('chat-messages');
       msgBox.innerHTML = '';
 
-      // 로그인 유저: D1에서 히스토리 로드 시도 → 없으면 sessionStorage → 없으면 첫 인사
+      // 로그인 유저: D1에서 히스토리 로드 시도 → 없으면 sessionStorage → 없으면 첫 인사/스토리
       loadAndRenderHistoryFromD1(persona, msgBox).then(loadedFromD1 => {
         if (loadedFromD1) return; // D1 로드 성공 → 완료
 
@@ -1473,22 +1819,27 @@
           });
           scrollToBottom();
         } else {
-          // 첫 대화: 날짜 구분선 + 첫 인사
+          // 첫 대화: 날짜 구분선 추가
           chatHistory = [];
           const today = new Date();
           const dateStr = today.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
           addDateDivider(dateStr);
 
-          // 첫 인사 (AI) + 허브 이력 업데이트
-          const greets = FIRST_GREET[persona.id] || ['안녕하세요! 💕'];
-          greets.forEach((g, i) => {
-            setTimeout(() => {
-              addAIMessage(g, false);
-              if (i === greets.length - 1) {
-                updateHubHistory(persona, g);
-              }
-            }, i * 900);
-          });
+          // 스토리 모드 or 일반 첫 인사
+          if (shouldStartStory(persona.id)) {
+            setTimeout(() => startStoryMode(persona), 500);
+          } else {
+            // 일반 첫 인사 (AI) + 허브 이력 업데이트
+            const greets = FIRST_GREET[persona.id] || ['안녕하세요! 💕'];
+            greets.forEach((g, i) => {
+              setTimeout(() => {
+                addAIMessage(g, false);
+                if (i === greets.length - 1) {
+                  updateHubHistory(persona, g);
+                }
+              }, i * 900);
+            });
+          }
         }
       });
 
@@ -2739,6 +3090,9 @@
       // 크레딧 내역 렌더링
       renderCreditHistory();
 
+      // 대화 초기화 섹션 렌더링
+      renderResetSection();
+
       // 선톡 알림 토글 상태 복원
       const toggle = document.getElementById('push-opt-toggle');
       if (toggle) {
@@ -2825,6 +3179,98 @@
         el.style.display = 'none';
         el.classList.remove('visible');
       }, 200);
+    }
+
+    // ─────────────────────────────
+    // 대화 초기화
+    // ─────────────────────────────
+    let _resetTargetPersonaId = null; // 모달에서 사용할 타겟
+
+    // 리셋 섹션 렌더링 (모든 페르소나 표시)
+    function renderResetSection() {
+      const list = document.getElementById('mypage-reset-list');
+      if (!list) return;
+
+      list.innerHTML = PERSONAS.map(p => {
+        const hasChatHistory = !!(loadChatHistory(p.id)?.length);
+        const hasStoryDone   = !!localStorage.getItem('story_done_' + p.id);
+        const hasData        = hasChatHistory || hasStoryDone || isLoggedIn();
+        const metaText       = hasChatHistory
+          ? '대화 기록 있음'
+          : (hasStoryDone ? '스토리 완료' : '대화 기록 없음');
+
+        return `
+          <div class="mypage-reset-card">
+            <img class="mypage-reset-avatar" src="${p.img}" alt="${p.name}" />
+            <div class="mypage-reset-info">
+              <div class="mypage-reset-name">${p.name}</div>
+              <div class="mypage-reset-meta">${metaText}</div>
+            </div>
+            <button
+              class="mypage-reset-btn"
+              onclick="confirmResetPersona('${p.id}', '${p.name}')"
+            >초기화</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 확인 모달 열기
+    function confirmResetPersona(personaId, personaName) {
+      _resetTargetPersonaId = personaId;
+      const modal     = document.getElementById('reset-confirm-modal');
+      const titleEl   = document.getElementById('reset-modal-title');
+      if (!modal) return;
+      if (titleEl) titleEl.textContent = `${personaName}와의 대화를 초기화할까요?`;
+      modal.style.display = 'flex';
+    }
+
+    // 확인 모달 닫기
+    function closeResetModal() {
+      const modal = document.getElementById('reset-confirm-modal');
+      if (modal) modal.style.display = 'none';
+      _resetTargetPersonaId = null;
+    }
+
+    // 실제 초기화 실행
+    async function doResetPersona() {
+      const personaId = _resetTargetPersonaId;
+      if (!personaId) return;
+      closeResetModal();
+
+      const confirmBtn = document.querySelector('.reset-modal-confirm');
+
+      // 1. sessionStorage 채팅 히스토리 삭제
+      sessionStorage.removeItem('chat_' + personaId);
+      // 현재 열린 채팅이 해당 페르소나면 history도 비움
+      if (currentChatPersona?.id === personaId) {
+        chatHistory = [];
+      }
+
+      // 2. localStorage 스토리 완료 플래그 삭제
+      localStorage.removeItem('story_done_' + personaId);
+      sessionStorage.removeItem('story_done_' + personaId);
+
+      // 3. 로그인 유저: 서버 데이터 삭제
+      if (isLoggedIn()) {
+        try {
+          const res = await fetch(`/api/chat/reset/${personaId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+          });
+          if (!res.ok) throw new Error('서버 초기화 실패');
+        } catch (e) {
+          showMypageToast('⚠️ 서버 초기화 중 오류가 발생했어요');
+          return;
+        }
+      }
+
+      // 4. 리셋 섹션 & 통계 갱신
+      renderResetSection();
+      const partnerEl = document.getElementById('mypage-stat-partners');
+      if (partnerEl) partnerEl.textContent = getActivePartnersCount();
+
+      showMypageToast('✅ 초기화 완료!');
     }
 
     // 출석 체크 버튼 렌더링
