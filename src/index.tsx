@@ -2054,6 +2054,71 @@ app.get('/', (c) => {
     .chat-send-btn:active { transform: translateY(-50%) scale(0.9); }
 
     /* ─────────────────────────────
+       스토리 모드 선택지 UI
+    ───────────────────────────── */
+    #story-choices-container {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 4px 4px;
+      animation: storyChoicesFadeIn 0.4s ease;
+    }
+    @keyframes storyChoicesFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .story-choice-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,107,138,0.1);
+      border: 1px solid rgba(255,107,138,0.3);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      line-height: 1.4;
+    }
+    .story-choice-btn:active {
+      background: rgba(255,107,138,0.22);
+      border-color: rgba(255,107,138,0.6);
+      transform: scale(0.98);
+    }
+
+    .story-end-btn {
+      width: 100%;
+      padding: 13px 16px;
+      background: linear-gradient(135deg, #FF6B8A, #FF4D6D);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .story-end-btn:active { opacity: 0.85; transform: scale(0.98); }
+
+    .story-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FF8FA3;
+      background: rgba(255,107,138,0.12);
+      border: 1px solid rgba(255,107,138,0.25);
+      border-radius: 10px;
+      padding: 2px 8px;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ─────────────────────────────
        ⑦ 채팅 허브 (메인 채팅 목록) 화면
     ───────────────────────────── */
     #hub-screen {
@@ -3120,6 +3185,133 @@ app.get('/', (c) => {
     /* 하단 여백 */
     .mypage-bottom-spacer { height: 40px; flex-shrink: 0; }
 
+    /* ─── 대화 초기화 섹션 ─── */
+    .mypage-reset-list {
+      margin: 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .mypage-reset-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mypage-reset-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .mypage-reset-info { flex: 1; min-width: 0; }
+    .mypage-reset-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .mypage-reset-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 2px;
+    }
+    .mypage-reset-btn {
+      padding: 7px 13px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,100,100,0.35);
+      background: rgba(255,80,80,0.08);
+      color: rgba(255,130,130,0.9);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+    .mypage-reset-btn:active { background: rgba(255,80,80,0.2); }
+
+    /* ─── 대화 초기화 확인 모달 ─── */
+    #reset-confirm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 24px;
+    }
+    .reset-modal-box {
+      background: #1c1c1e;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px 22px 22px;
+      width: 100%;
+      max-width: 310px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      animation: modalPop 0.2s ease;
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .reset-modal-icon { font-size: 38px; line-height: 1; }
+    .reset-modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.4;
+    }
+    .reset-modal-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.55;
+      margin-bottom: 4px;
+    }
+    .reset-modal-btns {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    .reset-modal-cancel {
+      flex: 1;
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .reset-modal-cancel:active { background: rgba(255,255,255,0.13); }
+    .reset-modal-confirm {
+      flex: 1;
+      padding: 13px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #ff4444, #cc2222);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .reset-modal-confirm:active { opacity: 0.82; }
+
     /* 법적정보 섹션 */
     .mypage-legal-inner {
       margin: 0 16px 8px;
@@ -4024,8 +4216,29 @@ app.get('/', (c) => {
       </div>
     </div><!-- /mypage-legal-section -->
 
+    <!-- 대화 초기화 섹션 -->
+    <div id="mypage-reset-section">
+      <div class="mypage-section-title">🗑️ 대화 초기화</div>
+      <div class="mypage-reset-list" id="mypage-reset-list">
+        <!-- JS로 생성 -->
+      </div>
+    </div>
+
     <div class="mypage-bottom-spacer"></div>
   </div><!-- /mypage-screen -->
+
+  <!-- 대화 초기화 확인 모달 -->
+  <div id="reset-confirm-modal" style="display:none;">
+    <div class="reset-modal-box">
+      <div class="reset-modal-icon">⚠️</div>
+      <div class="reset-modal-title" id="reset-modal-title">대화를 초기화할까요?</div>
+      <div class="reset-modal-desc">채팅 히스토리, 관계 레벨, 기억, 스토리 기록이 모두 삭제됩니다.<br/>되돌릴 수 없어요.</div>
+      <div class="reset-modal-btns">
+        <button class="reset-modal-cancel" onclick="closeResetModal()">취소</button>
+        <button class="reset-modal-confirm" onclick="doResetPersona()">초기화</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ⑧ 인앱 그램 피드 화면 -->
   <div id="gram-screen" class="screen" style="display:none; opacity:0;">
@@ -4155,6 +4368,9 @@ app.get('/', (c) => {
 
     <!-- 입력창 -->
     <div class="chat-input-bar">
+      <!-- 스토리 모드: 선택지 버튼 (기본 hidden) -->
+      <div id="story-choices-container"></div>
+
       <!-- 상단: 음성/사진 요청 버튼 -->
       <div class="chat-action-row" id="chat-action-row">
         <button class="chat-action-btn voice-btn" onclick="requestVoiceMessage()" title="음성 메시지 요청 (5C)">
@@ -5225,6 +5441,41 @@ memoryApp.post('/api/history/save', async (c) => {
   }
 })
 
+// DELETE /api/chat/reset/:personaId  — 캐릭터별 데이터 일괄 초기화
+memoryApp.delete('/api/chat/reset/:personaId', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '인증 필요' }, 401)
+
+    const personaId = c.req.param('personaId')
+    if (!personaId) return c.json({ error: 'personaId 필요' }, 400)
+
+    const db = c.env.DB
+    if (!db) return c.json({ ok: true, note: 'DB 없음 (로컬 개발)' })
+
+    // 1. 채팅 히스토리 삭제
+    await db.prepare('DELETE FROM chat_history WHERE user_id = ? AND persona_id = ?')
+      .bind(userId, personaId).run()
+
+    // 2. 장기 기억 삭제
+    await db.prepare('DELETE FROM user_memory WHERE user_id = ? AND persona_id = ?')
+      .bind(userId, personaId).run()
+
+    // 3. 관계 레벨 삭제
+    await db.prepare('DELETE FROM relationship_levels WHERE user_id = ? AND persona_id = ?')
+      .bind(userId, personaId).run()
+
+    // 4. 스토리 완료 기록 삭제 (스토리 재플레이 가능하게)
+    await db.prepare('DELETE FROM story_completions WHERE user_id = ? AND persona_id = ?')
+      .bind(userId, personaId).run()
+
+    return c.json({ ok: true })
+  } catch (e: any) {
+    console.error('[/api/chat/reset error]', e)
+    return c.json({ error: '초기화 실패', detail: e.message }, 500)
+  }
+})
+
 // GET /api/history/:personaId  — 최근 대화 이력 조회 (최대 50건)
 memoryApp.get('/api/history/:personaId', async (c) => {
   try {
@@ -6225,10 +6476,86 @@ app.get('/privacy', (c) => {
 </html>`)
 })
 
+// ════════════════════════════════════════════
+// STORY API  (/api/story/*)
+// ════════════════════════════════════════════
+
+const storyApp = new Hono<{ Bindings: Bindings }>()
+
+// GET /api/story/:personaId/status — 스토리 완료 여부 확인
+storyApp.get('/api/story/:personaId/status', async (c) => {
+  const personaId = c.req.param('personaId')
+  const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+
+  if (!userId || !c.env.DB) {
+    return c.json({ completed: false })
+  }
+
+  const row = await c.env.DB.prepare(
+    'SELECT ending_type FROM story_completions WHERE user_id = ? AND persona_id = ?'
+  ).bind(userId, personaId).first<{ ending_type: string }>()
+
+  return c.json({ completed: !!row, endingType: row?.ending_type ?? null })
+})
+
+// POST /api/story/complete — 스토리 완료 처리 (관계 보너스 + 기억 시드)
+storyApp.post('/api/story/complete', async (c) => {
+  try {
+    const { personaId, endingType, choiceTags, memorySeed } = await c.req.json<{
+      personaId: string
+      endingType: string
+      choiceTags: string[]
+      memorySeed: string
+    }>()
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+
+    if (!userId || !c.env.DB) {
+      // 비로그인 유저: 서버 기록 없이 성공 응답
+      return c.json({ success: true, guestMode: true })
+    }
+
+    const db = c.env.DB
+
+    // ① 스토리 완료 기록 (중복 무시)
+    await db.prepare(`
+      INSERT OR IGNORE INTO story_completions (user_id, persona_id, ending_type, choice_tags)
+      VALUES (?, ?, ?, ?)
+    `).bind(userId, personaId, endingType, JSON.stringify(choiceTags)).run()
+
+    // ② 관계 레벨 보너스: 스토리 완료 시 chat_count 20 부여 → Lv2(썸) 보장
+    await db.prepare(`
+      INSERT INTO relationship_levels (user_id, persona_id, chat_count, level)
+      VALUES (?, ?, 20, 2)
+      ON CONFLICT(user_id, persona_id) DO UPDATE SET
+        chat_count = MAX(chat_count, 20),
+        level      = MAX(level, 2),
+        updated_at = datetime('now')
+    `).bind(userId, personaId).run()
+
+    // ③ 장기 기억 시드 저장
+    if (memorySeed) {
+      await db.prepare(`
+        INSERT INTO user_memory (user_id, persona_id, memory_text)
+        VALUES (?, ?, ?)
+        ON CONFLICT(user_id, persona_id) DO UPDATE SET
+          memory_text = excluded.memory_text,
+          updated_at  = datetime('now')
+      `).bind(userId, personaId, memorySeed).run()
+    }
+
+    return c.json({ success: true })
+  } catch (e: any) {
+    console.error('[/api/story/complete error]', e)
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
 // chatApp 라우트를 메인 app에 마운트
 app.route('/', chatApp)
 app.route('/', authApp)
 app.route('/', memoryApp)
 app.route('/', pushApp)
+app.route('/', storyApp)
 
 export default app
