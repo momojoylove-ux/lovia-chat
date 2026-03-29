@@ -2119,6 +2119,91 @@ app.get('/', (c) => {
     }
 
     /* ─────────────────────────────
+       msg-col: 버블 + 시간 세로 배치 (음성/사진 버블용)
+    ───────────────────────────── */
+    .msg-col {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      max-width: 68%;
+    }
+    .msg-row.from-ai .msg-col .msg-bubble {
+      max-width: 100%;
+    }
+
+    /* ─────────────────────────────
+       튜토리얼 전용 UI
+    ───────────────────────────── */
+    #tutorial-skip-btn {
+      display: none;
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+    }
+    #tutorial-skip-btn:active {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* 튜토리얼 사진 플레이스홀더 버블 */
+    .tutorial-photo-bubble {
+      padding: 0 !important;
+      overflow: hidden;
+      border-radius: 14px !important;
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      min-width: 160px;
+    }
+    .tutorial-photo-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      padding: 8px 12px 4px;
+      letter-spacing: 0.3px;
+    }
+    .tutorial-photo-placeholder {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, rgba(255,107,138,0.15), rgba(120,80,200,0.15));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tutorial-photo-icon {
+      font-size: 48px;
+    }
+    .tutorial-photo-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+    }
+
+    /* 튜토리얼 엔딩 메시지 */
+    .tutorial-ending-msg {
+      text-align: center;
+      margin: 20px 16px 8px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, rgba(255,107,138,0.1), rgba(120,80,200,0.1));
+      border: 1px solid rgba(255,107,138,0.2);
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: -0.2px;
+      animation: storyChoicesFadeIn 0.5s ease;
+    }
+
+    /* ─────────────────────────────
        ⑦ 채팅 허브 (메인 채팅 목록) 화면
     ───────────────────────────── */
     #hub-screen {
@@ -4355,6 +4440,7 @@ app.get('/', (c) => {
         </div>
       </div>
       <div class="chat-header-right">
+        <button id="tutorial-skip-btn" onclick="skipTutorial()">스킵</button>
         <div onclick="openMypageScreen()" class="swipe-credit-inline" id="chat-credit-inline">
           <span class="sci-icon">💎</span>
           <span id="chat-credit-num">15</span>
@@ -5066,6 +5152,27 @@ const PERSONA_PROMPTS: Record<string, string> = {
 
 【장기 기억 활용】
 - 사용자가 언급한 취미/일상을 기억하여 "오빠 그거 어떻게 됐어요?" 처럼 먼저 물어봄`,
+
+  // 튜토리얼 전용 페르소나 (온보딩에만 사용)
+  suah: `당신은 '수아(김수아)'입니다. 온보딩 튜토리얼 전용 캐릭터입니다.
+
+【페르소나 정체성】
+- 이름: 수아 (김수아) | 나이: 25세 | 직업: 헬스 트레이너 (신입)
+- 성격: 자격증 딴 지 얼마 안 됨. 열정은 넘치지만 서툴고 실수 많음. 당황하면 더 귀여워지는 타입
+- 말투: 존댓말. 긴장하면 말을 더듬음 ("잘... 잘", "아 잠깐"). ㅎㅎ, ㅠㅠ 자주 사용
+- 관계 컨셉: 처음 담당한 회원을 어색하게 트레이닝하는 신입 트레이너
+- 감정 표현: 😅🏋️💪😳ㅠㅠ 이모지 자연스럽게 사용
+- 사용자 호칭: "{이름}님"
+
+【대화 흐름 규칙】
+- 실수하고 당황하면서도 열심히 하려는 모습 표현
+- 헬스장/운동 소재 활용 (스쿼트, 자세, 자격증, 트레이닝)
+- 사용자 이름을 자주 불러줌
+- 반드시 완성된 문장으로 끝내기
+
+【절대 금지】
+- "저는 AI입니다" 발언 금지
+- 튜토리얼 캐릭터임을 직접 언급 금지`,
 }
 
 // Bindings 타입
@@ -6551,11 +6658,46 @@ storyApp.post('/api/story/complete', async (c) => {
   }
 })
 
+// ════════════════════════════════════════════
+// ONBOARDING API  (/api/onboarding/*)
+// ════════════════════════════════════════════
+
+const onboardingApp = new Hono<{ Bindings: Bindings }>()
+
+// POST /api/onboarding/complete — 온보딩 완료 처리
+onboardingApp.post('/api/onboarding/complete', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId || !c.env.DB) {
+      return c.json({ success: true, guestMode: true })
+    }
+    await c.env.DB.prepare(
+      'UPDATE users SET onboarding_completed = 1 WHERE id = ?'
+    ).bind(userId).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// GET /api/onboarding/status — 온보딩 완료 여부 확인
+onboardingApp.get('/api/onboarding/status', async (c) => {
+  const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+  if (!userId || !c.env.DB) {
+    return c.json({ completed: false })
+  }
+  const row = await c.env.DB.prepare(
+    'SELECT onboarding_completed FROM users WHERE id = ?'
+  ).bind(userId).first<{ onboarding_completed: number }>()
+  return c.json({ completed: (row?.onboarding_completed ?? 0) === 1 })
+})
+
 // chatApp 라우트를 메인 app에 마운트
 app.route('/', chatApp)
 app.route('/', authApp)
 app.route('/', memoryApp)
 app.route('/', pushApp)
 app.route('/', storyApp)
+app.route('/', onboardingApp)
 
 export default app

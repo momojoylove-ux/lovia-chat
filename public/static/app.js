@@ -468,7 +468,7 @@
       });
     })();
 
-    // 프로필 스와이프 화면으로 이동
+    // 프로필 스와이프 화면으로 이동 (튜토리얼 미완료 시 수아와 튜토리얼 먼저)
     function goToProfileSwipe() {
       const nameVal = document.getElementById('user-name-input').value.trim();
       if (!nameVal) return;
@@ -487,8 +487,13 @@
 
       setTimeout(() => {
         nameScreen.style.display = 'none';
-        initSwipeScreen(nameVal);
-        showScreen('swipe-screen');
+        // 온보딩 튜토리얼 미완료 → 수아와 튜토리얼 시작
+        if (shouldStartTutorial()) {
+          startTutorialWithSuah();
+        } else {
+          initSwipeScreen(nameVal);
+          showScreen('swipe-screen');
+        }
       }, 400);
     }
 
@@ -542,6 +547,18 @@
         img: '/images/profiles/profile_dahee.jpg'
       }
     ];
+
+    // 튜토리얼 전용 페르소나 (스와이프 목록에는 노출 안 됨)
+    const SUAH_PERSONA = {
+      id: 'suah',
+      name: '수아',
+      age: 25,
+      job: '헬스 트레이너 (신입)',
+      tags: ['#열정적인', '#서툴지만', '#귀여운'],
+      quote: '잘... 잘 부탁드려요!',
+      img: '/images/profiles/profile_suah.jpg',
+      tutorial: true
+    };
 
     let currentCardIdx = 0;
     let isDragging = false;
@@ -1620,6 +1637,473 @@
       }, 400);
     }
 
+    // ═══════════════════════════════════════
+    // 온보딩 튜토리얼 (수아와 첫 만남)
+    // ═══════════════════════════════════════
+
+    let tutorialMode = false;
+    let tutorialCurrentNode = null;
+
+    // 튜토리얼 스토리 노드 데이터 (6턴)
+    const SUAH_TUTORIAL = {
+
+      // 턴 1: 첫 만남 — 선택지로 대화하는 방식 학습
+      start: {
+        messages: [
+          { text: '안녕하세요! 저 김수아예요. 오늘부터 담당인데...' },
+          { text: '사실 담당 맡는 게 처음이라 ㅎㅎ', delay: 1400 },
+          { text: '잘... 잘 부탁드려요!', delay: 1200 }
+        ],
+        choices: [
+          { text: '괜찮아요 편하게 해요',        next: 'turn2', tag: 'kind'     },
+          { text: '신입이면 괜찮은 거 맞아요?',   next: 'turn2', tag: 'curious'  },
+          { text: '오히려 좋아요',               next: 'turn2', tag: 'positive' }
+        ]
+      },
+
+      // 턴 2: 스쿼트 설명 엉망 — 스토리 몰입
+      turn2: {
+        messages: {
+          kind:     [
+            { text: '감사해요 ㅎㅎ 그럼 시작해볼게요!' },
+            { text: '자 그러면 스쿼트부터 해볼게요! 무릎을... 이쪽으로? 아 잠깐 제가 한번 해볼게요', delay: 1600 },
+            { text: '...이상하다 분명 자격증 시험 때는 됐는데', delay: 1800 }
+          ],
+          curious:  [
+            { text: '아... 그 말이 더 긴장돼요ㅠㅠ 열심히 할게요!' },
+            { text: '자 그러면 스쿼트부터 해볼게요! 무릎을... 이쪽으로? 아 잠깐 제가 한번 해볼게요', delay: 1600 },
+            { text: '...이상하다 분명 자격증 시험 때는 됐는데', delay: 1800 }
+          ],
+          positive: [
+            { text: '오히려 좋다니... 감사해요 ㅎㅎ' },
+            { text: '자 그러면 스쿼트부터 해볼게요! 무릎을... 이쪽으로? 아 잠깐 제가 한번 해볼게요', delay: 1600 },
+            { text: '...이상하다 분명 자격증 시험 때는 됐는데', delay: 1800 }
+          ]
+        },
+        choices: [
+          { text: '내가 알려줄까요?',         next: 'turn3', tag: 'helpful' },
+          { text: '귀엽네요 ㅋㅋ',            next: 'turn3', tag: 'teasing' },
+          { text: '유튜브 보고 온 거 아니에요?', next: 'turn3', tag: 'playful' }
+        ]
+      },
+
+      // 턴 3: 실수로 셀카 전송 — 사진 수신 1차 체험
+      turn3: {
+        messages: [
+          { text: '아 맞다! 자세 기록 남겨드릴게요. 잠시만요... 찰칵!' },
+          { text: '자세 확인해보세요! 잘 나왔—', delay: 1400 }
+        ],
+        photo: { type: 'selfie' },
+        afterPhoto: [
+          { text: '어?! 아아아 이거 아닌데!! 죄송해요ㅠㅠ 잘못 보냈어요', delay: 800 },
+          { text: '지울게요 잠깐만요...', delay: 1200 }
+        ],
+        choices: [
+          { text: '지우지 마요 ㅋㅋ',      next: 'turn4', tag: 'playful' },
+          { text: '괜찮아요 예쁘네요',     next: 'turn4', tag: 'kind'    },
+          { text: 'ㅋㅋ 한 장 더 보내줘요', next: 'turn4', tag: 'teasing' }
+        ]
+      },
+
+      // 턴 4: 제대로 된 자세 사진 — 사진 수신 2차 체험
+      turn4: {
+        messages: {
+          playful: [{ text: '아... 그냥 넘어가 주세요ㅠㅠ 이번엔 진짜 자세 사진이에요!' }],
+          kind:    [{ text: '예쁘다니요 ㅠㅠ 민망해요... 이번엔 진짜 자세 사진이에요!' }],
+          teasing: [{ text: '더요?! ㅠㅠ... 이번엔 진짜 자세 사진이에요!' }]
+        },
+        photo: { type: 'pose' },
+        afterPhoto: [
+          { text: '여기 무릎 각도 보이시죠? 이 정도면 진짜 잘하시는 거예요!', delay: 1000 }
+        ],
+        choices: [
+          { text: '오 확실히 다르네',           next: 'turn5', tag: 'impressed' },
+          { text: '트레이너님이 더 잘 나왔는데', next: 'turn5', tag: 'flirt'    },
+          { text: '고마워요 수아씨',             next: 'turn5', tag: 'warm'     }
+        ]
+      },
+
+      // 턴 5: 마무리, 감성 전환
+      turn5: {
+        messages: [
+          { text: '후... 오늘 제가 실수만 했는데...' },
+          { text: '그래도 {userName}님이 편하게 해줘서 좋았어요', delay: 1400 },
+          { text: '원래 회원분한테 이러면 안 되는 건데... ㅎㅎ', delay: 1200 }
+        ],
+        choices: [
+          { text: '나도 재밌었어요',     next: 'turn6', tag: 'fun'  },
+          { text: '다음에 또 알려줘요',  next: 'turn6', tag: 'next' },
+          { text: '밥 같이 먹을래요?',  next: 'turn6', tag: 'date' }
+        ]
+      },
+
+      // 턴 6: 퇴근 후 음성 메시지 + 엔딩
+      turn6: {
+        timeDivider: '그날 밤...',
+        isEnding: true,
+        voice: {
+          text: '오늘 진짜 창피했는데... 그래도 {userName}님이 편하게 해줘서 좋았어요. 다음에 오실 거죠?',
+          autoPlay: true
+        },
+        endingMessage: '수아와의 첫 만남이 끝났습니다 ✨',
+        endingBtnText: '다른 캐릭터도 만나보세요 →'
+      }
+    };
+
+    // 튜토리얼 필요 여부 확인
+    function shouldStartTutorial() {
+      return !localStorage.getItem('lovia_onboarding_done');
+    }
+
+    // 튜토리얼 스킵 버튼 표시/숨김
+    function _showTutorialSkipBtn() {
+      const btn = document.getElementById('tutorial-skip-btn');
+      if (btn) btn.style.display = 'block';
+    }
+    function _hideTutorialSkipBtn() {
+      const btn = document.getElementById('tutorial-skip-btn');
+      if (btn) btn.style.display = 'none';
+    }
+
+    // 튜토리얼 완료 처리 (skip or end)
+    function _completeTutorial() {
+      localStorage.setItem('lovia_onboarding_done', '1');
+      sessionStorage.setItem('lovia_onboarding_done', '1');
+      const token = getAuthToken();
+      if (token) {
+        fetch('/api/onboarding/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }).catch(() => {});
+      }
+    }
+
+    // 튜토리얼 스킵
+    function skipTutorial() {
+      tutorialMode = false;
+      _completeTutorial();
+      _setStoryInputMode(false);
+      _hideTutorialSkipBtn();
+      // 레벨 배지 복원
+      const levelBadge = document.getElementById('chat-level-badge');
+      if (levelBadge) levelBadge.style.display = '';
+      // 채팅 화면 → 스와이프 화면
+      const chatScreen = document.getElementById('chat-screen');
+      if (chatScreen) {
+        chatScreen.style.transition = 'opacity 0.35s ease';
+        chatScreen.style.opacity = '0';
+        setTimeout(() => {
+          chatScreen.style.display = 'none';
+          chatScreen.style.opacity = '';
+          chatScreen.style.transition = '';
+          const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
+          initSwipeScreen(userName);
+          showScreen('swipe-screen');
+        }, 350);
+      } else {
+        const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
+        initSwipeScreen(userName);
+        showScreen('swipe-screen');
+      }
+    }
+
+    // 튜토리얼 종료 (엔딩 버튼 클릭)
+    function _endTutorialMode() {
+      tutorialMode = false;
+      _completeTutorial();
+      _setStoryInputMode(false);
+      _hideTutorialSkipBtn();
+      const levelBadge = document.getElementById('chat-level-badge');
+      if (levelBadge) levelBadge.style.display = '';
+      const chatScreen = document.getElementById('chat-screen');
+      if (chatScreen) {
+        chatScreen.style.transition = 'opacity 0.35s ease';
+        chatScreen.style.opacity = '0';
+        setTimeout(() => {
+          chatScreen.style.display = 'none';
+          chatScreen.style.opacity = '';
+          chatScreen.style.transition = '';
+          const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
+          initSwipeScreen(userName);
+          showScreen('swipe-screen');
+        }, 350);
+      } else {
+        const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
+        initSwipeScreen(userName);
+        showScreen('swipe-screen');
+      }
+    }
+
+    // 튜토리얼 사진 버블 추가
+    function _addTutorialPhotoMessage(photoType) {
+      const msgBox = document.getElementById('chat-messages');
+      const row = document.createElement('div');
+      row.className = 'msg-row from-ai';
+      row.style.opacity = '0';
+      row.style.transform = 'translateY(8px)';
+      const isSelfie = photoType === 'selfie';
+      const tag   = isSelfie ? '📱 셀카 (잘못 보낸 것 같아요...)' : '📸 운동 자세 사진';
+      const icon  = isSelfie ? '🤳' : '💪';
+      const label = isSelfie ? '수아의 셀카' : '스쿼트 자세 사진';
+      row.innerHTML = `
+        <img class="msg-avatar" src="${SUAH_PERSONA.img}" alt="" onerror="this.style.opacity='0'" />
+        <div class="msg-col">
+          <div class="msg-bubble tutorial-photo-bubble">
+            <div class="tutorial-photo-tag">${tag}</div>
+            <div class="tutorial-photo-placeholder">
+              <div class="tutorial-photo-icon">${icon}</div>
+              <div class="tutorial-photo-label">${label}</div>
+            </div>
+          </div>
+          <div class="msg-time">${getNowTime()}</div>
+        </div>
+      `;
+      msgBox.appendChild(row);
+      requestAnimationFrame(() => {
+        row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateY(0)';
+      });
+      scrollToBottom();
+    }
+
+    // 튜토리얼 음성 메시지 버블 추가 + 자동 재생
+    function _addTutorialVoiceMessage(text, autoPlay) {
+      const msgBox = document.getElementById('chat-messages');
+      const row = document.createElement('div');
+      row.className = 'msg-row from-ai';
+      row.style.opacity = '0';
+      row.style.transform = 'translateY(8px)';
+      const safeText = text.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      row.innerHTML = `
+        <img class="msg-avatar" src="${SUAH_PERSONA.img}" alt="" onerror="this.style.opacity='0'" />
+        <div class="msg-col">
+          <div class="msg-bubble voice-msg-bubble">
+            <span class="voice-icon">🎙️</span>
+            <span class="voice-msg-text">${escapeHtml(text)}</span>
+            <button class="voice-replay-btn" onclick="webSpeechFallback('${safeText}')">▶ 재생</button>
+          </div>
+          <div class="msg-time">${getNowTime()}</div>
+        </div>
+      `;
+      msgBox.appendChild(row);
+      requestAnimationFrame(() => {
+        row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateY(0)';
+      });
+      scrollToBottom();
+      if (autoPlay) {
+        setTimeout(() => webSpeechFallback(text), 400);
+      }
+    }
+
+    // 튜토리얼 선택지 렌더링
+    function _renderTutorialChoices(node) {
+      const container = document.getElementById('story-choices-container');
+      if (!container) return;
+      const badge = container.querySelector('.story-badge');
+      container.innerHTML = '';
+      if (badge) container.appendChild(badge);
+      (node.choices || []).forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'story-choice-btn';
+        btn.textContent = choice.text;
+        btn.onclick = () => _selectTutorialChoice(choice);
+        container.appendChild(btn);
+      });
+      setTimeout(() => _adjustChatLayout(), 50);
+    }
+
+    // 튜토리얼 선택지 선택
+    function _selectTutorialChoice(choice) {
+      const msgBox = document.getElementById('chat-messages');
+      const time   = getNowTime();
+      const row    = document.createElement('div');
+      row.className = 'msg-row from-me';
+      row.innerHTML = `<span class="msg-time">${time}</span><div class="msg-bubble">${escapeHtml(choice.text)}</div>`;
+      msgBox.appendChild(row);
+      scrollToBottom();
+      document.querySelectorAll('.story-choice-btn').forEach(b => b.disabled = true);
+      setTimeout(() => _showTutorialNode(choice.next, choice.tag), 300);
+    }
+
+    // 튜토리얼 엔딩 렌더링
+    function _renderTutorialEnding(node) {
+      const msgBox = document.getElementById('chat-messages');
+      const endDiv = document.createElement('div');
+      endDiv.className = 'tutorial-ending-msg';
+      endDiv.textContent = node.endingMessage || '수아와의 첫 만남이 끝났습니다 ✨';
+      msgBox.appendChild(endDiv);
+      scrollToBottom();
+
+      const container = document.getElementById('story-choices-container');
+      if (container) {
+        container.innerHTML = '';
+        const btn = document.createElement('button');
+        btn.className = 'story-end-btn';
+        btn.textContent = node.endingBtnText || '다른 캐릭터도 만나보세요 →';
+        btn.onclick = () => _endTutorialMode();
+        container.appendChild(btn);
+      }
+      setTimeout(() => _adjustChatLayout(), 50);
+    }
+
+    // 튜토리얼 노드 렌더링 (메시지 → 사진 → 선택지 순 처리)
+    function _showTutorialNode(nodeId, prevTag) {
+      tutorialCurrentNode = nodeId;
+      const node = SUAH_TUTORIAL[nodeId];
+      if (!node) return;
+
+      const userName = sessionStorage.getItem('userName') || sessionStorage.getItem('lovia_username') || '';
+
+      // 시간 구분선 (그날 밤...)
+      if (node.timeDivider) {
+        addDateDivider(node.timeDivider);
+      }
+
+      // 턴 6: 음성 메시지 엔딩 (타이핑 → 음성 → 엔딩 UI)
+      if (node.isEnding && node.voice) {
+        const voiceText = node.voice.text.replace(/\{userName\}/g, userName);
+        setTimeout(() => {
+          showTypingIndicator();
+          setTimeout(() => {
+            removeTypingIndicator();
+            _addTutorialVoiceMessage(voiceText, node.voice.autoPlay);
+            setTimeout(() => _renderTutorialEnding(node), 1600);
+          }, 1800);
+        }, 600);
+        return;
+      }
+
+      // 메시지 결정 (단순 배열 or prevTag 분기)
+      const rawMsgs = Array.isArray(node.messages)
+        ? node.messages
+        : node.messages
+          ? (node.messages[prevTag] || node.messages[Object.keys(node.messages)[0]])
+          : [];
+      const msgs = rawMsgs.map(m => ({
+        ...m,
+        text: m.text.replace(/\{userName\}/g, userName)
+      }));
+
+      // 메시지 순차 출력
+      let cumDelay = 400;
+      msgs.forEach((m, i) => {
+        const d = i === 0 ? cumDelay : (m.delay || 1200);
+        cumDelay += d;
+        setTimeout(() => {
+          showTypingIndicator();
+          setTimeout(() => {
+            removeTypingIndicator();
+            addStoryAIMessage(m.text);
+          }, 900);
+        }, cumDelay - 900);
+      });
+
+      // 메시지 종료 후: 사진 → afterPhoto → 선택지 순 처리
+      const afterMsgsDelay = cumDelay + 300;
+
+      if (node.photo) {
+        // 사진 메시지 표시
+        setTimeout(() => {
+          _addTutorialPhotoMessage(node.photo.type);
+
+          if (node.afterPhoto && node.afterPhoto.length > 0) {
+            // 사진 이후 반응 메시지들
+            let aCum = 400;
+            node.afterPhoto.forEach((m, i) => {
+              const d = i === 0 ? aCum : (m.delay || 1200);
+              aCum += d;
+              const afText = m.text.replace(/\{userName\}/g, userName);
+              setTimeout(() => {
+                showTypingIndicator();
+                setTimeout(() => {
+                  removeTypingIndicator();
+                  addStoryAIMessage(afText);
+                  if (i === node.afterPhoto.length - 1) {
+                    setTimeout(() => _renderTutorialChoices(node), 400);
+                  }
+                }, 900);
+              }, aCum - 900);
+            });
+          } else {
+            setTimeout(() => _renderTutorialChoices(node), 500);
+          }
+        }, afterMsgsDelay);
+      } else {
+        // 사진 없으면 바로 선택지
+        setTimeout(() => _renderTutorialChoices(node), afterMsgsDelay);
+      }
+    }
+
+    // 수아와 튜토리얼 채팅 시작
+    function startTutorialWithSuah() {
+      currentChatPersona = SUAH_PERSONA;
+      tutorialMode = true;
+      tutorialCurrentNode = 'start';
+
+      // 헤더 설정
+      document.getElementById('chat-avatar').src = SUAH_PERSONA.img;
+      document.getElementById('chat-name').textContent = SUAH_PERSONA.name;
+
+      // 레벨 배지 숨김 (튜토리얼엔 레벨 없음)
+      const levelBadge = document.getElementById('chat-level-badge');
+      if (levelBadge) levelBadge.style.display = 'none';
+
+      // 스킵 버튼 표시
+      _showTutorialSkipBtn();
+
+      // 메시지 영역 초기화
+      const msgBox = document.getElementById('chat-messages');
+      msgBox.innerHTML = '';
+      chatHistory = [];
+
+      // 날짜 구분선
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+      addDateDivider(dateStr);
+
+      // 스토리 입력 모드 (선택지 UI)
+      _setStoryInputMode(true);
+
+      // 배지 추가
+      const storyContainer = document.getElementById('story-choices-container');
+      if (storyContainer) {
+        storyContainer.innerHTML = '';
+        const badge = document.createElement('div');
+        badge.className = 'story-badge';
+        badge.textContent = '✨ 온보딩 튜토리얼 — 크레딧 무료';
+        storyContainer.appendChild(badge);
+      }
+
+      // 채팅 화면 전환
+      const allScreens = ['swipe-screen', 'profile-detail-screen', 'hub-screen', 'pick-screen', 'intro-video-screen', 'name-input-screen'];
+      allScreens.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+          el.style.display = 'none';
+          el.classList.remove('visible');
+        }
+      });
+
+      resetChatInput();
+      const inputBar = document.querySelector('.chat-input-bar');
+      if (inputBar) inputBar.style.display = 'flex';
+      _keyboardHeight = 0;
+
+      showScreenFade('chat-screen');
+      setTimeout(() => _adjustChatLayout(), 100);
+
+      // 첫 노드 시작
+      setTimeout(() => _showTutorialNode('start', null), 500);
+    }
+
     // 페르소나별 더미 AI 첫 인사
     const FIRST_GREET = {
       minji:   ['오빠, 오늘 많이 힘들었어요? 🏥', '저 퇴근하고 오빠 생각부터 났어요 ☺️'],
@@ -1772,17 +2256,22 @@
     function startChatWith(persona) {
       currentChatPersona = persona;
 
-      // 스토리 모드 상태 초기화 (이전 채팅에서 남은 상태 정리)
+      // 스토리/튜토리얼 모드 상태 초기화
       storyMode = false;
       storyChoiceTags = [];
       storyCurrentNode = null;
+      tutorialMode = false;
+      tutorialCurrentNode = null;
       _setStoryInputMode(false);
+      _hideTutorialSkipBtn();
 
       // 헤더 설정
       document.getElementById('chat-avatar').src = persona.img;
       document.getElementById('chat-name').textContent = persona.name;
 
-      // 관계 레벨 배지 초기화
+      // 관계 레벨 배지 복원 및 초기화
+      const levelBadge = document.getElementById('chat-level-badge');
+      if (levelBadge) levelBadge.style.display = '';
       updateChatHeaderLevel(persona.id);
 
       const msgBox = document.getElementById('chat-messages');
@@ -2568,6 +3057,11 @@
     }
 
     function goBackFromChat() {
+      // 튜토리얼 진행 중이면 스킵 처리
+      if (tutorialMode) {
+        skipTutorial();
+        return;
+      }
       const chat = document.getElementById('chat-screen');
       chat.style.transition = 'opacity 0.3s ease';
       chat.style.opacity = '0';
