@@ -3674,6 +3674,25 @@ app.get('/', (c) => {
       color: #FF6B8A;
     }
 
+    .login-btn-google {
+      width: 100%;
+      height: 50px;
+      background: #fff;
+      border: none;
+      border-radius: 12px;
+      color: #3c4043;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity 0.2s ease;
+      margin-bottom: 12px;
+    }
+    .login-btn-google:active { opacity: 0.85; }
+
     /* ─────────────────────────────
        크레딧 충전 화면
     ───────────────────────────── */
@@ -4643,6 +4662,17 @@ app.get('/', (c) => {
         <div class="login-divider-line"></div>
       </div>
 
+      <button class="login-btn-google" onclick="loginWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        구글로 계속하기
+      </button>
+
+      <div class="login-divider">
+        <div class="login-divider-line"></div>
+        <div class="login-divider-text">또는</div>
+        <div class="login-divider-line"></div>
+      </div>
+
       <button class="login-btn-secondary" onclick="startFreshOnboarding()">
         새 계정으로 시작하기
       </button>
@@ -4990,7 +5020,28 @@ app.get('/', (c) => {
         cursor:pointer; letter-spacing:0.3px;
         box-shadow: 0 4px 16px rgba(255,107,138,0.4);
         transition: opacity 0.2s;
+        margin-bottom:14px;
       ">무료로 시작하기 🎁</button>
+
+      <!-- 구분선 -->
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.12);"></div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.3);">또는</div>
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.12);"></div>
+      </div>
+
+      <!-- 구글 가입 버튼 -->
+      <button onclick="loginWithGoogle()" style="
+        width:100%; padding:13px;
+        background:#fff; border:none; border-radius:14px;
+        color:#3c4043; font-size:14px; font-weight:600;
+        cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+        transition: opacity 0.2s;
+        margin-bottom:14px;
+      ">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        구글로 계속하기
+      </button>
 
       <!-- 하단 안내 -->
       <p style="text-align:center; color:rgba(255,255,255,0.3); font-size:11px; margin:12px 0 0;">
@@ -5186,6 +5237,8 @@ type Bindings = {
   FIREBASE_VAPID_KEY: string
   TOSS_SECRET_KEY: string
   TOSS_CLIENT_KEY: string
+  GOOGLE_CLIENT_ID: string
+  GOOGLE_CLIENT_SECRET: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
@@ -5503,6 +5556,81 @@ authApp.get('/api/auth/me', async (c) => {
   } catch (e: any) {
     return c.json({ error: '서버 오류', detail: e.message }, 500)
   }
+})
+
+// GET /api/auth/google  — Google OAuth 시작
+authApp.get('/api/auth/google', async (c) => {
+  const clientId = (c.env as any).GOOGLE_CLIENT_ID
+  if (!clientId) return c.json({ error: 'Google OAuth가 설정되지 않았습니다.' }, 500)
+  const redirectUri = 'https://lovia.pages.dev/api/auth/google/callback'
+  const scope = 'openid email profile'
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=select_account`
+  return c.redirect(url)
+})
+
+// GET /api/auth/google/callback  — Google OAuth 콜백
+authApp.get('/api/auth/google/callback', async (c) => {
+  const code  = c.req.query('code')
+  const error = c.req.query('error')
+
+  if (error || !code) {
+    return c.redirect('/?auth_error=google_denied')
+  }
+
+  const clientId     = (c.env as any).GOOGLE_CLIENT_ID
+  const clientSecret = (c.env as any).GOOGLE_CLIENT_SECRET
+  const redirectUri  = 'https://lovia.pages.dev/api/auth/google/callback'
+
+  // 1) code → access_token 교환
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ code, client_id: clientId, client_secret: clientSecret, redirect_uri: redirectUri, grant_type: 'authorization_code' }).toString()
+  })
+  const tokenData: any = await tokenRes.json()
+  if (!tokenRes.ok || !tokenData.access_token) {
+    return c.redirect('/?auth_error=google_token')
+  }
+
+  // 2) 유저 정보 조회
+  const userRes  = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    headers: { Authorization: `Bearer ${tokenData.access_token}` }
+  })
+  const googleUser: any = await userRes.json()
+  if (!googleUser.email) {
+    return c.redirect('/?auth_error=google_email')
+  }
+
+  const email    = googleUser.email.toLowerCase()
+  const name     = googleUser.name || googleUser.given_name || email.split('@')[0]
+  const db       = c.env.DB
+
+  let userId: number, finalNickname: string, credits: number, isNew: boolean
+
+  if (db) {
+    const existing = await db.prepare('SELECT * FROM users WHERE email = ?').bind(email).first<{ id: number; email: string; nickname: string; credits: number }>()
+    if (existing) {
+      userId        = existing.id
+      finalNickname = existing.nickname
+      credits       = existing.credits
+      isNew         = false
+      await db.prepare('UPDATE users SET last_login = datetime("now"), last_active = datetime("now") WHERE id = ?').bind(userId).run()
+    } else {
+      const result = await db.prepare('INSERT INTO users (email, nickname, credits) VALUES (?, ?, 200)').bind(email, name).run()
+      userId        = result.meta.last_row_id as number
+      finalNickname = name
+      credits       = 200
+      isNew         = true
+      await db.prepare('INSERT INTO credit_logs (user_id, type, amount, reason) VALUES (?, "earn", 200, "구글 회원가입 보너스")').bind(userId).run()
+    }
+  } else {
+    userId = 0; finalNickname = name; credits = 200; isNew = false
+  }
+
+  const exp   = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+  const token = await signJWT({ userId, email, nickname: finalNickname, exp }, c.env.JWT_SECRET || 'dev-secret')
+
+  return c.redirect(`/?auth_token=${encodeURIComponent(token)}&auth_nickname=${encodeURIComponent(finalNickname)}&is_new=${isNew ? '1' : '0'}`)
 })
 
 // ════════════════════════════════════════════

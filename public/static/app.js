@@ -280,6 +280,37 @@
       if (splashDone) return;
       splashDone = true;
 
+      // ── Google OAuth 콜백 체크 ──
+      const oauthParams   = new URLSearchParams(window.location.search);
+      const oauthToken    = oauthParams.get('auth_token');
+      const oauthNickname = oauthParams.get('auth_nickname');
+      if (oauthToken) {
+        // URL 파라미터 제거
+        window.history.replaceState({}, '', window.location.pathname);
+        saveAuthToken(oauthToken);
+        if (oauthNickname) {
+          sessionStorage.setItem('lovia_username', oauthNickname);
+          sessionStorage.setItem('userName', oauthNickname);
+        }
+        // 크레딧 서버에서 가져오기
+        try {
+          const meRes = await fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${oauthToken}` } });
+          if (meRes.ok) {
+            const meData = await meRes.json();
+            if (meData.user?.credits !== undefined) {
+              sessionStorage.setItem('lovia_credits', String(meData.user.credits));
+            }
+            if (meData.user?.nickname) {
+              sessionStorage.setItem('lovia_username', meData.user.nickname);
+              sessionStorage.setItem('userName', meData.user.nickname);
+            }
+          }
+        } catch(e) { /* 조용히 실패 */ }
+        hideSplashAndGoTo('swipe');
+        setTimeout(tryRequestPushAfterLogin, 2500);
+        return;
+      }
+
       // ── 결제 복귀 체크 (스플래시 건너뜀) ──
       const paymentResultRaw = sessionStorage.getItem('lovia_payment_result');
       if (paymentResultRaw) {
@@ -4342,6 +4373,11 @@
         submitBtn.disabled = false;
         submitBtn.textContent = '로그인';
       }
+    }
+
+    // 구글 OAuth 로그인 시작
+    function loginWithGoogle() {
+      window.location.href = '/api/auth/google';
     }
 
     // 새 계정으로 시작 → 기존 온보딩 플로우 진행
