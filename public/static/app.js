@@ -4344,6 +4344,66 @@
       }
     }
 
+    // 구글 OAuth 로그인 시작
+    function loginWithGoogle() {
+      window.location.href = '/api/auth/google';
+    }
+
+    // 구글 OAuth 콜백 처리 (URL 파라미터 ?google_token=... 감지)
+    (function handleGoogleCallback() {
+      const params = new URLSearchParams(window.location.search);
+      const googleToken = params.get('google_token');
+      const googleError = params.get('google_error');
+
+      if (googleError) {
+        // URL 정리
+        const url = new URL(window.location.href);
+        url.searchParams.delete('google_error');
+        window.history.replaceState({}, '', url.toString());
+
+        const messages = {
+          cancelled: '구글 로그인이 취소되었습니다.',
+          config: '구글 로그인 설정이 완료되지 않았습니다.',
+          token: '구글 인증에 실패했습니다. 다시 시도해주세요.',
+          userinfo: '구글 계정 정보를 가져오지 못했습니다.',
+          server: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+        };
+        alert(messages[googleError] || '구글 로그인에 실패했습니다.');
+        return;
+      }
+
+      if (googleToken) {
+        const isNew = params.get('is_new') === '1';
+        // URL 정리
+        const url = new URL(window.location.href);
+        url.searchParams.delete('google_token');
+        url.searchParams.delete('is_new');
+        window.history.replaceState({}, '', url.toString());
+
+        // 토큰 저장 및 사용자 정보 로드
+        localStorage.setItem('lovia_auth_token', googleToken);
+        try {
+          const payload = JSON.parse(atob(googleToken.split('.')[1]));
+          if (payload.nickname) sessionStorage.setItem('lovia_nickname', payload.nickname);
+          if (payload.email)    sessionStorage.setItem('lovia_email',    payload.email);
+        } catch (e) { /* ignore */ }
+
+        // 팝업/로그인 화면 닫기
+        const signupOverlay = document.getElementById('signup-overlay');
+        if (signupOverlay) signupOverlay.style.display = 'none';
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) { loginScreen.style.opacity = '0'; loginScreen.style.display = 'none'; }
+
+        if (typeof showSignupSuccessToast === 'function') {
+          showSignupSuccessToast(isNew, isNew ? 100 : 0);
+        }
+
+        // UI 갱신
+        if (typeof updateMypageUI === 'function') updateMypageUI();
+        if (typeof updateCreditDisplay === 'function') updateCreditDisplay();
+      }
+    })();
+
     // 새 계정으로 시작 → 기존 온보딩 플로우 진행
     function startFreshOnboarding() {
       const loginScreen = document.getElementById('login-screen');
@@ -4493,4 +4553,5 @@
     window.submitSignup      = submitSignup;
     window.submitLogin       = submitLogin;
     window.startFreshOnboarding = startFreshOnboarding;
+    window.loginWithGoogle   = loginWithGoogle;
   

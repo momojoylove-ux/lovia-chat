@@ -3674,6 +3674,30 @@ app.get('/', (c) => {
       color: #FF6B8A;
     }
 
+    .login-btn-google {
+      width: 100%;
+      height: 50px;
+      background: #fff;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #3c4043;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      margin-bottom: 14px;
+    }
+
+    .login-btn-google:active {
+      transform: scale(0.97);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
     /* ─────────────────────────────
        크레딧 충전 화면
     ───────────────────────────── */
@@ -4637,6 +4661,16 @@ app.get('/', (c) => {
         로그인
       </button>
 
+      <button class="login-btn-google" onclick="loginWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        구글로 계속하기
+      </button>
+
       <div class="login-divider">
         <div class="login-divider-line"></div>
         <div class="login-divider-text">또는</div>
@@ -4992,6 +5026,24 @@ app.get('/', (c) => {
         transition: opacity 0.2s;
       ">무료로 시작하기 🎁</button>
 
+      <!-- 구분선 -->
+      <div class="login-divider" style="margin:14px 0;">
+        <div class="login-divider-line"></div>
+        <div class="login-divider-text">또는</div>
+        <div class="login-divider-line"></div>
+      </div>
+
+      <!-- 구글 로그인 버튼 -->
+      <button class="login-btn-google" onclick="loginWithGoogle()" style="margin-bottom:0;">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        구글로 계속하기
+      </button>
+
       <!-- 하단 안내 -->
       <p style="text-align:center; color:rgba(255,255,255,0.3); font-size:11px; margin:12px 0 0;">
         가입 시 <a href="/terms" target="_blank" style="color:rgba(255,107,138,0.6);text-decoration:none;">이용약관</a> 및 <a href="/privacy" target="_blank" style="color:rgba(255,107,138,0.6);text-decoration:none;">개인정보처리방침</a>에 동의합니다
@@ -5186,6 +5238,8 @@ type Bindings = {
   FIREBASE_VAPID_KEY: string
   TOSS_SECRET_KEY: string
   TOSS_CLIENT_KEY: string
+  GOOGLE_CLIENT_ID: string
+  GOOGLE_CLIENT_SECRET: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
@@ -5502,6 +5556,120 @@ authApp.get('/api/auth/me', async (c) => {
 
   } catch (e: any) {
     return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// GET /api/auth/google  — Google OAuth 시작 (리다이렉트)
+authApp.get('/api/auth/google', async (c) => {
+  const clientId = c.env.GOOGLE_CLIENT_ID
+  if (!clientId) return c.json({ error: 'Google OAuth가 설정되지 않았습니다.' }, 500)
+
+  const redirectUri = new URL(c.req.url).origin + '/api/auth/google/callback'
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'offline',
+    prompt: 'select_account',
+  })
+  return c.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`)
+})
+
+// GET /api/auth/google/callback  — Google OAuth 콜백 처리
+authApp.get('/api/auth/google/callback', async (c) => {
+  try {
+    const code = c.req.query('code')
+    const error = c.req.query('error')
+    if (error || !code) {
+      return c.redirect('/?google_error=cancelled')
+    }
+
+    const clientId = c.env.GOOGLE_CLIENT_ID
+    const clientSecret = c.env.GOOGLE_CLIENT_SECRET
+    if (!clientId || !clientSecret) {
+      return c.redirect('/?google_error=config')
+    }
+
+    const redirectUri = new URL(c.req.url).origin + '/api/auth/google/callback'
+
+    // authorization code → access token 교환
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    })
+    const tokenData = await tokenRes.json<{ access_token?: string; error?: string }>()
+    if (!tokenData.access_token) {
+      return c.redirect('/?google_error=token')
+    }
+
+    // Google 사용자 정보 조회
+    const userRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    })
+    const googleUser = await userRes.json<{ email?: string; name?: string; sub?: string }>()
+    if (!googleUser.email) {
+      return c.redirect('/?google_error=userinfo')
+    }
+
+    const db = c.env.DB
+    const cleanEmail = googleUser.email.trim().toLowerCase()
+    const defaultNick = (googleUser.name || cleanEmail.split('@')[0]).slice(0, 12)
+
+    let userId: number
+    let isNew: boolean
+    let credits: number
+    let finalNickname: string
+
+    if (!db) {
+      // 로컬 개발 폴백
+      const token = await signJWT(
+        { userId: 0, email: cleanEmail, nickname: defaultNick, isGuest: true, iat: Date.now() },
+        c.env.JWT_SECRET || 'dev-secret'
+      )
+      return c.redirect(`/?google_token=${token}`)
+    }
+
+    const existing = await db.prepare('SELECT * FROM users WHERE email = ?').bind(cleanEmail).first<{
+      id: number; email: string; nickname: string; credits: number
+    }>()
+
+    if (existing) {
+      userId        = existing.id
+      isNew         = false
+      credits       = existing.credits
+      finalNickname = existing.nickname
+      await db.prepare('UPDATE users SET last_login = datetime("now"), last_active = datetime("now") WHERE id = ?').bind(userId).run()
+    } else {
+      const result = await db.prepare(
+        'INSERT INTO users (email, nickname, credits) VALUES (?, ?, 200)'
+      ).bind(cleanEmail, defaultNick).run()
+      userId        = result.meta.last_row_id as number
+      isNew         = true
+      credits       = 200
+      finalNickname = defaultNick
+      await db.prepare(
+        'INSERT INTO credit_logs (user_id, type, amount, reason) VALUES (?, "earn", 200, "구글 회원가입 보너스")'
+      ).bind(userId).run()
+    }
+
+    const exp   = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+    const token = await signJWT(
+      { userId, email: cleanEmail, nickname: finalNickname, exp },
+      c.env.JWT_SECRET
+    )
+
+    return c.redirect(`/?google_token=${token}&is_new=${isNew ? '1' : '0'}`)
+  } catch (e: any) {
+    console.error('[/api/auth/google/callback]', e)
+    return c.redirect('/?google_error=server')
   }
 })
 
