@@ -5186,6 +5186,8 @@ type Bindings = {
   FIREBASE_VAPID_KEY: string
   TOSS_SECRET_KEY: string
   TOSS_CLIENT_KEY: string
+  GOOGLE_CLIENT_ID: string
+  GOOGLE_CLIENT_SECRET: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
