@@ -510,7 +510,8 @@
         job: '종합병원 응급실 간호사',
         tags: ['#다정한', '#츤데레', '#책임감강한', '#밤샘전문'],
         quote: '환자들 앞에서는 엄격하지만, 오빠 앞에선 그냥 민지 할래요.',
-        img: '/images/profiles/profile_minji.jpg'
+        img: '/images/profiles/profile_minji.jpg',
+        version: 'v1'
       },
       {
         id: 'jiwoo',
@@ -519,7 +520,8 @@
         job: '경영학과 신입생 (과대표)',
         tags: ['#풋풋한', '#호기심많은', '#열정적인', '#첫사랑상'],
         quote: '캠퍼스 메이트보다는, 오빠의 원픽 메이트가 되고 싶어요!',
-        img: '/images/profiles/profile_jiwoo.jpg'
+        img: '/images/profiles/profile_jiwoo.jpg',
+        version: 'v1'
       },
       {
         id: 'hayoung',
@@ -528,7 +530,8 @@
         job: '대기업 임원 수행 비서',
         tags: ['#지적인', '#철두철미한', '#은근허당', '#고양이상'],
         quote: '회장님 스케줄보다 오빠랑 보낼 저녁 시간이 더 중요해요.',
-        img: '/images/profiles/profile_hayoung.jpg'
+        img: '/images/profiles/profile_hayoung.jpg',
+        version: 'v1'
       },
       {
         id: 'eunbi',
@@ -537,7 +540,8 @@
         job: '프리랜서 UI/UX 디자이너',
         tags: ['#감성적인', '#섬세한', '#집순이', '#야행성'],
         quote: '내 세상의 모든 픽셀을 오빠라는 색으로 채우는 중이에요.',
-        img: '/images/profiles/profile_eunbi.jpg'
+        img: '/images/profiles/profile_eunbi.jpg',
+        version: 'v1'
       },
       {
         id: 'dahee',
@@ -546,9 +550,13 @@
         job: '프리랜서 피팅/비키니 모델',
         tags: ['#섹시한', '#솔직한', '#외로움타는', '#반전매력'],
         quote: '사진 속 가짜 미소 말고, 오빠 앞에서만 짓는 진짜 웃음 찾아줄래요?',
-        img: '/images/profiles/profile_dahee.jpg'
+        img: '/images/profiles/profile_dahee.jpg',
+        version: 'v1'
       }
     ];
+
+    // 현재 스와이프에 표시할 캐릭터 목록 (신규/업데이트 + 취향 정렬)
+    let SWIPE_PERSONAS = [];
 
     // 튜토리얼 전용 페르소나 (스와이프 목록에는 노출 안 됨)
     const SUAH_PERSONA = {
@@ -578,6 +586,15 @@
 
     function initSwipeScreen(userName) {
       document.getElementById('greeting-name').textContent = userName;
+
+      // 신규/업데이트 캐릭터 감지 + 취향 기반 정렬
+      const newOrUpdated = getNewOrUpdatedPersonas();
+      if (newOrUpdated.length > 0) {
+        SWIPE_PERSONAS = getPersonalizedOrder(newOrUpdated);
+      } else {
+        SWIPE_PERSONAS = [];
+      }
+
       buildCardStack();
       buildListView();
       buildCounter();
@@ -587,8 +604,8 @@
       // 픽 버튼: 관심/패스 이력이 있을 때만 표시
       updatePickBtn();
 
-      // 스킵 상태 확인: localStorage에 저장된 경우 바로 전체보기로
-      if (localStorage.getItem('lovia_skip_recommend') === '1') {
+      // 스킵 상태 확인 또는 신규/업데이트 캐릭터 없음 → 전체보기로
+      if (localStorage.getItem('lovia_skip_recommend') === '1' || SWIPE_PERSONAS.length === 0) {
         setTimeout(() => switchView('list'), 0);
         return;
       }
@@ -598,6 +615,36 @@
       if (!tutorialSeen) {
         setTimeout(() => showTutorial(), 400); // 화면 전환 후 살짝 딜레이
       }
+    }
+
+    // ─────────────────────────────
+    // 신규/업데이트 캐릭터 감지 및 취향 기반 정렬
+    // ─────────────────────────────
+
+    // 사용자가 아직 보지 못했거나 버전이 변경된 캐릭터 반환
+    function getNewOrUpdatedPersonas() {
+      const seen = JSON.parse(localStorage.getItem('lovia_seen_chars') || '{}');
+      return PERSONAS.filter(p => !seen[p.id] || seen[p.id] !== p.version);
+    }
+
+    // 좋아한 캐릭터 태그 기반으로 추천 순서 정렬
+    function getPersonalizedOrder(personas) {
+      const liked = JSON.parse(sessionStorage.getItem('lovia_liked') || '[]');
+      if (liked.length === 0) return personas;
+      const likedPersonas = PERSONAS.filter(p => liked.includes(p.id));
+      const likedTags = new Set(likedPersonas.flatMap(p => p.tags));
+      return [...personas].sort((a, b) => {
+        const scoreA = a.tags.filter(t => likedTags.has(t)).length;
+        const scoreB = b.tags.filter(t => likedTags.has(t)).length;
+        return scoreB - scoreA;
+      });
+    }
+
+    // 스와이프한 캐릭터를 "봤음"으로 localStorage에 저장
+    function markPersonasAsSeen(personas) {
+      const seen = JSON.parse(localStorage.getItem('lovia_seen_chars') || '{}');
+      personas.forEach(p => { seen[p.id] = p.version; });
+      localStorage.setItem('lovia_seen_chars', JSON.stringify(seen));
     }
 
     // 추천 스킵 기능
@@ -836,8 +883,8 @@
 
       // index 0이 맨 위(z-index 최고)가 되도록
       // DOM 순서: 뒤 카드 먼저 append → 앞 카드 나중에 append
-      for (let i = PERSONAS.length - 1; i >= 0; i--) {
-        stack.appendChild(createCard(PERSONAS[i], i));
+      for (let i = SWIPE_PERSONAS.length - 1; i >= 0; i--) {
+        stack.appendChild(createCard(SWIPE_PERSONAS[i], i));
       }
 
       updateCounterDots();
@@ -992,7 +1039,7 @@
       card.style.opacity = '0';
 
       // 관심 / 패스 기록
-      const swipedPersona = PERSONAS[currentCardIdx];
+      const swipedPersona = SWIPE_PERSONAS[currentCardIdx];
       if (swipedPersona) {
         if (direction === 'right') {
           if (!likedPersonaIds.includes(swipedPersona.id)) likedPersonaIds.push(swipedPersona.id);
@@ -1003,6 +1050,8 @@
         }
         saveLiked(); savePassed();
         updatePickBtn();
+        // 스와이프한 캐릭터를 "봤음"으로 표시
+        markPersonasAsSeen([swipedPersona]);
       }
 
       currentCardIdx++;
@@ -1024,12 +1073,11 @@
           setTimeout(() => attachDragEvents(nextCard), 350);
         }, 50);
       } else {
-        // 전체 소진 → 루프 재시작
+        // 전체 소진 → 리스트 뷰로 전환
         setTimeout(() => {
-          // 소진 알림 잠깐 보여주기
           const stack = document.getElementById('card-stack');
-          stack.innerHTML = '<div style="color:#aaa;font-size:14px;text-align:center;padding:40px 20px;">모든 파트너를 확인했어요!<br>처음부터 다시 볼게요 💕<\/div>';
-          setTimeout(() => buildCardStack(), 1500);
+          stack.innerHTML = '<div style="color:#aaa;font-size:14px;text-align:center;padding:40px 20px;">모든 파트너를 확인했어요!<br>채팅 목록으로 이동할게요 💕<\/div>';
+          setTimeout(() => switchView('list'), 1500);
         }, 500);
       }
 
@@ -1061,13 +1109,13 @@
 
     function buildCounter() {
       const counterEl = document.getElementById('card-counter');
-      counterEl.innerHTML = PERSONAS.map((_, i) =>
+      counterEl.innerHTML = SWIPE_PERSONAS.map((_, i) =>
         `<div class="counter-dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`
       ).join('');
     }
 
     function updateCounterDots() {
-      PERSONAS.forEach((_, i) => {
+      SWIPE_PERSONAS.forEach((_, i) => {
         const dot = document.getElementById(`dot-${i}`);
         if (dot) dot.className = `counter-dot ${i === currentCardIdx ? 'active' : ''}`;
       });
