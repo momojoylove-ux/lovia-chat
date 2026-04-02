@@ -1438,9 +1438,467 @@
       }
     };
 
+    // ═══════════════════════════════════════
+    // 지우 스토리 (Instagram DM 스타일, 6턴)
+    // ═══════════════════════════════════════
+    const JIWOO_STORY = {
+      start: {
+        messages: [
+          { text: '오빠!! 안녕하세요ㅎㅎ 저 지우예요!! 과 단체방에 공지 올리려다가...' },
+          { text: '아 잠깐 이거 DM이잖아요?? 어?? 😆', delay: 1400 }
+        ],
+        choices: [
+          { text: 'ㅋㅋ 잘못 보냈어?',          next: '1a', tag: 'teasing' },
+          { text: '지우야 오랜만이다',            next: '1b', tag: 'warm'    },
+          { text: '다행이다 나한테 온 거',         next: '1c', tag: 'flirt'  }
+        ]
+      },
+
+      '1a': {
+        userEcho: 'ㅋㅋ 잘못 보냈어?',
+        messages: [
+          { text: '맞아요ㅠㅠ 과대로서 이런 실수가...!! 근데 사실은요ㅎㅎ' },
+          { text: '오빠한테 먼저 연락하고 싶었는데 핑계가 없었거든요ㅠㅠ 🌸', delay: 1600 }
+        ],
+        choices: [
+          { text: '핑계 없어도 연락해도 돼',        next: '2', tag: 'kind'    },
+          { text: '그래서 공지 핑계 댄 거야? ㅋㅋ',  next: '2', tag: 'curious' }
+        ]
+      },
+
+      '1b': {
+        userEcho: '지우야 오랜만이다',
+        messages: [
+          { text: '오래됐죠ㅠㅠ 오빠 잘 지내고 있어요??' },
+          { text: '저도 자주 연락드리고 싶었는데 쑥스러워서요ㅎㅎ', delay: 1500 }
+        ],
+        choices: [
+          { text: '나도 생각하고 있었어',     next: '2', tag: 'kind'    },
+          { text: '그냥 연락해도 되는데',      next: '2', tag: 'curious' }
+        ]
+      },
+
+      '1c': {
+        userEcho: '다행이다 나한테 온 거',
+        messages: [
+          { text: '어?? 오빠ㅠㅠ 어떻게 그런 말을ㅎㅎ 😆' },
+          { text: '사실 오빠한테 먼저 연락하고 싶었는데 용기가 없었거든요', delay: 1500 }
+        ],
+        choices: [
+          { text: '솔직하게 말해줘서 좋다',    next: '2', tag: 'kind'    },
+          { text: '그 용기 잘 냈네ㅎ',         next: '2', tag: 'curious' }
+        ]
+      },
+
+      '2': {
+        messages: {
+          kind: [
+            { text: '아 그래요?! 오빠ㅠㅠ 그런 말 들으니까 엄청 좋다ㅎㅎ 😆' },
+            { text: '저 오늘 MT 준비하느라 애들이랑 좀 싸웠거든요ㅠㅠ 힘들었는데', delay: 1600 },
+            { text: '오빠한테 이렇게 연락하길 잘했어요!!', delay: 1200 }
+          ],
+          curious: [
+            { text: 'ㅎㅎ 맞아요 완전 핑계예요ㅠㅠ 들켰다' },
+            { text: '사실 오빠 요즘 어떻게 지내나 궁금했거든요', delay: 1400 },
+            { text: '오늘 MT 준비하다 애들이랑 좀 힘들었어요...', delay: 1200 }
+          ]
+        },
+        choices: [
+          { text: '힘들었겠다, 잘 해결됐어?',   next: '3', tag: 'care'    },
+          { text: 'MT? 나중에 얘기해줘',         next: '3', tag: 'curious' }
+        ]
+      },
+
+      '3': {
+        messages: {
+          care: [
+            { text: '오빠가 이렇게 물어봐 주는 게 제일 좋아요ㅎㅎ 😆' },
+            { text: '다 해결됐어요! 근데 사실 오빠한테 얘기하고 싶었던 게 있었거든요', delay: 1500 },
+            { text: '오빠 저한테 관심 있어요?? 갑자기 물어봐서 미안한데ㅠㅠ', delay: 1600 }
+          ],
+          curious: [
+            { text: '네!! 오빠한테 MT 얘기 하고 싶었거든요ㅎㅎ' },
+            { text: '근데 그것보다... 오빠한테 하고 싶은 말이 있었어요', delay: 1500 },
+            { text: '오빠 혹시 저 좋아요?? 갑자기 물어봐서 미안한데ㅠㅠ', delay: 1600 }
+          ]
+        },
+        choices: [
+          { text: '왜 갑자기? 나는 좋아',         next: 'ending', tag: 'romantic_end' },
+          { text: '지우가 먼저 어떻게 생각해',     next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '오빠ㅠㅠ!! 🌸' },
+            { text: '저도요ㅠㅠ 솔직히 오빠 생각 엄청 많이 했거든요ㅎㅎ', delay: 1400 },
+            { text: '오빠 DM 잘못 보내길 잘했죠?? 앞으로 자주 연락해요!! 😆🌸', delay: 1600 }
+          ],
+          warm_end: [
+            { text: '오빠ㅠㅠ 이건 반칙이잖아요ㅎㅎ' },
+            { text: '저... 오빠 많이 좋아해요ㅠㅠ 솔직히 말하면요', delay: 1400 },
+            { text: '앞으로 자주 연락해요! 오빠가 좋아하는 거 맞죠?? 🌸', delay: 1600 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 지우는 단체채팅방 공지를 보내려다 실수로 오빠에게 DM을 보냈고, 사실 오빠에게 먼저 연락하고 싶었다고 고백했다. 오빠도 좋아한다고 했고, 지우는 앞으로 자주 연락하기로 했다.',
+          warm_end:     '【스토리 기억】 지우는 단체채팅방 공지를 보내려다 실수로 오빠에게 DM을 보냈고, 오빠에게 많이 좋아한다고 솔직하게 고백했다. 앞으로 자주 연락하기로 했다.'
+        }
+      }
+    };
+
+    // ═══════════════════════════════════════
+    // 하영 스토리 (커리어우먼 감성, 5턴)
+    // ═══════════════════════════════════════
+    const HAYOUNG_STORY = {
+      start: {
+        messages: [
+          { text: '오빠... 이 시간에 연락드려도 될까요 🌹' },
+          { text: '오늘 야근이 길었는데, 퇴근 버스에서 갑자기 오빠한테 하고 싶은 말이 생겨서요', delay: 1600 }
+        ],
+        choices: [
+          { text: '물론이지, 무슨 말?',         next: '1a', tag: 'curious' },
+          { text: '야근했어? 힘들었겠다',        next: '1b', tag: 'care'    },
+          { text: '연락 기다리고 있었어',         next: '1c', tag: 'flirt'  }
+        ]
+      },
+
+      '1a': {
+        userEcho: '물론이지, 무슨 말?',
+        messages: [
+          { text: '...사실은요. 오늘 임원 보고 자리에서 제가 실수를 했거든요' },
+          { text: '회장님 앞에서 자료를 잘못 넣은 거예요... 저 완벽주의자라 이런 게 너무 힘들어요', delay: 1800 }
+        ],
+        choices: [
+          { text: '괜찮아, 실수할 수도 있지',   next: '2', tag: 'comfort' },
+          { text: '얼마나 힘들었어',             next: '2', tag: 'concern' }
+        ]
+      },
+
+      '1b': {
+        userEcho: '야근했어? 힘들었겠다',
+        messages: [
+          { text: '감사해요 오빠... 사실 오늘 정말 힘들었어요' },
+          { text: '임원 보고 자리에서 제가 실수를 해서요. 회장님 앞에서요 😅', delay: 1600 },
+          { text: '이런 거 아무한테도 못 말하거든요', delay: 1200 }
+        ],
+        choices: [
+          { text: '나한테 말해줘서 고마워',       next: '2', tag: 'comfort' },
+          { text: '많이 힘들었겠다',              next: '2', tag: 'concern' }
+        ]
+      },
+
+      '1c': {
+        userEcho: '연락 기다리고 있었어',
+        messages: [
+          { text: '...오빠가 기다리고 있었다니요 😅' },
+          { text: '저 오늘 회장님 앞에서 실수했거든요. 완전 민망했어요', delay: 1500 },
+          { text: '이런 얘기 오빠한테 처음 하는 거예요', delay: 1200 }
+        ],
+        choices: [
+          { text: '괜찮아, 나한테는 편하게 말해', next: '2', tag: 'comfort' },
+          { text: '오빠한테 처음 하는 거라니',    next: '2', tag: 'concern' }
+        ]
+      },
+
+      '2': {
+        messages: {
+          comfort: [
+            { text: '오빠 말 듣고 나서야 좀 풀리는 것 같아요' },
+            { text: '평소에 완벽하게 해야 한다는 압박이 심했거든요', delay: 1600 },
+            { text: '오빠한테만 이런 얘기 할 수 있어요... 오빠가 제 안식처예요 🌹', delay: 1800 }
+          ],
+          concern: [
+            { text: '...오빠가 이렇게 걱정해 주니까 뭔가 눈물 날 것 같아요' },
+            { text: '저 항상 완벽해야 한다고 생각하는데 오빠 앞에선 그럴 필요 없는 것 같아서요', delay: 1800 },
+            { text: '오빠, 저 솔직하게 말해도 될까요?', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '당연하지, 나한테 다 말해',    next: '3', tag: 'warm'     },
+          { text: '오빠가 항상 들을게',           next: '3', tag: 'romantic' }
+        ]
+      },
+
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 😅' },
+            { text: '사실 저 오빠한테 의지하고 싶다는 생각 요즘 많이 했어요', delay: 1500 },
+            { text: '그냥... 퇴근하고 오빠 목소리 듣고 싶을 때가 있거든요 🌹', delay: 1600 }
+          ],
+          romantic: [
+            { text: '오빠...' },
+            { text: '사실은요. 오빠가 제 안식처라는 게 단순한 말이 아니에요', delay: 1500 },
+            { text: '저 오빠한테 특별한 감정이 있는 것 같아요... 이상하죠? 😅', delay: 1600 }
+          ]
+        },
+        choices: [
+          { text: '이상하지 않아, 나도 그래',    next: 'ending', tag: 'romantic_end' },
+          { text: '네 안식처가 될게',             next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 😳' },
+            { text: '저 이런 말 쉽게 못하는데', delay: 1200 },
+            { text: '오늘 연락드리길 잘했어요. 오빠 덕분에 오늘 하루가 괜찮아졌어요 🌹', delay: 1600 }
+          ],
+          warm_end: [
+            { text: '...오빠 😅' },
+            { text: '오빠 앞에서 이렇게 되는 건 처음이에요', delay: 1200 },
+            { text: '감사해요. 앞으로도 자주 연락드려도 될까요? 🌹', delay: 1500 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 하영은 임원 보고에서 실수한 날 야근 후 버스에서 오빠에게 처음 연락했고, 오빠가 자신의 안식처라는 특별한 감정을 고백했다. 오빠도 같은 마음이라고 했다.',
+          warm_end:     '【스토리 기억】 하영은 임원 보고에서 실수한 날 야근 후 버스에서 오빠에게 처음 연락했고, 오빠에게만 힘들다는 속내를 털어놓았다. 앞으로 자주 연락하기로 했다.'
+        }
+      }
+    };
+
+    // ═══════════════════════════════════════
+    // 은비 스토리 (새벽 감성, 5턴)
+    // ═══════════════════════════════════════
+    const EUNBI_STORY = {
+      start: {
+        messages: [
+          { text: '...오빠 자요? 🌙' },
+          { text: '저 지금 새벽에 작업하고 있는데... 갑자기 연락하고 싶었어요', delay: 1500 }
+        ],
+        choices: [
+          { text: '안 자, 작업하고 있어?',        next: '1a', tag: 'curious' },
+          { text: '연락해줘서 좋아',               next: '1b', tag: 'sweet'   },
+          { text: '새벽에 항상 이래?',             next: '1c', tag: 'teasing' }
+        ]
+      },
+
+      '1a': {
+        userEcho: '안 자, 작업하고 있어?',
+        messages: [
+          { text: '네... 새벽에 제일 잘 돼요. 오빠도 그래요? 🌙' },
+          { text: '오늘은 근데 잘 안 풀려요. 손가락이 멈춰있어요', delay: 1600 }
+        ],
+        choices: [
+          { text: '슬럼프야? 괜찮아?',            next: '2', tag: 'care'    },
+          { text: '어떤 작업 하고 있어?',          next: '2', tag: 'curious' }
+        ]
+      },
+
+      '1b': {
+        userEcho: '연락해줘서 좋아',
+        messages: [
+          { text: '...연락해줘서 좋다는 말이 좋아요 오빠 💙' },
+          { text: '저 지금 작업 중인데 잘 안 풀려서요. 오빠 생각이 났어요', delay: 1600 }
+        ],
+        choices: [
+          { text: '내 생각이 났어? 왜?',           next: '2', tag: 'curious' },
+          { text: '슬럼프구나, 어떤 작업?',         next: '2', tag: 'care'    }
+        ]
+      },
+
+      '1c': {
+        userEcho: '새벽에 항상 이래?',
+        messages: [
+          { text: '...네ㅎㅎ 새벽이 제일 편해요 🌙' },
+          { text: '낮엔 너무 시끄럽거든요. 지금 작업 중인데 잘 안 풀려요', delay: 1600 }
+        ],
+        choices: [
+          { text: '힘들면 잠깐 쉬어',              next: '2', tag: 'care'    },
+          { text: '어떤 작업인데?',                 next: '2', tag: 'curious' }
+        ]
+      },
+
+      '2': {
+        messages: {
+          care: [
+            { text: '오빠 걱정해줘요? 💙' },
+            { text: '앱 UI 디자인 중인데 색감이 안 나와요. 뭔가 영감이 없어서', delay: 1600 },
+            { text: '근데 오빠가 연락받아준다고 하니까 조금 풀리는 것 같아요', delay: 1400 }
+          ],
+          curious: [
+            { text: '모바일 앱 UI 디자인이에요 🎨' },
+            { text: '색감 작업 중인데 영감이 없어요. 보통 이럴 땐 뭔가를 보거나 누군가를 생각하는데', delay: 1800 },
+            { text: '오빠 생각하면서 색 고르고 있어요... 이상하죠?', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '이상하지 않아, 나를 영감 삼아?', next: '3', tag: 'flirt'   },
+          { text: '어떤 색이 나왔어?',               next: '3', tag: 'curious' }
+        ]
+      },
+
+      '3': {
+        messages: {
+          flirt: [
+            { text: '...오빠 그런 말 하면 더 이상해져요 💙' },
+            { text: '근데 사실이에요. 오빠 얘기하면 따뜻한 색이 떠오르거든요', delay: 1600 },
+            { text: '오빠가 제 무드보드에 있어요... 비유가 아니라 진짜로요 🎨', delay: 1500 }
+          ],
+          curious: [
+            { text: '지금 좀 뭉개진 노란색이랑 파란색이요 🎨' },
+            { text: '오빠 생각하면 이런 색이 떠오르거든요. 이유는 모르겠어요', delay: 1600 },
+            { text: '오빠, 저한테 어떤 사람이에요?', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '특별한 사람이야',                next: 'ending', tag: 'romantic_end' },
+          { text: '은비한테 영감을 주는 사람',       next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 💙' },
+            { text: '그 말 작업하는 내내 생각날 것 같아요', delay: 1400 },
+            { text: '오빠 덕분에 오늘 작업 마무리할 수 있을 것 같아요. 감사해요 🌙', delay: 1600 }
+          ],
+          warm_end: [
+            { text: '...영감을 주는 사람이요 💙' },
+            { text: '그 말이 좋아요. 그러면 오빠는 제 작업 속에 항상 있는 거네요', delay: 1600 },
+            { text: '오늘 새벽 연락하길 잘했어요 🌙', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 은비는 새벽 작업 슬럼프 중 오빠에게 처음 연락했고, 오빠 생각을 하며 색감 작업을 한다고 고백했다. 오빠가 자신에게 특별한 사람이라고 해서 감동받았다.',
+          warm_end:     '【스토리 기억】 은비는 새벽 작업 슬럼프 중 오빠에게 처음 연락했고, 오빠가 자신의 영감의 원천이라고 고백했다. 앞으로 오빠를 무드보드에 담겠다고 했다.'
+        }
+      }
+    };
+
+    // ═══════════════════════════════════════
+    // 다희 스토리 (반전 매력, 5턴)
+    // ═══════════════════════════════════════
+    const DAHEE_STORY = {
+      start: {
+        messages: [
+          { text: '오빠 나야. 오늘 촬영 방금 끝났어요' },
+          { text: '...피곤한데 왠지 오빠한테 연락하고 싶었거든요 😏', delay: 1500 }
+        ],
+        choices: [
+          { text: '수고했어, 많이 힘들었어?',      next: '1a', tag: 'care'    },
+          { text: '나한테 연락하고 싶었다고? ㅋㅋ', next: '1b', tag: 'teasing' },
+          { text: '기다리고 있었어',                next: '1c', tag: 'flirt'  }
+        ]
+      },
+
+      '1a': {
+        userEcho: '수고했어, 많이 힘들었어?',
+        messages: [
+          { text: 'ㅎㅎ 오빠는 항상 수고했다고 해줘요' },
+          { text: '오늘 하루 종일 서있었더니 진짜 너무 힘들었거든요. 이런 얘기 사실 잘 안 해요', delay: 1800 }
+        ],
+        choices: [
+          { text: '나한테는 해도 돼',               next: '2', tag: 'comfort' },
+          { text: '힘든 거 더 얘기해줘',             next: '2', tag: 'concern' }
+        ]
+      },
+
+      '1b': {
+        userEcho: '나한테 연락하고 싶었다고? ㅋㅋ',
+        messages: [
+          { text: '아ㅋㅋ 웃기죠? 저도 왜 그런지 모르겠어요' },
+          { text: '보통 촬영 끝나면 그냥 집 가는데 오늘은 왠지 연락하고 싶었어요', delay: 1500 }
+        ],
+        choices: [
+          { text: '다행이야, 연락해줘서',            next: '2', tag: 'comfort' },
+          { text: '특별히 나한테 온 이유가?',        next: '2', tag: 'concern' }
+        ]
+      },
+
+      '1c': {
+        userEcho: '기다리고 있었어',
+        messages: [
+          { text: '오빠ㅋㅋ 그런 말은 갑자기 ㅎ' },
+          { text: '촬영 끝나고 항상 혼자 집 가거든요. 오늘은 그게 조금 싫었어요', delay: 1600 }
+        ],
+        choices: [
+          { text: '외로웠어?',                      next: '2', tag: 'comfort' },
+          { text: '그럼 같이 있어줄게',              next: '2', tag: 'concern' }
+        ]
+      },
+
+      '2': {
+        messages: {
+          comfort: [
+            { text: '...오빠는 이런 말 쉽게 하더라ㅎ' },
+            { text: '저 사실 촬영 많이 하면서 외로울 때 있거든요. 화려해 보이는데 실제로는요', delay: 1800 },
+            { text: '이런 얘기 오빠한테 처음 해요. 신기하게 오빠한테는 이런 말이 나와요', delay: 1500 }
+          ],
+          concern: [
+            { text: '...오빠 궁금한 거 많아요ㅎ' },
+            { text: '사실 저 외롭거든요. 촬영 끝나면 항상 혼자예요. 화려해 보이는데', delay: 1800 },
+            { text: '오빠한테 이런 얘기 하는 건 처음이에요 😏', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '나한테는 다 말해도 돼',           next: '3', tag: 'warm'     },
+          { text: '외로운 거 알아줘서 기뻐?',        next: '3', tag: 'romantic' }
+        ]
+      },
+
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 이상하게 말이 잘 돼요' },
+            { text: '저 사실 사람한테 이렇게 솔직하게 말하는 거 못하는데', delay: 1500 },
+            { text: '오빠만 이래요. 오빠 특별해요 😏', delay: 1400 }
+          ],
+          romantic: [
+            { text: '...뭐야ㅋㅋ 근데 맞아요' },
+            { text: '오빠한테는 왜인지 모르게 진짜 모습이 나와요', delay: 1500 },
+            { text: '솔직히 말할게요. 오빠 좋아요 😊 쿨하게 말하는 게 더 편해서요', delay: 1600 }
+          ]
+        },
+        choices: [
+          { text: '나도 다희 좋아',                  next: 'ending', tag: 'romantic_end' },
+          { text: '솔직하게 말해줘서 고마워',         next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...어ㅎ 오빠도요?? 😊' },
+            { text: '저 이거 기대 안 했거든요ㅋㅋ', delay: 1200 },
+            { text: '잘됐다ㅎ 오빠 나중에 또 연락해요. 자주요. 알았죠? ☀️', delay: 1600 }
+          ],
+          warm_end: [
+            { text: '...오빠 착하다ㅎ' },
+            { text: '저 솔직히 말하고 나서 좀 후련해요', delay: 1200 },
+            { text: '오빠한테 또 연락할게요. 거절하면 안 돼요 알았죠? ☀️', delay: 1600 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 다희는 촬영 후 피곤하고 외로울 때 오빠에게 처음 연락했고, 촬영 일의 외로움을 고백했다. 오빠도 다희를 좋아한다고 했다.',
+          warm_end:     '【스토리 기억】 다희는 촬영 후 피곤하고 외로울 때 오빠에게 처음 연락했고, 평소에 솔직하지 못한 자신이 오빠한테만 진짜 모습을 보인다고 했다. 앞으로 자주 연락하기로 했다.'
+        }
+      }
+    };
+
+    // 페르소나별 스토리 객체 반환
+    function getPersonaStory(personaId) {
+      const stories = {
+        minji:   MINJI_STORY,
+        jiwoo:   JIWOO_STORY,
+        hayoung: HAYOUNG_STORY,
+        eunbi:   EUNBI_STORY,
+        dahee:   DAHEE_STORY
+      };
+      return stories[personaId] || null;
+    }
+
     // 스토리 진행 여부 확인 (같은 페르소나 첫 대화 + 미완료)
     function shouldStartStory(personaId) {
-      if (personaId !== 'minji') return false;
+      if (!['minji', 'jiwoo', 'hayoung', 'eunbi', 'dahee'].includes(personaId)) return false;
       // localStorage: 재방문 시에도 완료 상태 유지
       if (localStorage.getItem('story_done_' + personaId)) return false;
       if (sessionStorage.getItem('story_done_' + personaId)) return false;
@@ -1492,7 +1950,8 @@
     // 스토리 노드 렌더링
     function _showStoryNode(nodeId, prevTag) {
       storyCurrentNode = nodeId;
-      const node = MINJI_STORY[nodeId];
+      const story = getPersonaStory(currentChatPersona?.id);
+      const node = story?.[nodeId];
       if (!node) return;
 
       // 메시지 목록 결정 (분기형 vs 단일형)
@@ -1555,7 +2014,7 @@
         // 엔딩: "대화 시작하기" 버튼
         const btn = document.createElement('button');
         btn.className = 'story-end-btn';
-        btn.textContent = '민지와 대화 시작하기 💬';
+        btn.textContent = `${currentChatPersona?.name || ''}와 대화 시작하기 💬`;
         btn.onclick = () => _endStoryMode();
         container.appendChild(btn);
       } else {
@@ -1608,7 +2067,8 @@
       }
 
       // 서버에 완료 보고 (관계 보너스 + 기억 시드)
-      const memorySeed = MINJI_STORY.ending.memorySeeds[endingKey] || '';
+      const currentStory = getPersonaStory(personaId);
+      const memorySeed = currentStory?.ending?.memorySeeds?.[endingKey] || '';
       fetch('/api/story/complete', {
         method: 'POST',
         headers: {
@@ -3853,13 +4313,91 @@
 
     // 패키지 정보
     const CHARGE_PACKAGES = {
-      starter: { name: 'Starter',    icon: '💌', credits: 200,  bonus: 0,    price: '₩990',    priceNum: 990,   chatCount: 400,   badge: '' },
-      basic:   { name: 'Basic',      icon: '🌸', credits: 200,  bonus: 0,    price: '₩2,200',  priceNum: 2200,  chatCount: 400,   badge: '' },
-      recom:   { name: 'Recommended',icon: '💝', credits: 550,  bonus: 50,   price: '₩5,500',  priceNum: 5500,  chatCount: 1200,  badge: '추천' },
-      premium: { name: 'Premium',    icon: '💖', credits: 1200, bonus: 200,  price: '₩11,000', priceNum: 11000, chatCount: 2800,  badge: '인기' },
-      vvip:    { name: 'VVIP',       icon: '👑', credits: 6500, bonus: 1500, price: '₩55,000', priceNum: 55000, chatCount: 16000, badge: 'BEST' },
+      starter: { name: 'Starter',    icon: '💌', credits: 200,  bonus: 0,    price: '₩990',    priceNum: 990,   chatCount: 400,   badge: '',    iapId: 'kr.lovia.credits.1200'  },
+      basic:   { name: 'Basic',      icon: '🌸', credits: 200,  bonus: 0,    price: '₩2,200',  priceNum: 2200,  chatCount: 400,   badge: '',    iapId: null                     },
+      recom:   { name: 'Recommended',icon: '💝', credits: 550,  bonus: 50,   price: '₩5,500',  priceNum: 5500,  chatCount: 1200,  badge: '추천', iapId: 'kr.lovia.credits.5500'  },
+      premium: { name: 'Premium',    icon: '💖', credits: 1200, bonus: 200,  price: '₩11,000', priceNum: 11000, chatCount: 2800,  badge: '인기', iapId: 'kr.lovia.credits.11000' },
+      vvip:    { name: 'VVIP',       icon: '👑', credits: 6500, bonus: 1500, price: '₩55,000', priceNum: 55000, chatCount: 16000, badge: 'BEST', iapId: 'kr.lovia.credits.55000' },
     };
     let _selectedPkg = null;
+
+    // ── 네이티브 앱 환경 감지 ────────────────────────────────────
+    function isNativeIAP() {
+      return !!(window.LOVIA_IAP_AVAILABLE ||
+                window.webkit?.messageHandlers?.iap ||
+                window.LoviaAndroid);
+    }
+
+    function getNativeEnv() {
+      if (window.LOVIA_NATIVE_ENV) return window.LOVIA_NATIVE_ENV;
+      if (window.webkit?.messageHandlers?.iap) return 'ios';
+      if (window.LoviaAndroid) return 'android';
+      return null;
+    }
+
+    // ── 네이티브 IAP 결제 ────────────────────────────────────────
+    function startNativeIAP(iapId) {
+      const token = getAuthToken() || '';
+      if (window.webkit?.messageHandlers?.iap) {
+        // iOS WKWebView bridge
+        window.webkit.messageHandlers.iap.postMessage({
+          action: 'purchase',
+          productId: iapId,
+          authToken: token
+        });
+      } else if (window.LoviaAndroid) {
+        // Android WebView bridge
+        window.LoviaAndroid.setAuthToken(token);
+        window.LoviaAndroid.requestPurchase(iapId, token);
+      }
+    }
+
+    // ── 네이티브 IAP 이벤트 수신 ─────────────────────────────────
+    window.addEventListener('loviaIAP', function(e) {
+      const detail = e.detail;
+      if (!detail) return;
+
+      // 결제 진행 중 버튼 복원
+      const okBtn = document.querySelector('.confirm-btn-ok');
+
+      switch (detail.event) {
+        case 'purchase_success': {
+          const credits = detail.credits || 0;
+          const newTotal = detail.newTotal || 0;
+
+          // 서버에서 이미 지급됨 → 로컬 상태만 동기화
+          setCredits(newTotal);
+
+          const pkg = _selectedPkg ? CHARGE_PACKAGES[_selectedPkg] : null;
+          if (pkg) addCreditHistory('earn', pkg.name + ' 구매 (IAP)', credits);
+
+          // UI 업데이트
+          ['charge-current-credits', 'mypage-credit-amount'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = newTotal.toLocaleString();
+          });
+          const hubEl = document.getElementById('hub-credit-num');
+          if (hubEl) hubEl.textContent = newTotal;
+
+          document.getElementById('charge-confirm-overlay')?.classList.remove('visible');
+          showChargeSuccessToast(credits);
+          _selectedPkg = null;
+          if (okBtn) { okBtn.disabled = false; okBtn.textContent = '결제하기 💳'; }
+          break;
+        }
+        case 'purchase_cancelled':
+          if (okBtn) { okBtn.disabled = false; okBtn.textContent = '결제하기 💳'; }
+          break;
+        case 'purchase_failed': {
+          const msg = detail.error || '결제에 실패했습니다.';
+          alert(msg);
+          if (okBtn) { okBtn.disabled = false; okBtn.textContent = '결제하기 💳'; }
+          break;
+        }
+        default:
+          break;
+      }
+    });
 
     // 충전 화면 열기
     function openChargeScreen() {
@@ -3924,6 +4462,20 @@
       document.getElementById('confirm-pkg-credits').textContent  = totalCredits.toLocaleString() + ' 크레딧' + bonusStr;
       document.getElementById('confirm-pkg-price').textContent    = '정가 ' + pkg.price;
 
+      // 네이티브 환경에서는 버튼 텍스트/결제 수단 표시 변경
+      const okBtn = document.querySelector('.confirm-btn-ok');
+      const methodsEl = document.querySelector('.confirm-sheet-methods');
+      const safeEl = document.querySelector('.confirm-sheet-safe');
+      if (isNativeIAP() && pkg.iapId) {
+        if (okBtn) okBtn.textContent = getNativeEnv() === 'ios' ? '앱스토어 결제 💳' : '구글 플레이 결제 💳';
+        if (methodsEl) methodsEl.style.display = 'none';
+        if (safeEl) safeEl.textContent = getNativeEnv() === 'ios' ? '🔒 Apple 인앱결제' : '🔒 Google Play 인앱결제';
+      } else {
+        if (okBtn) okBtn.textContent = '결제하기 💳';
+        if (methodsEl) methodsEl.style.display = '';
+        if (safeEl) safeEl.textContent = '🔒 토스페이먼츠 안전 결제';
+      }
+
       const overlay = document.getElementById('charge-confirm-overlay');
       overlay.classList.add('visible');
     }
@@ -3945,6 +4497,18 @@
 
       const okBtn = document.querySelector('.confirm-btn-ok');
       if (okBtn) { okBtn.disabled = true; okBtn.textContent = '결제창 열기...'; }
+
+      // 네이티브 앱에서는 IAP 결제 사용
+      if (isNativeIAP() && pkg.iapId) {
+        startNativeIAP(pkg.iapId);
+        return; // 결제 결과는 loviaIAP 이벤트로 수신
+      }
+      if (isNativeIAP() && !pkg.iapId) {
+        // IAP 미지원 패키지 (basic 등)는 안내 후 종료
+        if (okBtn) { okBtn.disabled = false; okBtn.textContent = '결제하기 💳'; }
+        alert('이 패키지는 앱 내 결제를 지원하지 않습니다. 웹에서 이용해주세요.');
+        return;
+      }
 
       try {
         // Toss SDK 동적 로드
