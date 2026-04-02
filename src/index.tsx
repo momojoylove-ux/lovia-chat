@@ -3682,6 +3682,27 @@ app.get('/', (c) => {
     .mypage-legal-label { flex: 1; font-size: 14px; color: rgba(255,255,255,0.8); }
     .mypage-legal-arrow { font-size: 18px; color: rgba(255,255,255,0.25); }
 
+    /* AI 콘텐츠 공시 배너 */
+    .mypage-ai-disclosure {
+      margin: 0 16px 12px;
+      background: rgba(255,107,138,0.08);
+      border: 1px solid rgba(255,107,138,0.2);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .mypage-ai-disclosure-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,107,138,0.9);
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+    .mypage-ai-disclosure-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
     /* 푸시 토글 스위치 */
     .mypage-push-row { cursor: default; }
 
@@ -4390,6 +4411,163 @@ app.get('/', (c) => {
       cursor: pointer; text-decoration: underline;
     }
 
+    /* ═══════════════════════════════════════
+       광고 시청 → 크레딧 획득 UI
+    ═══════════════════════════════════════ */
+
+    /* ① 크레딧 부족 모달 */
+    #ad-credit-modal.visible { display: flex !important; }
+    .ad-credit-sheet {
+      background: linear-gradient(160deg, #1a0a12, #2a0e1e);
+      border-radius: 28px 28px 0 0;
+      padding: 28px 24px max(40px, env(safe-area-inset-bottom));
+      width: 100%; max-width: 480px;
+      display: flex; flex-direction: column; align-items: center;
+      animation: slideUp 0.35s ease; position: relative;
+      margin-top: auto;
+    }
+    .ad-credit-close {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,0.08); border: none; border-radius: 50%;
+      width: 32px; height: 32px; color: rgba(255,255,255,0.5);
+      font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ad-credit-emoji { font-size: 44px; margin-bottom: 8px; }
+    .ad-credit-title {
+      font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px;
+    }
+    .ad-credit-balance {
+      font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 4px;
+    }
+    .ad-credit-remain-info {
+      font-size: 13px; color: #FF8FA3; font-weight: 600; margin-bottom: 22px;
+    }
+    .ad-watch-btn {
+      width: 100%; height: 58px;
+      background: linear-gradient(135deg, #FF6B8A, #FF4D6D);
+      border: none; border-radius: 29px;
+      color: #fff; font-size: 17px; font-weight: 800;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 12px;
+      box-shadow: 0 6px 24px rgba(255,77,109,0.5);
+      transition: transform 0.15s, opacity 0.2s;
+      position: relative;
+    }
+    .ad-watch-btn:active { transform: scale(0.97); }
+    .ad-watch-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .ad-watch-icon { font-size: 20px; }
+    .ad-watch-badge {
+      position: absolute; top: -8px; right: 16px;
+      background: #FFD60A; color: #1a0a12;
+      font-size: 11px; font-weight: 800; padding: 2px 8px;
+      border-radius: 10px; letter-spacing: 0.3px;
+    }
+    .ad-charge-btn {
+      width: 100%; height: 50px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,107,138,0.3); border-radius: 25px;
+      color: rgba(255,255,255,0.7); font-size: 15px; font-weight: 600;
+      cursor: pointer; margin-bottom: 8px;
+      transition: background 0.15s;
+    }
+    .ad-charge-btn:active { background: rgba(255,255,255,0.12); }
+    .ad-credit-dismiss {
+      margin-top: 10px; font-size: 13px;
+      color: rgba(255,255,255,0.28); cursor: pointer; text-decoration: underline;
+    }
+
+    /* ② 광고 로딩 오버레이 */
+    #ad-loading-overlay.visible { display: flex !important; }
+    .ad-loading-logo { font-size: 56px; margin-bottom: 6px; }
+    .ad-loading-title {
+      font-size: 24px; font-weight: 800; color: #FF8FA3; margin-bottom: 24px;
+    }
+    .ad-loading-spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(255,107,138,0.2);
+      border-top-color: #FF6B8A; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 16px;
+    }
+    .ad-loading-msg {
+      font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 8px;
+    }
+    .ad-loading-timer {
+      font-size: 32px; font-weight: 800; color: #FF6B8A;
+      margin-bottom: 6px; min-width: 40px; text-align: center;
+    }
+    .ad-loading-sub { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* ③ 크레딧 보상 팝업 */
+    #ad-reward-popup.visible { display: flex !important; }
+    .ad-reward-sheet {
+      background: linear-gradient(160deg, #1a0a12, #2a0e1e);
+      border: 1px solid rgba(255,107,138,0.4);
+      border-radius: 28px; padding: 40px 32px;
+      display: flex; flex-direction: column; align-items: center;
+      animation: rewardPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      min-width: 260px;
+    }
+    @keyframes rewardPop {
+      from { transform: scale(0.6); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .ad-reward-coins {
+      display: flex; gap: 6px; margin-bottom: 12px;
+    }
+    .ad-coin {
+      font-size: 36px;
+      animation: coinDrop 0.6s ease both;
+    }
+    @keyframes coinDrop {
+      0%   { transform: translateY(-40px); opacity: 0; }
+      60%  { transform: translateY(4px); }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .ad-reward-amount {
+      font-size: 52px; font-weight: 900;
+      background: linear-gradient(135deg, #FFD60A, #FF8FA3);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+      animation: countUp 0.8s ease;
+    }
+    @keyframes countUp {
+      from { transform: scale(0.5); }
+      to   { transform: scale(1); }
+    }
+    .ad-reward-label {
+      font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px;
+    }
+    .ad-reward-total { font-size: 13px; color: rgba(255,255,255,0.45); }
+
+    /* ④ 재고 없음 모달 */
+    #ad-no-inventory-modal.visible { display: flex !important; }
+    .ad-noinv-sheet {
+      background: linear-gradient(160deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,107,138,0.2);
+      border-radius: 24px; padding: 36px 28px;
+      display: flex; flex-direction: column; align-items: center;
+      animation: modalSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      width: min(320px, 90vw);
+    }
+    .ad-noinv-emoji { font-size: 48px; margin-bottom: 12px; }
+    .ad-noinv-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .ad-noinv-sub {
+      font-size: 14px; color: rgba(255,255,255,0.5);
+      text-align: center; line-height: 1.6; margin-bottom: 24px;
+    }
+    .ad-noinv-charge-btn {
+      width: 100%; height: 52px;
+      background: linear-gradient(135deg, #FF6B8A, #FF4D6D);
+      border: none; border-radius: 26px;
+      color: #fff; font-size: 16px; font-weight: 700;
+      cursor: pointer; margin-bottom: 10px;
+    }
+    .ad-noinv-close {
+      font-size: 13px; color: rgba(255,255,255,0.3);
+      cursor: pointer; text-decoration: underline;
+    }
+
   </style>
 </head>
 <body>
@@ -4572,6 +4750,11 @@ app.get('/', (c) => {
         <span class="mypage-legal-arrow">›</span>
       </a>
       </div><!-- /mypage-legal-inner -->
+      <!-- AI 콘텐츠 공시 (App Store 정책 준수) -->
+      <div class="mypage-ai-disclosure">
+        <div class="mypage-ai-disclosure-title">🤖 AI 생성 콘텐츠 안내</div>
+        <div class="mypage-ai-disclosure-text">이 앱의 캐릭터 대화는 AI(인공지능)가 생성하는 콘텐츠를 포함합니다. 대화 상대는 실제 사람이 아닌 AI 캐릭터입니다. AI 응답은 Anthropic Claude API를 통해 생성되며, 대화 내용은 AI 모델 학습에 사용되지 않습니다.</div>
+      </div>
       <div class="mypage-app-version">Lovia v1.2 · © 2026 Lovia</div>
 
       <!-- 사업자 정보 푸터 -->
@@ -5217,6 +5400,72 @@ app.get('/', (c) => {
   <script src="/static/app.js"></script>
 
   <!-- ══════════════════════════════════════ -->
+  <!-- 광고 시청 → 크레딧 획득 UI              -->
+  <!-- ══════════════════════════════════════ -->
+
+  <!-- ① 크레딧 부족 모달 (광고 CTA 포함) -->
+  <div id="ad-credit-modal" style="display:none; position:fixed; inset:0; z-index:99998; background:rgba(0,0,0,0.72); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+    <div class="ad-credit-sheet">
+      <button class="ad-credit-close" onclick="closeAdCreditModal()">✕</button>
+      <div class="ad-credit-emoji">💎</div>
+      <div class="ad-credit-title">크레딧이 부족해요</div>
+      <div class="ad-credit-balance">
+        현재 잔액: <span id="ad-credit-current">0</span>C &nbsp;/&nbsp; 필요: <span id="ad-credit-needed">0</span>C
+      </div>
+      <div class="ad-credit-remain-info">
+        오늘 <span id="ad-remain-count">5</span>회 더 광고를 볼 수 있어요
+      </div>
+      <!-- Primary CTA -->
+      <button class="ad-watch-btn" id="ad-watch-btn" onclick="watchAdForCredits()">
+        <span class="ad-watch-icon">📺</span>
+        <span>광고 보고 +15 받기</span>
+        <span class="ad-watch-badge">무료</span>
+      </button>
+      <!-- Secondary CTA -->
+      <button class="ad-charge-btn" onclick="closeAdCreditModal(); openChargeScreen();">
+        크레딧 충전하기 💳
+      </button>
+      <!-- Dismiss -->
+      <div class="ad-credit-dismiss" onclick="closeAdCreditModal()">나중에</div>
+    </div>
+  </div>
+
+  <!-- ② 광고 로딩 화면 (전체화면 오버레이) -->
+  <div id="ad-loading-overlay" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(13,13,26,0.97); align-items:center; justify-content:center; flex-direction:column;">
+    <div class="ad-loading-logo">💌</div>
+    <div class="ad-loading-title">Lovia</div>
+    <div class="ad-loading-spinner"></div>
+    <div class="ad-loading-msg">광고 준비 중...</div>
+    <div class="ad-loading-timer" id="ad-loading-timer">8</div>
+    <div class="ad-loading-sub">잠시 후 광고가 시작돼요</div>
+  </div>
+
+  <!-- ③ 크레딧 지급 애니메이션 팝업 -->
+  <div id="ad-reward-popup" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div class="ad-reward-sheet">
+      <div class="ad-reward-coins" id="ad-reward-coins">
+        <span class="ad-coin">💰</span>
+        <span class="ad-coin" style="animation-delay:0.1s">💰</span>
+        <span class="ad-coin" style="animation-delay:0.2s">💰</span>
+      </div>
+      <div class="ad-reward-amount" id="ad-reward-amount">+15</div>
+      <div class="ad-reward-label">크레딧 획득!</div>
+      <div class="ad-reward-total">총 잔액: <span id="ad-reward-total">0</span>C</div>
+    </div>
+  </div>
+
+  <!-- ④ 광고 재고 없음 모달 -->
+  <div id="ad-no-inventory-modal" style="display:none; position:fixed; inset:0; z-index:99998; background:rgba(0,0,0,0.72); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+    <div class="ad-noinv-sheet">
+      <div class="ad-noinv-emoji">😢</div>
+      <div class="ad-noinv-title">지금은 광고가 없어요</div>
+      <div class="ad-noinv-sub">5분 후 다시 시도하거나 크레딧을 충전해보세요</div>
+      <button class="ad-noinv-charge-btn" onclick="closeNoInventoryModal(); openChargeScreen();">크레딧 충전하기 💳</button>
+      <div class="ad-noinv-close" onclick="closeNoInventoryModal()">닫기</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
   <!-- 회원가입 유도 팝업 (오버레이)           -->
   <!-- ══════════════════════════════════════ -->
   <div id="signup-overlay" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.72); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
@@ -5512,6 +5761,8 @@ type Bindings = {
   APPLE_IAP_ISSUER_ID: string
   APPLE_IAP_PRIVATE_KEY: string
   GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: string
+  // AppLovin 리워드 광고 S2S 검증용
+  APPLOVIN_S2S_SECRET_KEY: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
@@ -6448,6 +6699,164 @@ memoryApp.post('/api/payments/iap/google', async (c) => {
     return c.json(result)
   } catch (e: any) {
     return c.json({ ok: false, error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// ── 리워드 광고 상수 ─────────────────────────────────────────────
+const AD_REWARD_CREDITS = 15    // 광고 1회 보상
+const AD_DAILY_LIMIT    = 5     // 일일 최대 시청 횟수
+
+// KST(UTC+9) 기준 오늘 날짜 반환 (YYYY-MM-DD)
+function kstDateToday(): string {
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000)
+  return now.toISOString().slice(0, 10)
+}
+
+// GET /api/ads/daily-status — 오늘 남은 시청 횟수 조회
+memoryApp.get('/api/ads/daily-status', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '인증 필요' }, 401)
+
+    const db = c.env.DB
+    if (!db) return c.json({ viewedToday: 0, remaining: AD_DAILY_LIMIT })
+
+    const today = kstDateToday()
+    const row = await db.prepare(
+      'SELECT COUNT(*) as cnt FROM ad_views WHERE user_id = ? AND kst_date = ?'
+    ).bind(userId, today).first<{ cnt: number }>()
+
+    const viewedToday = row?.cnt ?? 0
+    const remaining = Math.max(0, AD_DAILY_LIMIT - viewedToday)
+    return c.json({ viewedToday, remaining, dailyLimit: AD_DAILY_LIMIT })
+  } catch (e: any) {
+    return c.json({ error: '조회 실패', detail: e.message }, 500)
+  }
+})
+
+// GET /api/ads/applovin/callback — AppLovin S2S 리워드 콜백
+// AppLovin이 서버에 직접 호출하여 크레딧 지급을 확정
+// 파라미터: user_id, event_id, ad_unit_name, currency, amount, timestamp, signature
+memoryApp.get('/api/ads/applovin/callback', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.text('OK', 200)  // DB 없으면 200 반환 (AppLovin 재시도 방지)
+
+    const userId       = c.req.query('user_id')
+    const eventId      = c.req.query('event_id')
+    const adUnitName   = c.req.query('ad_unit_name') ?? ''
+    const amount       = parseInt(c.req.query('amount') ?? '0', 10)
+    const timestamp    = c.req.query('timestamp') ?? ''
+    const signature    = c.req.query('signature') ?? ''
+
+    if (!userId || !eventId) return c.text('missing params', 400)
+
+    // S2S 서명 검증 (APPLOVIN_S2S_SECRET_KEY 환경변수 설정 시)
+    const secretKey = (c.env as any).APPLOVIN_S2S_SECRET_KEY
+    if (secretKey) {
+      // AppLovin 서명 방식: HMAC-SHA256(queryString without signature, secretKey)
+      const url = new URL(c.req.url)
+      url.searchParams.delete('signature')
+      const queryString = url.search.slice(1)  // '?' 제거
+
+      const key = await crypto.subtle.importKey(
+        'raw', new TextEncoder().encode(secretKey),
+        { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+      )
+      const sigBuffer = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(queryString))
+      const expected = Array.from(new Uint8Array(sigBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('')
+
+      if (expected !== signature.toLowerCase()) {
+        return c.text('invalid signature', 403)
+      }
+    }
+
+    // 중복 처리 방지 (eventId = transaction_id로 UNIQUE)
+    const existing = await db.prepare(
+      'SELECT id FROM ad_views WHERE transaction_id = ?'
+    ).bind(eventId).first()
+    if (existing) return c.text('OK', 200)  // 이미 처리됨
+
+    // 일일 한도 확인
+    const today = kstDateToday()
+    const row = await db.prepare(
+      'SELECT COUNT(*) as cnt FROM ad_views WHERE user_id = ? AND kst_date = ?'
+    ).bind(userId, today).first<{ cnt: number }>()
+    const viewedToday = row?.cnt ?? 0
+
+    if (viewedToday >= AD_DAILY_LIMIT) {
+      // 한도 초과 — 기록만 하고 크레딧 미지급 (AppLovin에는 200 반환)
+      return c.text('OK', 200)
+    }
+
+    // 크레딧 지급
+    const credits = AD_REWARD_CREDITS
+    await db.batch([
+      db.prepare(
+        'INSERT INTO ad_views (user_id, transaction_id, ad_unit_id, credits, kst_date) VALUES (?, ?, ?, ?, ?)'
+      ).bind(userId, eventId, adUnitName, credits, today),
+      db.prepare('UPDATE users SET credits = credits + ? WHERE id = ?')
+        .bind(credits, userId),
+      db.prepare(
+        'INSERT INTO credit_logs (user_id, type, amount, reason, created_at) VALUES (?, "earn", ?, ?, datetime("now"))'
+      ).bind(userId, credits, `리워드 광고 (${eventId.slice(0, 20)})`),
+    ])
+
+    return c.text('OK', 200)
+  } catch (e: any) {
+    // AppLovin은 non-200 응답 시 재시도하므로, 예외에도 200 반환 후 로깅
+    console.error('[AppLovin S2S] 오류:', e.message)
+    return c.text('OK', 200)
+  }
+})
+
+// POST /api/ads/complete — 웹앱 광고 시청 완료 (Phase 1: 시뮬레이션)
+// 클라이언트가 광고 시청 완료 후 호출 → 크레딧 지급
+memoryApp.post('/api/ads/complete', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '인증 필요', code: 'AUTH_REQUIRED' }, 401)
+
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+
+    // 일일 한도 확인
+    const today = kstDateToday()
+    const row = await db.prepare(
+      'SELECT COUNT(*) as cnt FROM ad_views WHERE user_id = ? AND kst_date = ?'
+    ).bind(userId, today).first<{ cnt: number }>()
+    const viewedToday = row?.cnt ?? 0
+
+    if (viewedToday >= AD_DAILY_LIMIT) {
+      return c.json({ error: '일일 한도 초과', code: 'DAILY_LIMIT_REACHED', remaining: 0 }, 429)
+    }
+
+    // 크레딧 지급 (고유 트랜잭션 ID 생성)
+    const transactionId = `web_${userId.slice(0, 8)}_${Date.now()}`
+    const credits = AD_REWARD_CREDITS
+
+    await db.batch([
+      db.prepare(
+        'INSERT INTO ad_views (user_id, transaction_id, ad_unit_id, credits, kst_date) VALUES (?, ?, ?, ?, ?)'
+      ).bind(userId, transactionId, 'web_rewarded_v1', credits, today),
+      db.prepare('UPDATE users SET credits = credits + ? WHERE id = ?')
+        .bind(credits, userId),
+      db.prepare(
+        'INSERT INTO credit_logs (user_id, type, amount, reason, created_at) VALUES (?, "earn", ?, ?, datetime("now"))'
+      ).bind(userId, credits, `리워드 광고 시청 (웹)`),
+    ])
+
+    // 지급 후 잔액 조회
+    const userRow = await db.prepare('SELECT credits FROM users WHERE id = ?')
+      .bind(userId).first<{ credits: number }>()
+    const newTotal = userRow?.credits ?? credits
+
+    const remaining = Math.max(0, AD_DAILY_LIMIT - (viewedToday + 1))
+    return c.json({ ok: true, credits, newTotal, remaining, dailyLimit: AD_DAILY_LIMIT })
+  } catch (e: any) {
+    console.error('[Ad Complete] 오류:', e.message)
+    return c.json({ error: '처리 실패', detail: e.message }, 500)
   }
 })
 

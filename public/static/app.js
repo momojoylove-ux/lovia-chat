@@ -1249,8 +1249,163 @@
       const t = document.getElementById('credit-toast');
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2500);
-      // 크레딧 부족 시 1.5초 후 Starter 충동구매 팝업
-      setTimeout(() => showStarterImpulsePopup(), 1500);
+      // 크레딧 부족 시 1.5초 후 광고 CTA 모달 (광고 우선, 충전 Secondary)
+      setTimeout(() => showAdCreditModal(getCredits(), 0), 1500);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // 광고 시청 → 크레딧 획득 기능 (Phase 1)
+    // ═══════════════════════════════════════════════════════
+
+    let _adDailyStatus = null; // { remaining, viewedToday, dailyLimit }
+    let _adLoadingTimer = null;
+
+    // 일일 광고 상태 조회 (캐시 30초)
+    async function fetchAdDailyStatus() {
+      const token = localStorage.getItem('lovia_auth_token');
+      if (!token) return { remaining: 0, viewedToday: 0, dailyLimit: 5 };
+      try {
+        const res = await fetch('/api/ads/daily-status', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) return { remaining: 0, viewedToday: 0, dailyLimit: 5 };
+        _adDailyStatus = await res.json();
+        return _adDailyStatus;
+      } catch {
+        return { remaining: 0, viewedToday: 0, dailyLimit: 5 };
+      }
+    }
+
+    // 크레딧 부족 모달 열기 (광고 CTA 포함)
+    async function showAdCreditModal(currentBalance, needed) {
+      const modal = document.getElementById('ad-credit-modal');
+      if (!modal) return;
+
+      document.getElementById('ad-credit-current').textContent = currentBalance ?? getCredits();
+      document.getElementById('ad-credit-needed').textContent = needed ?? 0;
+
+      // 광고 잔여 횟수 조회
+      const status = await fetchAdDailyStatus();
+      const remaining = status.remaining ?? 0;
+      document.getElementById('ad-remain-count').textContent = remaining;
+
+      const watchBtn = document.getElementById('ad-watch-btn');
+      if (watchBtn) {
+        watchBtn.disabled = remaining <= 0;
+        watchBtn.title = remaining <= 0 ? '오늘 광고 시청 한도에 도달했어요' : '';
+      }
+
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('visible'), 10);
+    }
+
+    function closeAdCreditModal() {
+      const modal = document.getElementById('ad-credit-modal');
+      if (!modal) return;
+      modal.classList.remove('visible');
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+
+    // 광고 시청 시작
+    async function watchAdForCredits() {
+      const token = localStorage.getItem('lovia_auth_token');
+      if (!token) { showSignupPopup('charge'); return; }
+
+      closeAdCreditModal();
+
+      // 광고 로딩 오버레이 표시
+      showAdLoadingOverlay();
+
+      // 8초 카운트다운 (광고 시뮬레이션)
+      let seconds = 8;
+      const timerEl = document.getElementById('ad-loading-timer');
+      if (timerEl) timerEl.textContent = seconds;
+
+      _adLoadingTimer = setInterval(() => {
+        seconds--;
+        if (timerEl) timerEl.textContent = seconds;
+        if (seconds <= 0) {
+          clearInterval(_adLoadingTimer);
+          _adLoadingTimer = null;
+          hideAdLoadingOverlay();
+          completeAdWatch(token);
+        }
+      }, 1000);
+    }
+
+    function showAdLoadingOverlay() {
+      const overlay = document.getElementById('ad-loading-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      setTimeout(() => overlay.classList.add('visible'), 10);
+    }
+
+    function hideAdLoadingOverlay() {
+      const overlay = document.getElementById('ad-loading-overlay');
+      if (!overlay) return;
+      overlay.classList.remove('visible');
+      overlay.style.display = 'none';
+    }
+
+    // 광고 시청 완료 → 서버에 크레딧 지급 요청
+    async function completeAdWatch(token) {
+      try {
+        const res = await fetch('/api/ads/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ simulatedView: true })
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          // 크레딧 업데이트
+          setCredits(data.newTotal);
+          _adDailyStatus = null; // 캐시 무효화
+          showCreditRewardAnimation(data.credits, data.newTotal);
+        } else if (data.code === 'DAILY_LIMIT_REACHED') {
+          showNoInventoryModal();
+        } else {
+          showNoInventoryModal();
+        }
+      } catch {
+        showNoInventoryModal();
+      }
+    }
+
+    // 크레딧 보상 애니메이션
+    function showCreditRewardAnimation(credits, newTotal) {
+      const popup = document.getElementById('ad-reward-popup');
+      if (!popup) return;
+
+      document.getElementById('ad-reward-amount').textContent = '+' + credits;
+      document.getElementById('ad-reward-total').textContent = newTotal;
+
+      popup.style.display = 'flex';
+      setTimeout(() => popup.classList.add('visible'), 10);
+
+      // 0.8초 후 챕터 화면으로 자동 전환 + 0.5초 딜레이
+      setTimeout(() => {
+        popup.classList.remove('visible');
+        setTimeout(() => { popup.style.display = 'none'; }, 300);
+      }, 2500);
+    }
+
+    // 재고 없음 모달
+    function showNoInventoryModal() {
+      const modal = document.getElementById('ad-no-inventory-modal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('visible'), 10);
+    }
+
+    function closeNoInventoryModal() {
+      const modal = document.getElementById('ad-no-inventory-modal');
+      if (!modal) return;
+      modal.classList.remove('visible');
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
     }
 
     // ─── Starter 충동구매 팝업 ───
