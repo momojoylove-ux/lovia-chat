@@ -331,7 +331,6 @@
           });
           if (res.ok) {
             const data = await res.json();
-            // ✅ 유효한 토큰 → 온보딩 스킵, 스와이프로 바로 이동
             const user = data.user;
             sessionStorage.setItem('lovia_username', user.nickname);
             sessionStorage.setItem('userName', user.nickname);
@@ -339,6 +338,18 @@
             if (user.credits !== undefined) {
               sessionStorage.setItem('lovia_credits', String(user.credits));
             }
+            // 온보딩 미완료 → 수아 튜토리얼 먼저 실행
+            if (!localStorage.getItem('lovia_onboarding_done')) {
+              const splash = document.getElementById('splash');
+              if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => { splash.style.display = 'none'; }, 600);
+              }
+              setTimeout(() => startTutorialWithSuah(), 700);
+              setTimeout(tryRequestPushAfterLogin, 3000);
+              return;
+            }
+            // ✅ 온보딩 완료된 유저 → 스와이프로 이동
             hideSplashAndGoTo('swipe');
             // 푸시 토큰 재등록 (이미 권한 허용된 경우 조용히 갱신)
             setTimeout(tryRequestPushAfterLogin, 3000);
@@ -502,6 +513,11 @@
     // ─────────────────────────────
     // 스와이프 화면 초기화
     // ─────────────────────────────
+    // GIF 파일 경로 규약:
+    //   정적 이미지: /images/profiles/profile_{id}.jpg
+    //   GIF 애니메이션: /images/profiles/profile_{id}.gif  (추후 제공 예정)
+    // GIF 파일을 추가할 때: 각 페르소나의 gif 속성에 경로를 설정하면 자동으로 적용됩니다.
+    // 예시: gif: '/images/profiles/profile_minji.gif'
     const PERSONAS = [
       {
         id: 'minji',
@@ -511,6 +527,7 @@
         tags: ['#다정한', '#츤데레', '#책임감강한', '#밤샘전문'],
         quote: '환자들 앞에서는 엄격하지만, 오빠 앞에선 그냥 민지 할래요.',
         img: '/images/profiles/profile_minji.jpg',
+        gif: null, // GIF 준비 시: '/images/profiles/profile_minji.gif'
         version: 'v1'
       },
       {
@@ -521,6 +538,7 @@
         tags: ['#풋풋한', '#호기심많은', '#열정적인', '#첫사랑상'],
         quote: '캠퍼스 메이트보다는, 오빠의 원픽 메이트가 되고 싶어요!',
         img: '/images/profiles/profile_jiwoo.jpg',
+        gif: null, // GIF 준비 시: '/images/profiles/profile_jiwoo.gif'
         version: 'v1'
       },
       {
@@ -531,6 +549,7 @@
         tags: ['#지적인', '#철두철미한', '#은근허당', '#고양이상'],
         quote: '회장님 스케줄보다 오빠랑 보낼 저녁 시간이 더 중요해요.',
         img: '/images/profiles/profile_hayoung.jpg',
+        gif: null, // GIF 준비 시: '/images/profiles/profile_hayoung.gif'
         version: 'v1'
       },
       {
@@ -541,6 +560,7 @@
         tags: ['#감성적인', '#섬세한', '#집순이', '#야행성'],
         quote: '내 세상의 모든 픽셀을 오빠라는 색으로 채우는 중이에요.',
         img: '/images/profiles/profile_eunbi.jpg',
+        gif: null, // GIF 준비 시: '/images/profiles/profile_eunbi.gif'
         version: 'v1'
       },
       {
@@ -551,6 +571,7 @@
         tags: ['#섹시한', '#솔직한', '#외로움타는', '#반전매력'],
         quote: '사진 속 가짜 미소 말고, 오빠 앞에서만 짓는 진짜 웃음 찾아줄래요?',
         img: '/images/profiles/profile_dahee.jpg',
+        gif: null, // GIF 준비 시: '/images/profiles/profile_dahee.gif'
         version: 'v1'
       }
     ];
@@ -567,8 +588,15 @@
       tags: ['#열정적인', '#서툴지만', '#귀여운'],
       quote: '잘... 잘 부탁드려요!',
       img: '/images/profiles/profile_suah.jpg',
+      gif: null, // GIF 준비 시: '/images/profiles/profile_suah.gif'
       tutorial: true
     };
+
+    // GIF/정적 이미지 헬퍼: gif 속성이 있으면 GIF 우선, 없으면 정적 이미지 사용
+    // 사용법: getPersonaImg(persona) → 현재 표시할 이미지 경로 반환
+    function getPersonaImg(persona) {
+      return (persona && persona.gif) ? persona.gif : (persona ? persona.img : '');
+    }
 
     let currentCardIdx = 0;
     let isDragging = false;
@@ -788,7 +816,7 @@
           : '<button class="pick-card-act-btn pick-act-restore" onclick="pickRestoreToLike(\''+p.id+'\')">💗 관심으로<\/button>'
             + '<button class="pick-card-act-btn pick-act-delete" onclick="pickDeletePass(\''+p.id+'\')">삭제<\/button>';
         return '<div class="pick-card" id="pick-card-' + p.id + '">'
-          + '<img class="pick-card-img" src="' + p.img + '" alt="' + p.name + '" />'
+          + '<img class="pick-card-img" src="' + getPersonaImg(p) + '" alt="' + p.name + '" />'
           + '<div class="pick-card-overlay">'
           + '<div class="pick-card-name">' + p.name + ' ' + p.age + '세<\/div>'
           + '<div class="pick-card-job">' + p.job + '<\/div>'
@@ -912,7 +940,7 @@
       el.style.opacity = idx <= 2 ? '1' : '0';
 
       el.innerHTML = `
-        <img class="card-img" src="${persona.img}" alt="${persona.name}" draggable="false" />
+        <img class="card-img" src="${getPersonaImg(persona)}" alt="${persona.name}" draggable="false" />
         <div class="swipe-indicator like">CHAT 💬</div>
         <div class="swipe-indicator nope">PASS ✕</div>
         <div class="card-info">
@@ -1125,7 +1153,7 @@
       const listEl = document.getElementById('list-items');
       listEl.innerHTML = PERSONAS.map(p => `
         <div class="list-item" onclick="startChat('${p.id}')">
-          <img class="list-thumb" src="${p.img}" alt="${p.name}" />
+          <img class="list-thumb" src="${getPersonaImg(p)}" alt="${p.name}" />
           <div class="list-info">
             <div class="list-name-row">
               <span class="list-name">${p.name}</span>
@@ -1290,7 +1318,7 @@
       currentDetailPersona = persona;
 
       // 히어로 이미지
-      document.getElementById('pd-hero-img').src = persona.img;
+      document.getElementById('pd-hero-img').src = getPersonaImg(persona);
       document.getElementById('pd-hero-img').alt = persona.name;
 
       // 이름 / 나이 / 직업
@@ -2081,7 +2109,7 @@
       row.style.opacity   = '0';
       row.style.transform = 'translateY(8px)';
       row.innerHTML = `
-        <img class="msg-avatar" src="${currentChatPersona?.img || ''}" alt="" />
+        <img class="msg-avatar" src="${getPersonaImg(currentChatPersona)}" alt="" />
         <div class="msg-bubble">${escapeHtml(text)}</div>
         <span class="msg-time">${time}</span>
       `;
@@ -2403,7 +2431,7 @@
       const icon  = isSelfie ? '🤳' : '💪';
       const label = isSelfie ? '수아의 셀카' : '스쿼트 자세 사진';
       row.innerHTML = `
-        <img class="msg-avatar" src="${SUAH_PERSONA.img}" alt="" onerror="this.style.opacity='0'" />
+        <img class="msg-avatar" src="${getPersonaImg(SUAH_PERSONA)}" alt="" onerror="this.style.opacity='0'" />
         <div class="msg-col">
           <div class="msg-bubble tutorial-photo-bubble">
             <div class="tutorial-photo-tag">${tag}</div>
@@ -2433,7 +2461,7 @@
       row.style.transform = 'translateY(8px)';
       const safeText = text.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       row.innerHTML = `
-        <img class="msg-avatar" src="${SUAH_PERSONA.img}" alt="" onerror="this.style.opacity='0'" />
+        <img class="msg-avatar" src="${getPersonaImg(SUAH_PERSONA)}" alt="" onerror="this.style.opacity='0'" />
         <div class="msg-col">
           <div class="msg-bubble voice-msg-bubble">
             <span class="voice-icon">🎙️</span>
@@ -2601,7 +2629,7 @@
       tutorialCurrentNode = 'start';
 
       // 헤더 설정
-      document.getElementById('chat-avatar').src = SUAH_PERSONA.img;
+      document.getElementById('chat-avatar').src = getPersonaImg(SUAH_PERSONA);
       document.getElementById('chat-name').textContent = SUAH_PERSONA.name;
 
       // 레벨 배지 숨김 (튜토리얼엔 레벨 없음)
@@ -2795,7 +2823,7 @@
           } else if (entry.role === 'ai') {
             const row = document.createElement('div');
             row.className = 'msg-row from-ai';
-            row.innerHTML = `<img class="msg-avatar" src="${persona.img}" alt="" /><div class="msg-bubble">${escapeHtml(entry.text)}</div><span class="msg-time">${entry.time}</span>`;
+            row.innerHTML = `<img class="msg-avatar" src="${getPersonaImg(persona)}" alt="" /><div class="msg-bubble">${escapeHtml(entry.text)}</div><span class="msg-time">${entry.time}</span>`;
             msgBox.appendChild(row);
           }
         });
@@ -2820,7 +2848,7 @@
       _hideTutorialSkipBtn();
 
       // 헤더 설정
-      document.getElementById('chat-avatar').src = persona.img;
+      document.getElementById('chat-avatar').src = getPersonaImg(persona);
       document.getElementById('chat-name').textContent = persona.name;
 
       // 관계 레벨 배지 복원 및 초기화
@@ -2851,7 +2879,7 @@
             } else if (entry.role === 'ai') {
               const row = document.createElement('div');
               row.className = 'msg-row from-ai';
-              row.innerHTML = `<img class="msg-avatar" src="${persona.img}" alt="" /><div class="msg-bubble">${escapeHtml(entry.text)}</div><span class="msg-time">${entry.time}</span>`;
+              row.innerHTML = `<img class="msg-avatar" src="${getPersonaImg(persona)}" alt="" /><div class="msg-bubble">${escapeHtml(entry.text)}</div><span class="msg-time">${entry.time}</span>`;
               msgBox.appendChild(row);
             } else if (entry.role === 'date') {
               const div = document.createElement('div');
@@ -3143,7 +3171,7 @@
       const msgBox = document.getElementById('chat-messages');
       const row = document.createElement('div');
       row.className = 'msg-row ai';
-      const avatarSrc = persona ? persona.img : '';
+      const avatarSrc = getPersonaImg(persona);
       row.innerHTML = `
         <img class="msg-avatar" src="${avatarSrc}" onerror="this.style.display='none'" />
         <div class="msg-col">
@@ -3198,7 +3226,7 @@
         // 그램 포스트 중 해당 페르소나 이미지를 랜덤 선택
         const personaPosts = GRAM_POSTS.filter(p => p.personaId === persona.id);
         const randomPost = personaPosts[Math.floor(Math.random() * personaPosts.length)];
-        const imgSrc = randomPost ? randomPost.img : persona.img;
+        const imgSrc = randomPost ? randomPost.img : getPersonaImg(persona);
 
         // 특별 사진 + 코멘트 버블 추가
         addSpecialPhotoMessage(aiComment, imgSrc, persona);
@@ -3217,7 +3245,7 @@
       const row = document.createElement('div');
       row.className = 'msg-row ai';
       row.innerHTML = `
-        <img class="msg-avatar" src="${persona.img}" onerror="this.style.display='none'" />
+        <img class="msg-avatar" src="${getPersonaImg(persona)}" onerror="this.style.display='none'" />
         <div class="msg-col">
           <div class="msg-bubble ai special-photo-bubble">
             <div class="special-photo-tag">📸 특별 사진</div>
@@ -3324,7 +3352,7 @@
       row.style.opacity = animate ? '0' : '1';
       row.style.transform = animate ? 'translateY(8px)' : 'none';
       row.innerHTML = `
-        <img class="msg-avatar" src="${currentChatPersona?.img || ''}" alt="" />
+        <img class="msg-avatar" src="${getPersonaImg(currentChatPersona)}" alt="" />
         <div class="msg-bubble">${escapeHtml(text)}</div>
         <span class="msg-time">${time}</span>
       `;
@@ -3355,7 +3383,7 @@
       row.className = 'msg-row from-ai';
       row.id = 'typing-row';
       row.innerHTML = `
-        <img class="msg-avatar" src="${currentChatPersona?.img || ''}" alt="" />
+        <img class="msg-avatar" src="${getPersonaImg(currentChatPersona)}" alt="" />
         <div class="typing-indicator">
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>
@@ -3551,7 +3579,7 @@
         card.onclick = () => openChatFromHub(persona.id);
         card.innerHTML = `
           <div class="hub-discover-avatar-wrap">
-            <img class="hub-discover-avatar" src="${persona.img}" alt="${persona.name}" />
+            <img class="hub-discover-avatar" src="${getPersonaImg(persona)}" alt="${persona.name}" />
             <div class="hub-discover-dot${(h.unread || 0) > 0 ? ' active' : ''}"></div>
           </div>
           <div class="hub-discover-name">${persona.name}</div>
@@ -3584,7 +3612,7 @@
           item.onclick = () => openChatFromHub(persona.id);
           item.innerHTML = `
             <div class="hub-chat-avatar-wrap">
-              <img class="hub-chat-avatar" src="${persona.img}" alt="${persona.name}" />
+              <img class="hub-chat-avatar" src="${getPersonaImg(persona)}" alt="${persona.name}" />
               <div class="hub-online-dot"></div>
             </div>
             <div class="hub-chat-body">
@@ -3790,7 +3818,7 @@
 
       // '전체' + 각 페르소나 탭
       const tabs = [{ id:'all', name:'전체', img:null }]
-        .concat(PERSONAS.map(p => ({ id:p.id, name:p.name, img:p.img })));
+        .concat(PERSONAS.map(p => ({ id:p.id, name:p.name, img:getPersonaImg(p) })));
 
       wrap.innerHTML = tabs.map(t => `
         <button class="gram-filter-tab ${gramFilter === t.id ? 'active' : ''}"
@@ -3833,7 +3861,7 @@
         if (!persona) return '';
 
         // 이미지: 전용 gram 이미지 → 없으면 프로필 이미지 폴백
-        const imgSrc = post.img || persona.img;
+        const imgSrc = post.img || getPersonaImg(persona);
         const isLiked = !!gramLikes[post.id];
         const likeCount = post.likes + (isLiked ? 1 : 0);
 
@@ -3841,7 +3869,7 @@
           <div class="gram-post" style="animation-delay:${idx * 0.06}s" data-post-id="${post.id}">
             <!-- 헤더: 아바타 + 이름 + 시간 -->
             <div class="gram-post-header">
-              <img class="gram-post-avatar" src="${persona.img}" alt="${persona.name}" />
+              <img class="gram-post-avatar" src="${getPersonaImg(persona)}" alt="${persona.name}" />
               <div class="gram-post-meta">
                 <div class="gram-post-name">${persona.name}</div>
                 <div class="gram-post-time">${post.time}</div>
@@ -4249,7 +4277,7 @@
 
         return `
           <div class="mypage-reset-card">
-            <img class="mypage-reset-avatar" src="${p.img}" alt="${p.name}" />
+            <img class="mypage-reset-avatar" src="${getPersonaImg(p)}" alt="${p.name}" />
             <div class="mypage-reset-info">
               <div class="mypage-reset-name">${p.name}</div>
               <div class="mypage-reset-meta">${metaText}</div>
