@@ -166,6 +166,261 @@ self.addEventListener('fetch', (e) => {
   return c.body(swCode, 200, { 'Content-Type': 'application/javascript' })
 })
 
+// ── 개인정보처리방침 페이지 ──────────────────────────────────
+app.get('/privacy', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>개인정보처리방침 — Lovia</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      background:#fff;color:#1a1a2e;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;
+      font-size:15px;line-height:1.7;padding:0 0 60px;
+    }
+    .header{
+      background:#0d0d1a;color:#fff;padding:20px 24px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .header img{width:32px;height:32px;border-radius:8px;}
+    .header-text h1{font-size:16px;font-weight:700;margin:0;}
+    .header-text p{font-size:12px;color:rgba(255,255,255,0.5);margin:0;}
+    .container{max-width:780px;margin:0 auto;padding:32px 20px;}
+    h1.title{font-size:22px;font-weight:800;color:#0d0d1a;margin-bottom:6px;}
+    .meta{font-size:13px;color:#888;margin-bottom:32px;}
+    .intro{
+      background:#f8f8fc;border-left:4px solid #FF6B8A;
+      padding:16px 18px;border-radius:0 8px 8px 0;
+      font-size:14px;color:#333;margin-bottom:32px;line-height:1.7;
+    }
+    h2{font-size:17px;font-weight:700;color:#0d0d1a;margin:36px 0 12px;
+       padding-bottom:6px;border-bottom:2px solid #f0f0f5;}
+    h3{font-size:15px;font-weight:600;color:#333;margin:20px 0 8px;}
+    p,li{font-size:14px;color:#444;margin-bottom:8px;}
+    ul,ol{padding-left:20px;margin-bottom:12px;}
+    li{margin-bottom:4px;}
+    .table-wrap{overflow-x:auto;margin:12px 0 20px;-webkit-overflow-scrolling:touch;}
+    table{width:100%;border-collapse:collapse;min-width:500px;font-size:13px;}
+    th{background:#0d0d1a;color:#fff;padding:10px 12px;text-align:left;font-weight:600;}
+    td{padding:9px 12px;border-bottom:1px solid #eee;color:#333;vertical-align:top;}
+    tr:nth-child(even) td{background:#f9f9fc;}
+    .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;}
+    .badge-required{background:#ffe0e6;color:#d63361;}
+    .badge-optional{background:#e0f0ff;color:#1565c0;}
+    .highlight-box{
+      background:#fff8f9;border:1px solid #ffd0da;border-radius:10px;
+      padding:16px 18px;margin:16px 0;font-size:14px;
+    }
+    .highlight-box strong{color:#FF6B8A;}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+    .contact-card{background:#f5f5fb;border-radius:10px;padding:14px 16px;}
+    .contact-card .label{font-size:11px;color:#888;margin-bottom:4px;}
+    .contact-card .value{font-size:14px;font-weight:600;color:#0d0d1a;}
+    .footer{text-align:center;font-size:12px;color:#aaa;margin-top:48px;padding-top:24px;border-top:1px solid #eee;}
+    a{color:#FF6B8A;text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    @media(max-width:480px){
+      .contact-grid{grid-template-columns:1fr;}
+      .container{padding:24px 16px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-text">
+      <h1>Lovia</h1>
+      <p>개인정보처리방침</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 class="title">개인정보처리방침</h1>
+    <div class="meta">시행일: 2026년 4월 1일 &nbsp;|&nbsp; 버전: 1.0</div>
+
+    <div class="intro">
+      Lovia 서비스를 운영하는 회사(이하 "회사")는 「개인정보 보호법」(PIPA) 및 관련 법령을 준수하며, 이용자의 개인정보를 소중히 여깁니다. 본 방침은 회사가 수집하는 개인정보의 종류, 이용 목적, 보유 기간 등을 안내합니다.
+    </div>
+
+    <h2 id="section1">1. 수집하는 개인정보 항목 및 목적</h2>
+
+    <h3>1.1 수집 항목</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>수집 항목</th><th>수집 목적</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-required">필수</span></td><td>이메일 주소, 이름(닉네임), 프로필 사진</td><td>회원가입 및 본인 식별, 서비스 제공</td></tr>
+          <tr><td><span class="badge badge-required">필수</span></td><td>Google 계정 식별자(Google OAuth)</td><td>소셜 로그인 인증</td></tr>
+          <tr><td><span class="badge badge-required">필수</span></td><td>기기 정보(OS 종류, 앱 버전)</td><td>서비스 안정성 및 오류 처리</td></tr>
+          <tr><td><span class="badge badge-optional">선택</span></td><td>채팅 대화 내용</td><td>AI 캐릭터 대화 서비스 제공</td></tr>
+          <tr><td>결제 시</td><td>결제 수단 정보(카드사 처리, 회사는 직접 보유 안 함)</td><td>유료 서비스 결제 처리</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>1.2 수집 방법</h3>
+    <ul>
+      <li>이용자가 직접 입력(회원가입, 채팅)</li>
+      <li>Google OAuth를 통한 자동 수집</li>
+      <li>앱 사용 중 자동 생성(로그, 기기 정보)</li>
+    </ul>
+
+    <h3>1.3 수집 목적</h3>
+    <ul>
+      <li>AI 캐릭터 채팅 서비스 제공</li>
+      <li>회원 관리 및 본인 확인</li>
+      <li>서비스 개선 및 신규 기능 개발</li>
+      <li>고객 지원 및 불만 처리</li>
+      <li>유료 콘텐츠 결제 및 이용 내역 관리</li>
+    </ul>
+
+    <h2 id="section2">2. 개인정보의 처리 및 보유 기간</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>보유 기간</th></tr></thead>
+        <tbody>
+          <tr><td>회원 정보(이메일, 이름)</td><td>회원 탈퇴 시까지</td></tr>
+          <tr><td>채팅 대화 내용</td><td>최종 대화일로부터 1년 (또는 회원 탈퇴 시)</td></tr>
+          <tr><td>결제 관련 기록</td><td>전자상거래법에 따라 5년</td></tr>
+          <tr><td>소비자 불만 처리 기록</td><td>전자상거래법에 따라 3년</td></tr>
+          <tr><td>서비스 이용 로그</td><td>6개월</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:#888;">※ 관련 법령에 의해 보존이 필요한 경우 해당 기간 동안 별도 보관합니다.</p>
+
+    <h2 id="section3">3. 제3자 제공 및 처리 위탁</h2>
+
+    <h3>3.1 개인정보 제3자 제공</h3>
+    <p>회사는 원칙적으로 이용자의 개인정보를 제3자에게 제공하지 않습니다. 단, 다음의 경우는 예외입니다:</p>
+    <ul>
+      <li>이용자의 사전 동의가 있는 경우</li>
+      <li>법령에 특별한 규정이 있거나 법적 의무를 준수하기 위한 경우</li>
+      <li>이용자 또는 제3자의 생명·신체·재산 보호를 위해 급박하게 필요한 경우</li>
+    </ul>
+
+    <h3>3.2 개인정보 처리 위탁</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>수탁사</th><th>위탁 업무</th><th>보유 기간</th></tr></thead>
+        <tbody>
+          <tr><td>Anthropic, Inc. (미국)</td><td>AI 대화 생성 (Claude API)</td><td>처리 후 즉시 삭제 (저장 없음)</td></tr>
+          <tr><td>Google LLC (미국)</td><td>소셜 로그인 인증(OAuth)</td><td>Google 정책에 따름</td></tr>
+          <tr><td>Cloudflare, Inc. (미국)</td><td>웹 호스팅 및 CDN</td><td>서비스 이용 기간</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="section4">4. 개인정보의 국외 이전</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이전 대상</th><th>이전 국가</th><th>이전 항목</th><th>이전 목적</th><th>보유 기간</th></tr></thead>
+        <tbody>
+          <tr><td>Anthropic, Inc.</td><td>미국</td><td>채팅 대화 내용</td><td>AI 응답 생성</td><td>처리 후 즉시 파기</td></tr>
+          <tr><td>Google LLC</td><td>미국</td><td>이메일, Google 계정 정보</td><td>인증 처리</td><td>Google 정책에 따름</td></tr>
+          <tr><td>Cloudflare, Inc.</td><td>미국</td><td>서비스 이용 로그</td><td>서비스 운영</td><td>6개월</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>이용자는 국외 이전에 동의하지 않을 권리가 있으며, 동의하지 않을 경우 서비스 이용이 제한될 수 있습니다.</p>
+
+    <h2 id="section5">5. 만 14세 미만 아동의 서비스 이용 제한</h2>
+    <div class="highlight-box">
+      <strong>본 서비스는 만 14세 미만 아동의 이용을 허용하지 않습니다.</strong>
+    </div>
+    <ul>
+      <li>회원가입 시 만 14세 이상임을 확인하는 절차를 운영합니다.</li>
+      <li>만 14세 미만으로 확인될 경우 즉시 회원 자격이 취소됩니다.</li>
+      <li>만 14세 미만 아동의 개인정보가 수집된 사실을 발견한 경우, 즉시 해당 정보를 삭제합니다.</li>
+      <li>보호자(법정대리인)가 아동의 개인정보 삭제를 요청하는 경우 지체 없이 처리합니다.</li>
+    </ul>
+
+    <h2 id="section6">6. 이용자의 권리 및 행사 방법</h2>
+
+    <h3>6.1 권리 목록</h3>
+    <ul>
+      <li><strong>열람권</strong>: 보유 중인 본인의 개인정보 확인</li>
+      <li><strong>정정권</strong>: 부정확한 개인정보의 수정 요청</li>
+      <li><strong>삭제권(잊힐 권리)</strong>: 개인정보의 삭제 요청</li>
+      <li><strong>처리 정지권</strong>: 개인정보 처리의 일시 정지 요청</li>
+      <li><strong>동의 철회</strong>: 수집·이용 동의 철회 및 회원 탈퇴</li>
+    </ul>
+
+    <h3>6.2 행사 방법</h3>
+    <ul>
+      <li><strong>앱 내</strong>: 설정 &gt; 계정 &gt; 내 정보 관리</li>
+      <li><strong>이메일</strong>: <a href="mailto:privacy@lovia.app">privacy@lovia.app</a></li>
+      <li>요청 접수 후 <strong>10일 이내</strong> 처리</li>
+      <li>처리 결과를 이메일로 통보</li>
+    </ul>
+
+    <h3>6.3 불만 처리 및 분쟁 해결</h3>
+    <p>개인정보와 관련한 불만이나 피해 구제는 아래 기관에 신청할 수 있습니다:</p>
+    <ul>
+      <li><strong>개인정보보호위원회</strong>: <a href="https://www.pipc.go.kr" target="_blank">www.pipc.go.kr</a> / 국번없이 182</li>
+      <li><strong>개인정보 침해신고센터</strong>: <a href="https://privacy.kisa.or.kr" target="_blank">privacy.kisa.or.kr</a> / 국번없이 118</li>
+      <li><strong>대검찰청 사이버수사과</strong>: <a href="https://www.spo.go.kr" target="_blank">www.spo.go.kr</a> / 02-3480-3573</li>
+      <li><strong>경찰청 사이버수사국</strong>: <a href="https://cyberbureau.police.go.kr" target="_blank">cyberbureau.police.go.kr</a> / 국번없이 182</li>
+    </ul>
+
+    <h2 id="section7">7. AI 학습 활용 여부</h2>
+    <div class="highlight-box">
+      <strong>회사는 이용자의 채팅 대화 내용을 AI 모델 학습에 활용하지 않습니다.</strong>
+    </div>
+    <ul>
+      <li>채팅 대화는 실시간 AI 응답 생성 목적으로만 사용됩니다.</li>
+      <li>제3자 AI API(Anthropic Claude 등)에 전달된 대화는 해당 회사의 정책에 따라 처리되며, Anthropic의 API 이용 약관상 사용자 데이터는 모델 학습에 사용되지 않습니다.</li>
+      <li>서비스 개선을 위한 통계 분석 시, 개인을 식별할 수 없도록 익명화·집계 처리합니다.</li>
+    </ul>
+
+    <h2 id="section8">8. 개인정보 보호를 위한 기술적·관리적 조치</h2>
+
+    <h3>기술적 조치</h3>
+    <ul>
+      <li>개인정보 전송 시 SSL/TLS 암호화 적용</li>
+      <li>비밀번호 등 민감 정보 해시 처리</li>
+      <li>접근 권한 최소화 및 접근 로그 관리</li>
+      <li>정기적 보안 취약점 점검</li>
+    </ul>
+
+    <h3>관리적 조치</h3>
+    <ul>
+      <li>개인정보 취급 직원 대상 정기 교육</li>
+      <li>개인정보 처리 업무 담당자 지정 및 최소화</li>
+      <li>내부 관리 계획 수립·시행</li>
+    </ul>
+
+    <h2 id="section9">9. 개인정보 보호책임자</h2>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="label">직책</div>
+        <div class="value">개인정보 보호책임자(CPO)</div>
+      </div>
+      <div class="contact-card">
+        <div class="label">이메일</div>
+        <div class="value"><a href="mailto:privacy@lovia.app">privacy@lovia.app</a></div>
+      </div>
+    </div>
+    <p>개인정보와 관련한 문의, 불만, 피해구제 등에 관한 사항은 위 담당자에게 문의하시기 바랍니다.</p>
+
+    <h2 id="section10">10. 개인정보처리방침의 변경</h2>
+    <ul>
+      <li>본 방침은 <strong>2026년 4월 1일</strong>부터 시행됩니다.</li>
+      <li>법령·정책 변경 또는 서비스 업데이트에 따라 본 방침이 변경될 수 있으며, 변경 시 앱 내 공지 또는 이메일로 사전 고지합니다.</li>
+      <li>중요한 내용 변경 시 최소 <strong>7일 전</strong> 공지합니다.</li>
+    </ul>
+
+    <div class="footer">
+      <p>© 2026 Lovia. All rights reserved.</p>
+      <p style="margin-top:6px;"><a href="mailto:privacy@lovia.app">privacy@lovia.app</a></p>
+    </div>
+  </div>
+</body>
+</html>`)
+})
+
 // 스플래시 → 매니저 동영상 화면
 app.get('/', (c) => {
   return c.html(`<!DOCTYPE html>
@@ -5240,6 +5495,11 @@ type Bindings = {
   TOSS_CLIENT_KEY: string
   GOOGLE_CLIENT_ID: string
   GOOGLE_CLIENT_SECRET: string
+  // IAP 검증용
+  APPLE_IAP_KEY_ID: string
+  APPLE_IAP_ISSUER_ID: string
+  APPLE_IAP_PRIVATE_KEY: string
+  GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
@@ -5952,6 +6212,230 @@ memoryApp.post('/api/credits/add', async (c) => {
     return c.json({ ok: true, credits: user?.credits ?? 0 })
   } catch (e: any) {
     return c.json({ error: '크레딧 처리 실패', detail: e.message }, 500)
+  }
+})
+
+// ── IAP 상품-크레딧 매핑 ────────────────────────────────────────
+const IAP_PRODUCT_MAP: Record<string, { credits: number; bonus: number; name: string }> = {
+  'kr.lovia.credits.1200':  { credits: 200,  bonus: 0,    name: 'Starter (IAP)' },
+  'kr.lovia.credits.5500':  { credits: 550,  bonus: 50,   name: 'Recommended (IAP)' },
+  'kr.lovia.credits.11000': { credits: 1200, bonus: 200,  name: 'Premium (IAP)' },
+  'kr.lovia.credits.33000': { credits: 3500, bonus: 500,  name: 'Premium Plus (IAP)' },
+  'kr.lovia.credits.55000': { credits: 6500, bonus: 1500, name: 'VVIP (IAP)' },
+}
+
+// ── 공통 크레딧 지급 헬퍼 ───────────────────────────────────────
+async function grantIAPCredits(
+  db: D1Database,
+  userId: string,
+  productId: string,
+  dedupeKey: string
+): Promise<{ ok: boolean; credits?: number; newTotal?: number; error?: string }> {
+  const pkg = IAP_PRODUCT_MAP[productId]
+  if (!pkg) return { ok: false, error: '알 수 없는 상품 ID' }
+
+  // 중복 지급 방지
+  const existing = await db.prepare(
+    'SELECT id FROM credit_logs WHERE reason LIKE ? AND user_id = ?'
+  ).bind(`%${dedupeKey}%`, userId).first()
+  if (existing) return { ok: false, error: '이미 처리된 결제입니다' }
+
+  const totalCredits = pkg.credits + pkg.bonus
+  await db.prepare('UPDATE users SET credits = credits + ? WHERE id = ?')
+    .bind(totalCredits, userId).run()
+  await db.prepare(
+    'INSERT INTO credit_logs (user_id, type, amount, reason, created_at) VALUES (?, ?, ?, ?, datetime("now"))'
+  ).bind(userId, 'earn', totalCredits, `${pkg.name} (${dedupeKey})`).run()
+
+  const user = await db.prepare('SELECT credits FROM users WHERE id = ?')
+    .bind(userId).first<{ credits: number }>()
+  return { ok: true, credits: totalCredits, newTotal: user?.credits ?? 0 }
+}
+
+// POST /api/payments/iap/apple — Apple StoreKit 2 서버 검증 + 크레딧 지급
+memoryApp.post('/api/payments/iap/apple', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ ok: false, error: '인증 필요' }, 401)
+
+    const { productId, transactionId, environment } = await c.req.json<{
+      productId: string
+      transactionId: string | number
+      purchaseDate?: string
+      environment?: string
+    }>()
+
+    if (!productId || !transactionId) {
+      return c.json({ ok: false, error: '필수 파라미터 누락 (productId, transactionId)' }, 400)
+    }
+
+    const db = c.env.DB
+    if (!db) return c.json({ ok: false, error: 'DB 없음' }, 500)
+
+    // App Store Server API로 트랜잭션 검증
+    // 프로덕션: https://api.storekit.itunes.apple.com
+    // 샌드박스: https://api.storekit-sandbox.itunes.apple.com
+    const isProduction = environment === 'production'
+    const appleBaseUrl = isProduction
+      ? 'https://api.storekit.itunes.apple.com'
+      : 'https://api.storekit-sandbox.itunes.apple.com'
+
+    // App Store Server API 호출 (Bearer token 방식)
+    // 실제 배포 시 APPLE_IAP_KEY_ID, APPLE_IAP_ISSUER_ID, APPLE_IAP_PRIVATE_KEY 환경변수 필요
+    const appleKeyId     = (c.env as any).APPLE_IAP_KEY_ID
+    const appleIssuerId  = (c.env as any).APPLE_IAP_ISSUER_ID
+    const applePrivateKey = (c.env as any).APPLE_IAP_PRIVATE_KEY
+
+    if (appleKeyId && appleIssuerId && applePrivateKey) {
+      // JWT 생성 (ES256)
+      const now = Math.floor(Date.now() / 1000)
+      const header = { alg: 'ES256', kid: appleKeyId, typ: 'JWT' }
+      const payload = {
+        iss: appleIssuerId,
+        iat: now,
+        exp: now + 3600,
+        aud: 'appstoreconnect-v1',
+        bid: 'kr.lovia.app'
+      }
+      const b64url = (obj: object) =>
+        btoa(JSON.stringify(obj)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      const headerB64 = b64url(header)
+      const payloadB64 = b64url(payload)
+
+      // PEM private key import
+      const pemBody = applePrivateKey
+        .replace(/-----BEGIN EC PRIVATE KEY-----/, '')
+        .replace(/-----END EC PRIVATE KEY-----/, '')
+        .replace(/-----BEGIN PRIVATE KEY-----/, '')
+        .replace(/-----END PRIVATE KEY-----/, '')
+        .replace(/\n/g, '')
+      const derBuffer = Uint8Array.from(atob(pemBody), (ch: string) => ch.charCodeAt(0))
+      const cryptoKey = await crypto.subtle.importKey(
+        'pkcs8', derBuffer.buffer,
+        { name: 'ECDSA', namedCurve: 'P-256' },
+        false, ['sign']
+      )
+      const sigInput = new TextEncoder().encode(`${headerB64}.${payloadB64}`)
+      const sigBuffer = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, cryptoKey, sigInput)
+      const sig = btoa(String.fromCharCode(...new Uint8Array(sigBuffer)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      const jwtToken = `${headerB64}.${payloadB64}.${sig}`
+
+      // App Store Server API: GET /inApps/v1/transactions/{transactionId}
+      const appleRes = await fetch(
+        `${appleBaseUrl}/inApps/v1/transactions/${transactionId}`,
+        { headers: { 'Authorization': `Bearer ${jwtToken}` } }
+      )
+      if (!appleRes.ok) {
+        return c.json({ ok: false, error: 'Apple 서버 검증 실패' }, 400)
+      }
+      const appleData = await appleRes.json<{ signedTransactionInfo?: string }>()
+      if (!appleData.signedTransactionInfo) {
+        return c.json({ ok: false, error: '트랜잭션 정보 없음' }, 400)
+      }
+      // JWS 페이로드 파싱 (서명 검증은 Apple CA로 처리됨 — 서버에서 재확인 가능하나 생략)
+      const txPayload = JSON.parse(atob(appleData.signedTransactionInfo.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+      if (txPayload.productId !== productId) {
+        return c.json({ ok: false, error: '상품 ID 불일치' }, 400)
+      }
+    }
+    // appleKeyId 없는 경우(개발/테스트): 트랜잭션 ID 존재만으로 진행
+
+    const result = await grantIAPCredits(db, userId, productId, `apple_${transactionId}`)
+    if (!result.ok) return c.json(result, result.error === '이미 처리된 결제입니다' ? 409 : 400)
+    return c.json(result)
+  } catch (e: any) {
+    return c.json({ ok: false, error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// POST /api/payments/iap/google — Google Play 구매 검증 + 크레딧 지급
+memoryApp.post('/api/payments/iap/google', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ ok: false, error: '인증 필요' }, 401)
+
+    const { productId, purchaseToken, orderId } = await c.req.json<{
+      productId: string
+      purchaseToken: string
+      orderId: string
+    }>()
+
+    if (!productId || !purchaseToken) {
+      return c.json({ ok: false, error: '필수 파라미터 누락 (productId, purchaseToken)' }, 400)
+    }
+
+    const db = c.env.DB
+    if (!db) return c.json({ ok: false, error: 'DB 없음' }, 500)
+
+    // Google Play Developer API로 구매 검증
+    // 실제 배포 시 GOOGLE_PLAY_SERVICE_ACCOUNT_JSON 환경변수 필요
+    const serviceAccountJson = (c.env as any).GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
+
+    if (serviceAccountJson) {
+      const sa = JSON.parse(serviceAccountJson)
+      const now = Math.floor(Date.now() / 1000)
+      const jwtPayload = {
+        iss: sa.client_email,
+        sub: sa.client_email,
+        aud: 'https://oauth2.googleapis.com/token',
+        iat: now,
+        exp: now + 3600,
+        scope: 'https://www.googleapis.com/auth/androidpublisher'
+      }
+      const b64url = (obj: object) =>
+        btoa(JSON.stringify(obj)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      const headerB64 = b64url({ alg: 'RS256', typ: 'JWT' })
+      const payloadB64 = b64url(jwtPayload)
+
+      const pemBody = sa.private_key
+        .replace(/-----BEGIN PRIVATE KEY-----/, '')
+        .replace(/-----END PRIVATE KEY-----/, '')
+        .replace(/\n/g, '')
+      const derBuffer = Uint8Array.from(atob(pemBody), (ch: string) => ch.charCodeAt(0))
+      const cryptoKey = await crypto.subtle.importKey(
+        'pkcs8', derBuffer.buffer,
+        { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+        false, ['sign']
+      )
+      const sigInput = new TextEncoder().encode(`${headerB64}.${payloadB64}`)
+      const sigBuffer = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cryptoKey, sigInput)
+      const sig = btoa(String.fromCharCode(...new Uint8Array(sigBuffer)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+      const jwt = `${headerB64}.${payloadB64}.${sig}`
+
+      // OAuth2 토큰 교환
+      const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
+      })
+      const tokenData = await tokenRes.json<{ access_token?: string }>()
+      const accessToken = tokenData.access_token
+      if (!accessToken) return c.json({ ok: false, error: 'Google 인증 실패' }, 400)
+
+      // Google Play Developer API: GET purchases/products/{productId}/tokens/{token}
+      const packageName = 'kr.lovia.app'
+      const gpRes = await fetch(
+        `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${packageName}/purchases/products/${productId}/tokens/${purchaseToken}`,
+        { headers: { 'Authorization': `Bearer ${accessToken}` } }
+      )
+      if (!gpRes.ok) return c.json({ ok: false, error: 'Google Play 검증 실패' }, 400)
+
+      const gpData = await gpRes.json<{ purchaseState?: number; acknowledgementState?: number }>()
+      // purchaseState: 0 = Purchased, 1 = Cancelled, 2 = Pending
+      if (gpData.purchaseState !== 0) {
+        return c.json({ ok: false, error: '유효하지 않은 구매 상태' }, 400)
+      }
+    }
+    // serviceAccount 없는 경우(개발/테스트): purchaseToken 존재만으로 진행
+
+    const dedupeKey = `google_${purchaseToken.slice(0, 40)}`
+    const result = await grantIAPCredits(db, userId, productId, dedupeKey)
+    if (!result.ok) return c.json(result, result.error === '이미 처리된 결제입니다' ? 409 : 400)
+    return c.json(result)
+  } catch (e: any) {
+    return c.json({ ok: false, error: '서버 오류', detail: e.message }, 500)
   }
 })
 
