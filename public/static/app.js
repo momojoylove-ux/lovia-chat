@@ -386,6 +386,8 @@
       if (greetEl) greetEl.textContent = userName;
       initSwipeScreen(userName);
       showScreen('swipe-screen');
+      // 서버에서 사용자 설정 동기화 (로그인된 경우)
+      setTimeout(syncUserPreferences, 500);
     }
 
     setTimeout(goToVideo, 2500);
@@ -585,11 +587,58 @@
       // 픽 버튼: 관심/패스 이력이 있을 때만 표시
       updatePickBtn();
 
+      // 스킵 상태 확인: localStorage에 저장된 경우 바로 전체보기로
+      if (localStorage.getItem('lovia_skip_recommend') === '1') {
+        setTimeout(() => switchView('list'), 0);
+        return;
+      }
+
       // 튜토리얼: 첫 방문 시에만 표시 (sessionStorage로 상태 관리)
       const tutorialSeen = sessionStorage.getItem('lovia_tutorial_seen');
       if (!tutorialSeen) {
         setTimeout(() => showTutorial(), 400); // 화면 전환 후 살짝 딜레이
       }
+    }
+
+    // 추천 스킵 기능
+    async function skipRecommendation() {
+      // 1. localStorage에 저장
+      localStorage.setItem('lovia_skip_recommend', '1');
+
+      // 2. DB에 저장 (로그인된 경우)
+      const token = localStorage.getItem('lovia_auth_token');
+      if (token) {
+        try {
+          await fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ skipRecommend: true })
+          });
+        } catch(e) { /* 조용히 실패 */ }
+      }
+
+      // 3. 전체보기(리스트) 화면으로 전환
+      switchView('list');
+    }
+
+    // 서버에서 사용자 설정 동기화 (로그인 후 호출)
+    async function syncUserPreferences() {
+      const token = localStorage.getItem('lovia_auth_token');
+      if (!token) return;
+      try {
+        const res = await fetch('/api/user/preferences', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.skipRecommend) {
+          localStorage.setItem('lovia_skip_recommend', '1');
+          switchView('list');
+        }
+      } catch(e) { /* 조용히 실패 */ }
     }
 
     function updateHubBtn() {
@@ -1035,12 +1084,9 @@
               <span class="list-age">${p.age}세</span>
             </div>
             <div class="list-job">${p.job}</div>
-            <div class="list-tags">
-              ${p.tags.map(t => `<span class="list-tag">${t}</span>`).join('')}
-            </div>
             <div class="list-quote">${p.quote}</div>
           </div>
-          <button class="list-chat-btn" onclick="event.stopPropagation(); startChat('${p.id}')">💬</button>
+          <button class="list-chat-btn" onclick="event.stopPropagation(); startChat('${p.id}')">💬 대화하기</button>
         </div>
       `).join('');
     }
@@ -5117,5 +5163,6 @@
     window.submitSignup      = submitSignup;
     window.submitLogin       = submitLogin;
     window.startFreshOnboarding = startFreshOnboarding;
-    window.loginWithGoogle   = loginWithGoogle;
+    window.loginWithGoogle       = loginWithGoogle;
+    window.skipRecommendation    = skipRecommendation;
   

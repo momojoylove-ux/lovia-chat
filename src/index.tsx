@@ -1258,6 +1258,27 @@ app.get('/', (c) => {
       border-radius: 3px;
     }
 
+    /* ── 추천 스킵 버튼 ── */
+    .skip-recommend-wrap {
+      position: absolute;
+      bottom: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      text-align: center;
+    }
+
+    .skip-recommend-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 8px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
     /* ── 스와이프 튜토리얼 오버레이 ── */
     #swipe-tutorial {
       position: fixed;
@@ -1507,111 +1528,97 @@ app.get('/', (c) => {
       padding: 8px 16px;
     }
 
-    /* ── 리스트 뷰 ── */
+    /* ── 리스트 뷰 (2열 그리드) ── */
     .list-items {
-      padding: 0 16px 100px;
-      display: flex;
-      flex-direction: column;
+      padding: 8px 12px 100px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
 
     .list-item {
       display: flex;
-      align-items: center;
-      gap: 14px;
+      flex-direction: column;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px;
-      padding: 14px;
+      overflow: hidden;
       cursor: pointer;
       transition: background 0.15s ease, transform 0.15s ease;
     }
 
     .list-item:active {
       background: rgba(255,107,138,0.12);
-      transform: scale(0.99);
+      transform: scale(0.98);
     }
 
     .list-thumb {
-      width: 72px; height: 88px;
-      border-radius: 12px;
+      width: 100%;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
       object-position: center top;
-      flex-shrink: 0;
+      display: block;
     }
 
     .list-info {
-      flex: 1;
-      min-width: 0;
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
 
     .list-name-row {
       display: flex;
       align-items: baseline;
-      gap: 6px;
-      margin-bottom: 3px;
+      gap: 5px;
     }
 
     .list-name {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 700;
       color: #fff;
       letter-spacing: -0.3px;
     }
 
     .list-age {
-      font-size: 13px;
+      font-size: 12px;
       color: rgba(255,255,255,0.5);
     }
 
     .list-job {
-      font-size: 12px;
+      font-size: 11px;
       color: #FF8FA3;
-      margin-bottom: 7px;
       letter-spacing: -0.1px;
     }
 
-    .list-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 6px;
-    }
-
-    .list-tag {
-      background: rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 2px 8px;
-      font-size: 10.5px;
-      color: rgba(255,255,255,0.65);
-    }
-
     .list-quote {
-      font-size: 11.5px;
+      font-size: 11px;
       color: rgba(255,255,255,0.45);
       line-height: 1.4;
       letter-spacing: -0.1px;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      margin-top: 2px;
     }
 
     .list-chat-btn {
-      width: 42px; height: 42px;
+      margin: 0 10px 10px;
+      width: calc(100% - 20px);
+      height: 36px;
       background: linear-gradient(135deg, #FF8FA3 0%, #FF4D6D 100%);
       border: none;
-      border-radius: 50%;
-      font-size: 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
       cursor: pointer;
-      flex-shrink: 0;
-      box-shadow: 0 3px 12px rgba(255,77,109,0.4);
+      box-shadow: 0 3px 10px rgba(255,77,109,0.35);
       transition: transform 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .list-chat-btn:active { transform: scale(0.9); }
+    .list-chat-btn:active { transform: scale(0.97); }
 
     /* ═══════════════════════════════════════
        [5] AI 프로필 상세 화면
@@ -4859,6 +4866,11 @@ app.get('/', (c) => {
         <div class="card-counter" id="card-counter"></div>
       </div>
 
+      <!-- 추천 스킵 버튼 -->
+      <div class="skip-recommend-wrap" id="skip-recommend-wrap">
+        <button class="skip-recommend-btn" onclick="skipRecommendation()">다음부터 추천받지 않음</button>
+      </div>
+
       <!-- 하단 액션 버튼 -->
       <div class="card-actions">
         <button class="action-btn action-btn-pass" onclick="swipeCard('left')" title="패스">✕</button>
@@ -7344,6 +7356,45 @@ onboardingApp.get('/api/onboarding/status', async (c) => {
   return c.json({ completed: (row?.onboarding_completed ?? 0) === 1 })
 })
 
+// ════════════════════════════════════════════
+// USER PREFERENCES API  (/api/user/preferences)
+// ════════════════════════════════════════════
+
+const prefsApp = new Hono<{ Bindings: Bindings }>()
+
+// GET /api/user/preferences — 사용자 설정 조회
+prefsApp.get('/api/user/preferences', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId || !c.env.DB) {
+      return c.json({ skipRecommend: false })
+    }
+    const row = await c.env.DB.prepare(
+      'SELECT skip_recommend FROM users WHERE id = ?'
+    ).bind(userId).first<{ skip_recommend: number }>()
+    return c.json({ skipRecommend: (row?.skip_recommend ?? 0) === 1 })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// POST /api/user/preferences — 사용자 설정 저장
+prefsApp.post('/api/user/preferences', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId || !c.env.DB) {
+      return c.json({ success: true, guestMode: true })
+    }
+    const { skipRecommend } = await c.req.json<{ skipRecommend: boolean }>()
+    await c.env.DB.prepare(
+      'UPDATE users SET skip_recommend = ? WHERE id = ?'
+    ).bind(skipRecommend ? 1 : 0, userId).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
 // chatApp 라우트를 메인 app에 마운트
 app.route('/', chatApp)
 app.route('/', authApp)
@@ -7351,5 +7402,6 @@ app.route('/', memoryApp)
 app.route('/', pushApp)
 app.route('/', storyApp)
 app.route('/', onboardingApp)
+app.route('/', prefsApp)
 
 export default app
