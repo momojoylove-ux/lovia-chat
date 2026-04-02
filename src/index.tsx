@@ -6730,6 +6730,10 @@ memoryApp.get('/api/ads/daily-status', async (c) => {
     const remaining = Math.max(0, AD_DAILY_LIMIT - viewedToday)
     return c.json({ viewedToday, remaining, dailyLimit: AD_DAILY_LIMIT })
   } catch (e: any) {
+    // ad_views 테이블 미생성 시 (마이그레이션 미적용) → 전체 한도 허용하여 테스트 가능하게
+    if (e?.message?.includes('no such table')) {
+      return c.json({ viewedToday: 0, remaining: AD_DAILY_LIMIT, dailyLimit: AD_DAILY_LIMIT })
+    }
     return c.json({ error: '조회 실패', detail: e.message }, 500)
   }
 })

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Lovia placeholder icon: pink heart on dark background -->
+    <path
+        android:fillColor="#FF6B8A"
+        android:pathData="M54,75 C54,75 28,58 28,42 C28,34 35,27 42,29 C47,31 50,35 54,40 C58,35 61,31 66,29 C73,27 80,34 80,42 C80,58 54,75 54,75Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.15"
+        android:pathData="M54,38 C56,34 59,30 63,28 C68,26 75,30 78,37 C72,30 65,32 61,37 C58,41 55,45 54,48 C53,45 50,41 47,37 C43,32 36,30 30,37 C33,30 40,26 45,28 C49,30 52,34 54,38Z" />
+</vector>

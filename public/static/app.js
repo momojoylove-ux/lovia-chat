@@ -1268,11 +1268,13 @@
         const res = await fetch('/api/ads/daily-status', {
           headers: { 'Authorization': 'Bearer ' + token }
         });
-        if (!res.ok) return { remaining: 0, viewedToday: 0, dailyLimit: 5 };
+        if (res.status === 401) return { remaining: 0, viewedToday: 0, dailyLimit: 5 };
+        // API 오류(테이블 미생성 등) 시 전체 한도 허용 → 버튼 활성화하여 테스트 가능하게
+        if (!res.ok) return { remaining: 5, viewedToday: 0, dailyLimit: 5 };
         _adDailyStatus = await res.json();
         return _adDailyStatus;
       } catch {
-        return { remaining: 0, viewedToday: 0, dailyLimit: 5 };
+        return { remaining: 5, viewedToday: 0, dailyLimit: 5 };
       }
     }
 

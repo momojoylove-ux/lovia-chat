@@ -32,3 +32,8 @@ lerna-debug.log*
 # misc
 .DS_Store
 .claude/
+
+# Android signing (never commit keystore files or passwords)
+android/keystore.properties
+android/*.jks
+android/*.keystore
