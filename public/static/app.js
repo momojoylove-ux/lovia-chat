@@ -1740,6 +1740,7 @@
     let storyMode = false;
     let storyCurrentNode = null;
     let storyChoiceTags = []; // 선택한 태그 목록
+    let _chatGeneration = 0;  // 채팅 화면 전환 시 증가 — 이전 setTimeout 콜백 무효화용
 
     // 민지 스토리 노드 데이터
     const MINJI_STORY = {
@@ -4476,6 +4477,7 @@
 
     // 스토리 모드 시작
     function startStoryMode(persona) {
+      _chatGeneration++;  // 이전 setTimeout 콜백 무효화
       storyMode = true;
       storyCurrentNode = 'start';
       storyChoiceTags = [];
@@ -4522,6 +4524,7 @@
         localStorage.setItem('ep_done_' + persona.id, String(prev));
       }
 
+      _chatGeneration++;  // 이전 setTimeout 콜백 무효화
       storyMode = true;
       storyCurrentNode = 'start';
       storyChoiceTags = [];
@@ -4597,19 +4600,24 @@
         ? node.messages
         : (node.messages[prevTag] || node.messages[Object.keys(node.messages)[0]]);
 
+      // 현재 세대 캡처 — 채팅 전환 시 이전 콜백 무효화
+      const gen = _chatGeneration;
+
       // AI 메시지 순차 출력
       let cumDelay = 400;
       msgs.forEach((m, i) => {
         const d = (i === 0 ? cumDelay : (m.delay || 1200));
         cumDelay += d;
         setTimeout(() => {
+          if (_chatGeneration !== gen) return;
           showTypingIndicator();
           setTimeout(() => {
+            if (_chatGeneration !== gen) { removeTypingIndicator(); return; }
             removeTypingIndicator();
             addStoryAIMessage(m.text, m.emotion || 'neutral');
             // 마지막 메시지 뒤 선택지 표시
             if (i === msgs.length - 1) {
-              setTimeout(() => _renderChoices(node, storyCurrentNode), 400);
+              setTimeout(() => { if (_chatGeneration === gen) _renderChoices(node, storyCurrentNode); }, 400);
             }
           }, 900);
         }, cumDelay - 900);
@@ -5158,14 +5166,19 @@
         text: m.text.replace(/\{userName\}/g, userName)
       }));
 
+      // 현재 세대 캡처 — 채팅 전환 시 이전 콜백 무효화
+      const gen = _chatGeneration;
+
       // 메시지 순차 출력
       let cumDelay = 400;
       msgs.forEach((m, i) => {
         const d = i === 0 ? cumDelay : (m.delay || 1200);
         cumDelay += d;
         setTimeout(() => {
+          if (_chatGeneration !== gen) return;
           showTypingIndicator();
           setTimeout(() => {
+            if (_chatGeneration !== gen) { removeTypingIndicator(); return; }
             removeTypingIndicator();
             addStoryAIMessage(m.text);
           }, 900);
@@ -5178,6 +5191,7 @@
       if (node.photo) {
         // 사진 메시지 표시
         setTimeout(() => {
+          if (_chatGeneration !== gen) return;
           _addTutorialPhotoMessage(node.photo.type);
 
           if (node.afterPhoto && node.afterPhoto.length > 0) {
@@ -5188,28 +5202,31 @@
               aCum += d;
               const afText = m.text.replace(/\{userName\}/g, userName);
               setTimeout(() => {
+                if (_chatGeneration !== gen) return;
                 showTypingIndicator();
                 setTimeout(() => {
+                  if (_chatGeneration !== gen) { removeTypingIndicator(); return; }
                   removeTypingIndicator();
                   addStoryAIMessage(afText);
                   if (i === node.afterPhoto.length - 1) {
-                    setTimeout(() => _renderTutorialChoices(node), 400);
+                    setTimeout(() => { if (_chatGeneration === gen) _renderTutorialChoices(node); }, 400);
                   }
                 }, 900);
               }, aCum - 900);
             });
           } else {
-            setTimeout(() => _renderTutorialChoices(node), 500);
+            setTimeout(() => { if (_chatGeneration === gen) _renderTutorialChoices(node); }, 500);
           }
         }, afterMsgsDelay);
       } else {
         // 사진 없으면 바로 선택지
-        setTimeout(() => _renderTutorialChoices(node), afterMsgsDelay);
+        setTimeout(() => { if (_chatGeneration === gen) _renderTutorialChoices(node); }, afterMsgsDelay);
       }
     }
 
     // 수아와 튜토리얼 채팅 시작
     function startTutorialWithSuah() {
+      _chatGeneration++;  // 이전 setTimeout 콜백 무효화
       currentChatPersona = SUAH_PERSONA;
       tutorialMode = true;
       tutorialCurrentNode = 'start';
@@ -5423,6 +5440,7 @@
 
     function startChatWith(persona) {
       currentChatPersona = persona;
+      _chatGeneration++;  // 이전 setTimeout 콜백 무효화
 
       // 스토리/튜토리얼 모드 상태 초기화
       storyMode = false;
