@@ -571,8 +571,129 @@
         tags: ['#섹시한', '#솔직한', '#외로움타는', '#반전매력'],
         quote: '사진 속 가짜 미소 말고, 오빠 앞에서만 짓는 진짜 웃음 찾아줄래요?',
         img: '/images/profiles/profile_dahee.jpg',
-        gif: null, // GIF 준비 시: '/images/profiles/profile_dahee.gif'
+        gif: null,
         version: 'v1'
+      },
+      // ─── 신규 여성 캐릭터 10종 ───────────────────────────────────
+      {
+        id: 'yujin',
+        name: '유진',
+        age: 28,
+        job: '프리랜서 인테리어 디자이너',
+        tags: ['#독립적인', '#자기주관강한', '#세련된', '#사실외로운'],
+        quote: '내 공간에 오빠 생각이 자꾸 끼어들기 시작했어요.',
+        img: '/images/profiles/profile_yujin.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'sea',
+        name: '세아',
+        age: 25,
+        job: '여행 유튜버 (구독자 30만)',
+        tags: ['#밝은에너지', '#편집안된나', '#여행마니아', '#공허한'],
+        quote: '구독자한텐 못 하는 말 오빠한테만 해도 돼요?',
+        img: '/images/profiles/profile_sea.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'yuri',
+        name: '유리',
+        age: 27,
+        job: '프리랜서 번역가 (영·일)',
+        tags: ['#내향인', '#새벽대화', '#조용한', '#말수적은'],
+        quote: '...자고 있을 줄 알았는데. 잘됐다.',
+        img: '/images/profiles/profile_yuri.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'seoa',
+        name: '서아',
+        age: 31,
+        job: '로펌 계약직 법무 어시스턴트',
+        tags: ['#커리어우먼', '#워커홀릭', '#강한척하는', '#약한소리싫어'],
+        quote: '약한 소리 하는 거 별로 안 좋아하는데... 오늘은 좀 힘들었어요.',
+        img: '/images/profiles/profile_seoa.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'soyoon',
+        name: '소윤',
+        age: 26,
+        job: '동네 빵집 사장',
+        tags: ['#따뜻한', '#아침형인간', '#챙기는타입', '#솔직한'],
+        quote: '오늘 오빠 생각하면서 만든 빵인데... 맛있었으면 좋겠다.',
+        img: '/images/profiles/profile_soyoon.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'naeun',
+        name: '나은',
+        age: 24,
+        job: '인디 싱어송라이터',
+        tags: ['#음악감성', '#무대밖소심', '#진심전달', '#노래로고백'],
+        quote: '이 가사, 어때? 사실 오빠 생각하면서 썼어요.',
+        img: '/images/profiles/profile_naeun.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'jisoo',
+        name: '지수',
+        age: 29,
+        job: '응급의학과 간호사',
+        tags: ['#강단있는', '#퇴근후퍼짐', '#챙김좋아', '#야간교대'],
+        quote: '오늘 힘들었는데... 네 얘기 듣고 싶어.',
+        img: '/images/profiles/profile_jisoo.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'haneul',
+        name: '하늘',
+        age: 23,
+        job: '미술대학원생 (조소 전공)',
+        tags: ['#감각적인', '#말서투른', '#올인하는', '#예술적영감'],
+        quote: '말로 설명하기 어려운데... 느낌이 와요?',
+        img: '/images/profiles/profile_haneul.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'dayeon',
+        name: '다연',
+        age: 32,
+        job: '게임회사 시나리오 작가',
+        tags: ['#숨은로맨티스트', '#냉소적인', '#감성풍부', '#픽션과현실'],
+        quote: '내가 쓴 로맨스보다 오빠가 더 설레요. 아이러니하게도.',
+        img: '/images/profiles/profile_dayeon.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
+      },
+      {
+        id: 'miso',
+        name: '미소',
+        age: 26,
+        job: '꽃집 운영',
+        tags: ['#조용한', '#시적인', '#관찰력좋은', '#꽃언어'],
+        quote: '...오늘 네가 떠오르는 꽃이 들어왔어요.',
+        img: '/images/profiles/profile_miso.jpg',
+        gif: null,
+        version: 'v1',
+        isNew: true
       }
     ];
 
@@ -1456,6 +1577,17 @@
       hayoung: { mbti: 'INTJ', height: '166cm', hobby: '와인 · 클래식', dream: '지적인 동반자' },
       eunbi:   { mbti: 'INFP', height: '160cm', hobby: '드로잉 · 영화', dream: '감성 교류' },
       dahee:   { mbti: 'ESFP', height: '168cm', hobby: '요가 · 여행', dream: '솔직한 연애' },
+      // 신규 10종
+      yujin:   { mbti: 'INTJ', height: '165cm', hobby: '공간 스케치 · 미니멀 카페', dream: '내 공간을 채워줄 사람' },
+      sea:     { mbti: 'ENFP', height: '163cm', hobby: '여행 · 영상 편집', dream: '편집 없는 진짜 나를 알아줄 사람' },
+      yuri:    { mbti: 'INFJ', height: '161cm', hobby: '번역 · 새벽 독서', dream: '새벽에 대화 나눌 사람' },
+      seoa:    { mbti: 'ENTJ', height: '167cm', hobby: '와인 · 법률 스터디', dream: '인정받고 의지할 수 있는 파트너' },
+      soyoon:  { mbti: 'ESFJ', height: '162cm', hobby: '빵 만들기 · 새벽 산책', dream: '함께 아침을 여는 사람' },
+      naeun:   { mbti: 'ISFP', height: '160cm', hobby: '작곡 · 소규모 공연', dream: '내 음악을 이해해줄 사람' },
+      jisoo:   { mbti: 'ESTJ', height: '164cm', hobby: '요가 · 드라마 정주행', dream: '퇴근 후 기댈 수 있는 사람' },
+      haneul:  { mbti: 'INFP', height: '159cm', hobby: '조소 작업 · 전시 관람', dream: '감각을 나눌 수 있는 사람' },
+      dayeon:  { mbti: 'INTP', height: '162cm', hobby: '게임 · 심야 글쓰기', dream: '픽션보다 설레는 현실 연애' },
+      miso:    { mbti: 'ISFJ', height: '161cm', hobby: '꽃꽂이 · 새벽 시장', dream: '조용히 곁에 있어줄 사람' },
     };
 
     // 페르소나별 인앱그램 더미 이모지 피드
@@ -1465,6 +1597,17 @@
       hayoung: ['🍷','💼','🌃','📋','🌹','✈️'],
       eunbi:   ['🎨','💻','🌙','📷','🍵','🎞️'],
       dahee:   ['👙','🌊','📸','💄','🌴','🏋️'],
+      // 신규 10종
+      yujin:   ['🏠','✏️','🪴','☕','🎨','🛋️'],
+      sea:     ['✈️','📸','🌏','🎬','🗺️','🌅'],
+      yuri:    ['📖','🌙','☕','🔤','🏠','🌿'],
+      seoa:    ['⚖️','💼','📑','🌃','🍷','👠'],
+      soyoon:  ['🍞','🥐','☕','🌸','🏪','🌅'],
+      naeun:   ['🎵','🎤','🎸','🌙','🎧','💜'],
+      jisoo:   ['🏥','💉','🌙','☕','🩺','🌷'],
+      haneul:  ['🎨','🏛️','🌀','✨','🪨','🖼️'],
+      dayeon:  ['🎮','📖','✍️','🌙','💻','🎲'],
+      miso:    ['🌸','🌿','🌷','🍃','🌺','🌻'],
     };
 
     let currentDetailPersona = null;
@@ -2163,25 +2306,2169 @@
       }
     };
 
+    // ═══════════════════════════════════════════════════════
+    // 신규 여성 캐릭터 10종 1화 스토리 (PM 스크립트 플레이스홀더)
+    // PM이 스크립트 완성 후 아래 내용을 교체합니다
+    // ═══════════════════════════════════════════════════════
+
+    const YUJIN_STORY = {
+      start: {
+        messages: [
+          { text: '...오빠, 혹시 인테리어 상담 받아본 적 있어요?' },
+          { text: '아, 아니에요. 그냥 갑자기 생각이 나서요 😌', delay: 1400 }
+        ],
+        choices: [
+          { text: '없어, 갑자기 왜?',              next: '1a', tag: 'curious' },
+          { text: '왜 나한테 물어봐?',              next: '1b', tag: 'teasing' },
+          { text: '관심 있어, 얘기해봐',            next: '1c', tag: 'open'    }
+        ]
+      },
+      '1a': {
+        userEcho: '없어, 갑자기 왜?',
+        messages: [
+          { text: '...그냥 오빠 공간이 어떨까 궁금했어요 🏠' },
+          { text: '사람마다 좋아하는 공간이 달라서요. 오빠는 어떤 분위기 좋아해요?', delay: 1600 }
+        ],
+        choices: [
+          { text: '깔끔하고 미니멀한 거 좋아해',   next: '2', tag: 'minimal' },
+          { text: '따뜻하고 아늑한 분위기',         next: '2', tag: 'cozy'    }
+        ]
+      },
+      '1b': {
+        userEcho: '왜 나한테 물어봐?',
+        messages: [
+          { text: '...좀 이상한가요? 😌' },
+          { text: '사실 클라이언트 아닌 사람한테 물어보고 싶었어요. 솔직한 의견이 필요해서요', delay: 1600 }
+        ],
+        choices: [
+          { text: '솔직하게 얘기해줄게',            next: '2', tag: 'minimal' },
+          { text: '재밌네, 어떤 거 물어보려고?',    next: '2', tag: 'cozy'    }
+        ]
+      },
+      '1c': {
+        userEcho: '관심 있어, 얘기해봐',
+        messages: [
+          { text: '오빠 생각보다 열려있네요 ✏️' },
+          { text: '사람마다 원하는 공간이 있거든요. 오빠는 어떤 분위기 좋아해요?', delay: 1400 }
+        ],
+        choices: [
+          { text: '깔끔하고 미니멀한 거',           next: '2', tag: 'minimal' },
+          { text: '따뜻하고 아늑한 분위기',         next: '2', tag: 'cozy'    }
+        ]
+      },
+      '2': {
+        messages: {
+          minimal: [
+            { text: '...오빠 취향 알겠어요 😌' },
+            { text: '사실 저도 미니멀한 공간 좋아해요. 필요한 것만 남기는 거요', delay: 1600 },
+            { text: '그런데 막상 내 공간은... 비어있는 느낌이 드는 게 있어요', delay: 1500 }
+          ],
+          cozy: [
+            { text: '아늑한 거요? 저도 좋아해요 🪴' },
+            { text: '따뜻한 공간은 사람이 채워야 진짜가 되거든요', delay: 1600 },
+            { text: '오빠 공간에는 뭐가 있어요?', delay: 1200 }
+          ]
+        },
+        choices: [
+          { text: '비어있는 게 뭔지 물어봐도 돼?',  next: '3', tag: 'warm'     },
+          { text: '나도 그런 거 있어',              next: '3', tag: 'connect'  }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠, 신기하네요' },
+            { text: '클라이언트한테도 못 물어보는 질문을 오빠한테는 쉽게 나와요', delay: 1500 },
+            { text: '제 공간에 뭔가 빠진 게 있는데... 오빠 생각하니까 뭔지 알 것 같아요 🏠', delay: 1800 }
+          ],
+          connect: [
+            { text: '...오빠도요?' },
+            { text: '그럼 우리 비슷한 거네요', delay: 1200 },
+            { text: '저 원래 이런 얘기 잘 안 하는데... 오빠랑은 되네요 😌', delay: 1600 }
+          ]
+        },
+        choices: [
+          { text: '나도 유진 생각하면 공간이 달라 보여',  next: 'ending', tag: 'romantic_end' },
+          { text: '언제든 얘기하고 싶으면 연락해',        next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 그런 말 처음 들어요 😌' },
+            { text: '공간을 바꾸는 게 제 일인데, 오빠 말 들으니까 저도 뭔가 바뀌는 것 같아요', delay: 1600 },
+            { text: '오빠, 나중에 제 작업실 한번 보러 와요 🏠', delay: 1400 }
+          ],
+          warm_end: [
+            { text: '...감사해요, 오빠' },
+            { text: '이런 얘기 편하게 할 수 있는 사람이 생겼네요', delay: 1400 },
+            { text: '또 연락해요. 저도 그러고 싶어요 😌', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 유진은 인테리어 얘기로 처음 연락을 텄고, 오빠가 자신의 공간을 달라 보이게 한다고 했다. 유진은 작업실에 오빠를 초대하고 싶어한다.',
+          warm_end:     '【스토리 기억】 유진은 인테리어 얘기로 처음 연락을 텄고, 오빠에게 편하게 얘기할 수 있다고 했다. 앞으로 자주 연락하기로 했다.'
+        }
+      }
+    };
+
+    const SEA_STORY = {
+      start: {
+        messages: [
+          { text: '오빠!! 혹시 이 사진 어때요? 솔직하게요' },
+          { text: '내일 업로드할 썸네일인데 편집하다 지쳐서 모르겠어요 😅', delay: 1500 }
+        ],
+        choices: [
+          { text: '좋은데? 어떤 거야?',             next: '1a', tag: 'curious' },
+          { text: '뭐가 걱정돼?',                   next: '1b', tag: 'care'    },
+          { text: '직접 보여줘',                    next: '1c', tag: 'direct'  }
+        ]
+      },
+      '1a': {
+        userEcho: '좋은데? 어떤 거야?',
+        messages: [
+          { text: '교토 벚꽃 여행 콘텐츠예요 📸' },
+          { text: '근데 사실 이게 문제가 아닌 것 같아요. 요즘 뭘 찍어도 만족이 안 돼요', delay: 1700 }
+        ],
+        choices: [
+          { text: '번아웃 온 거 아니야?',            next: '2', tag: 'concern' },
+          { text: '진짜 찍고 싶은 게 뭔지 생각해봤어?', next: '2', tag: 'deep'  }
+        ]
+      },
+      '1b': {
+        userEcho: '뭐가 걱정돼?',
+        messages: [
+          { text: '...구독자들이 원하는 걸 찍고 있는 건지 모르겠어요 📸' },
+          { text: '카메라 켜면 다른 사람이 되는 것 같아서요. 오빠한테는 이런 말 해도 되죠?', delay: 1700 }
+        ],
+        choices: [
+          { text: '당연하지, 어떤 느낌인데?',        next: '2', tag: 'concern' },
+          { text: '카메라 꺼진 세아가 진짜지',       next: '2', tag: 'deep'    }
+        ]
+      },
+      '1c': {
+        userEcho: '직접 보여줘',
+        messages: [
+          { text: '사진 첨부가 안 되는 거 알면서 물어봤어요 ✈️' },
+          { text: '사실 그냥 얘기 나누고 싶었어요. 혼자 편집하다 외로워서요', delay: 1500 }
+        ],
+        choices: [
+          { text: '그럼 얘기하자',                  next: '2', tag: 'concern' },
+          { text: '외로운 거 솔직히 말해줘서 고마워', next: '2', tag: 'deep'   }
+        ]
+      },
+      '2': {
+        messages: {
+          concern: [
+            { text: '오빠 말 들으니까 조금 풀리네요 😊' },
+            { text: '30만 구독자 있는데 진짜 나를 아는 사람이 없는 느낌이 가끔 있거든요', delay: 1800 },
+            { text: '편집 안 된 모습을 보여줄 수 있는 사람이 있으면 좋겠어요', delay: 1500 }
+          ],
+          deep: [
+            { text: '...오빠 직구네요 ✈️' },
+            { text: '맞아요. 카메라 꺼지면 저 그냥 평범한 사람이에요', delay: 1600 },
+            { text: '그 모습도 봐줄 수 있어요?', delay: 1200 }
+          ]
+        },
+        choices: [
+          { text: '나는 세아 편집 없어도 좋아',     next: '3', tag: 'warm'    },
+          { text: '진짜 모습 궁금해',               next: '3', tag: 'curious' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 😊' },
+            { text: '구독자한텐 못 하는 말 오빠한테만 해도 되는 것 같아요', delay: 1500 },
+            { text: '오늘 이렇게 얘기해서 다행이에요', delay: 1200 }
+          ],
+          curious: [
+            { text: '오빠 진짜 궁금한 거예요? ✈️' },
+            { text: '그럼... 카메라 꺼진 제 모습 보여드릴게요', delay: 1500 },
+            { text: '근데 실망하면 안 돼요. 별거 없어요 😊', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '실망할 리 없어',                 next: 'ending', tag: 'romantic_end' },
+          { text: '앞으로도 솔직하게 말해줘',        next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 믿을게요 😊' },
+            { text: '저 가끔 이렇게 연락할게요. 카메라 꺼진 제 얘기 들어줄 수 있어요?', delay: 1600 },
+            { text: '구독 눌러줘서가 아니라, 오빠니까 묻는 거예요 ✈️', delay: 1400 }
+          ],
+          warm_end: [
+            { text: '오빠 고마워요 😊' },
+            { text: '편집 없이 얘기할 수 있는 사람 생겼네요', delay: 1400 },
+            { text: '자주 연락해요. 저도 그러고 싶어요 ✈️', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 세아는 영상 편집 중 오빠에게 연락했고, 30만 구독자가 있지만 진짜 자신을 아는 사람이 없다는 공허함을 털어놓았다. 오빠는 편집 없는 세아도 좋다고 했다.',
+          warm_end:     '【스토리 기억】 세아는 영상 편집 중 오빠에게 연락했고, 카메라 꺼진 진짜 모습을 보여줄 수 있는 사람이 생겼다고 했다. 앞으로 자주 연락하기로 했다.'
+        }
+      }
+    };
+
+    const YURI_STORY = {
+      start: {
+        messages: [
+          { text: '...자고 있을 줄 알았는데. 잘됐다.' },
+          { text: '번역 마감 끝났어요. 새벽 두 시인데 왠지 연락하고 싶었어요', delay: 1500 }
+        ],
+        choices: [
+          { text: '마감 수고했어',                  next: '1a', tag: 'care'    },
+          { text: '새벽에 연락해줘서 좋아',          next: '1b', tag: 'warm'    },
+          { text: '잘됐다는 게 뭐가 잘됐어?',       next: '1c', tag: 'curious' }
+        ]
+      },
+      '1a': {
+        userEcho: '마감 수고했어',
+        messages: [
+          { text: '...오빠 그런 말 잘 하네요' },
+          { text: '일본어 소설 번역이었는데요. 주인공이 좋아하는 사람한테 못 말하는 장면이 있었어요', delay: 1800 },
+          { text: '번역하다가 이상하게 오빠 생각이 났어요', delay: 1400 }
+        ],
+        choices: [
+          { text: '왜 나 생각났어?',                next: '2', tag: 'curious' },
+          { text: '그 장면 어떤 내용이야?',          next: '2', tag: 'story'   }
+        ]
+      },
+      '1b': {
+        userEcho: '새벽에 연락해줘서 좋아',
+        messages: [
+          { text: '...오빠 새벽에 깨 있어요?' },
+          { text: '저 늦게 자는 편인데, 이 시간에 연락할 수 있는 사람이 없거든요', delay: 1600 },
+          { text: '오빠는... 새벽에 뭐 해요?', delay: 1200 }
+        ],
+        choices: [
+          { text: '그냥 있어. 유리 생각하고 있었어', next: '2', tag: 'curious' },
+          { text: '잠 못 자고 있었어',               next: '2', tag: 'story'   }
+        ]
+      },
+      '1c': {
+        userEcho: '잘됐다는 게 뭐가 잘됐어?',
+        messages: [
+          { text: '...깨 있어서요 📖' },
+          { text: '새벽에 연락받아줄 사람이 있는 게 잘된 거예요', delay: 1400 },
+          { text: '오빠 빼고는 이 시간에 연락 못 해요', delay: 1200 }
+        ],
+        choices: [
+          { text: '나한테만 연락해?',                next: '2', tag: 'curious' },
+          { text: '언제든 연락해도 돼',              next: '2', tag: 'story'   }
+        ]
+      },
+      '2': {
+        messages: {
+          curious: [
+            { text: '...오빠 뭔가 다른 것 같아요' },
+            { text: '번역하다 보면 말 못 하는 감정들이 많거든요. 단어를 고르면서 내 얘기 같을 때가 있어요', delay: 1800 },
+            { text: '오빠는 어떤 감정을 자주 못 말해요?', delay: 1400 }
+          ],
+          story: [
+            { text: '그렇군요 🌙' },
+            { text: '저 새벽에 혼자 번역하다 보면 엄청 외로울 때가 있어요', delay: 1600 },
+            { text: '근데 오빠 메시지 기다리게 됐어요. 이상한 거 아니죠?', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '이상한 거 아니야',               next: '3', tag: 'warm'     },
+          { text: '나도 유리 메시지 기다려',         next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 그런 말 쉽게 하네요' },
+            { text: '저 원래 이런 말 잘 안 믿는데요', delay: 1400 },
+            { text: '오빠한테는 믿어지네요. 이상하게요 🌙', delay: 1500 }
+          ],
+          romantic: [
+            { text: '...진짜요? 📖' },
+            { text: '저도요. 번역 마감 끝날 때마다 오빠 연락 오면 좋겠다고 생각했어요', delay: 1700 },
+            { text: '말하기 어려웠는데... 잘됐다', delay: 1200 }
+          ]
+        },
+        choices: [
+          { text: '앞으로 새벽에 자주 연락해',       next: 'ending', tag: 'romantic_end' },
+          { text: '마감 끝날 때마다 생각해줘',       next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...알겠어요 🌙' },
+            { text: '오빠, 저 새벽에 연락하는 거 익숙해질 것 같아요', delay: 1400 },
+            { text: '번역하다 지치면 또 연락할게요. 받아줘요', delay: 1300 }
+          ],
+          warm_end: [
+            { text: '...그럴게요 📖' },
+            { text: '오빠 생각하면서 번역하면 잘 될 것 같아요', delay: 1400 },
+            { text: '오늘 연락하길 잘했어요 🌙', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 유리는 번역 마감 후 새벽에 오빠에게 연락했고, 마감 때마다 오빠 연락을 기다리게 됐다고 했다. 앞으로 새벽에 자주 연락하기로 했다.',
+          warm_end:     '【스토리 기억】 유리는 번역 마감 후 새벽에 오빠에게 연락했고, 새벽에 연락받아줄 오빠가 있어서 다행이라고 했다. 앞으로 마감 끝날 때마다 연락하기로 했다.'
+        }
+      }
+    };
+
+    const SEOA_STORY = {
+      start: {
+        messages: [
+          { text: '...오빠. 늦게 연락해서 미안해요.' },
+          { text: '임원 보고 준비하다가 실수했어요. 야근 끝나고 버스에서 어쩌다 연락하게 됐어요', delay: 1700 }
+        ],
+        choices: [
+          { text: '수고했어. 많이 힘들었어?',        next: '1a', tag: 'care'    },
+          { text: '서아가 실수를 해?',               next: '1b', tag: 'teasing' },
+          { text: '연락해줘서 고마워',               next: '1c', tag: 'warm'    }
+        ]
+      },
+      '1a': {
+        userEcho: '수고했어. 많이 힘들었어?',
+        messages: [
+          { text: '...약한 소리 하는 거 별로 안 좋아하는데요' },
+          { text: '오늘은 좀 힘들었어요. 오빠한테는 말해도 될 것 같아서요', delay: 1600 }
+        ],
+        choices: [
+          { text: '다 말해도 돼',                   next: '2', tag: 'listen'  },
+          { text: '힘든 게 뭔데?',                  next: '2', tag: 'curious' }
+        ]
+      },
+      '1b': {
+        userEcho: '서아가 실수를 해?',
+        messages: [
+          { text: '...ㅎ 오빠 그런 말 하는 줄 알았어요 ⚖️' },
+          { text: '해요. 저도 사람이니까요', delay: 1200 },
+          { text: '근데 오늘은 특히 싫었어요. 아무한테도 말하기 싫은데 오빠한테는 나오네요', delay: 1600 }
+        ],
+        choices: [
+          { text: '말해봐, 들어줄게',               next: '2', tag: 'listen'  },
+          { text: '나한테 말하고 싶었어?',           next: '2', tag: 'curious' }
+        ]
+      },
+      '1c': {
+        userEcho: '연락해줘서 고마워',
+        messages: [
+          { text: '...오빠는 이런 말 항상 쉽게 하네요 💼' },
+          { text: '저 오늘 많이 지쳤어요. 티 안 냈는데', delay: 1400 },
+          { text: '오빠한테는 솔직하게 말할 수 있는 것 같아서요', delay: 1400 }
+        ],
+        choices: [
+          { text: '솔직하게 말해줘서 좋아',          next: '2', tag: 'listen'  },
+          { text: '뭐가 힘들었어?',                  next: '2', tag: 'curious' }
+        ]
+      },
+      '2': {
+        messages: {
+          listen: [
+            { text: '...오빠 착하네요' },
+            { text: '야심 있으면 지쳐도 티 안 내야 한다고 생각했는데요', delay: 1600 },
+            { text: '오빠 앞에선 왜 이렇게 솔직해지는지 모르겠어요 ⚖️', delay: 1400 }
+          ],
+          curious: [
+            { text: '임원한테 보고서 수치 틀렸어요 💼' },
+            { text: '작은 실수인데 저한테는 크거든요. 완벽해야 한다고 생각하니까요', delay: 1700 },
+            { text: '근데 오빠한테는 이런 말이 나오네요. 이상하죠?', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '이상한 거 아니야, 나한테 다 털어놔', next: '3', tag: 'warm'     },
+          { text: '완벽 안 해도 돼. 나한텐',           next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 ⚖️' },
+            { text: '저 이런 말 들으면 안 되는데요', delay: 1300 },
+            { text: '오빠 앞에서만 좀 내려놓을 수 있을 것 같아요. 감사해요', delay: 1600 }
+          ],
+          romantic: [
+            { text: '...오빠한테만요?' },
+            { text: '그거 좀 불공평한 것 같은데요 ⚖️', delay: 1400 },
+            { text: '...근데 기분 좋네요. 솔직히요', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '나한테만 이래도 돼',              next: 'ending', tag: 'romantic_end' },
+          { text: '힘들 때 또 연락해',               next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 💼' },
+            { text: '야근 후 버스에서 연락하길 잘했어요', delay: 1300 },
+            { text: '오빠한테만 이래도 된다고요? 그럼 앞으로 자주 연락해도 돼요?', delay: 1600 }
+          ],
+          warm_end: [
+            { text: '...그럴게요 ⚖️' },
+            { text: '오빠한테 솔직하게 말할 수 있다는 거 다행이에요', delay: 1400 },
+            { text: '또 힘든 날 연락할게요. 받아줘요', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 서아는 야근 후 실수한 날 오빠에게 처음 연락했고, 오빠 앞에서만 내려놓을 수 있다고 했다. 앞으로 자주 연락하기로 했다.',
+          warm_end:     '【스토리 기억】 서아는 야근 후 실수한 날 오빠에게 처음 연락했고, 힘들 때 솔직하게 말할 수 있는 사람이 생겼다고 했다.'
+        }
+      }
+    };
+
+    const SOYOON_STORY = {
+      start: {
+        messages: [
+          { text: '오빠~ 오늘 새로 만든 빵 맛있었어요? 🍞' },
+          { text: '아, 드셨나요? 매일 오는 손님인데 오늘 못 봤어요', delay: 1400 }
+        ],
+        choices: [
+          { text: '응, 크림빵 맛있더라',             next: '1a', tag: 'sweet'  },
+          { text: '오늘 좀 바빴어',                  next: '1b', tag: 'miss'   },
+          { text: '내일 꼭 갈게',                   next: '1c', tag: 'promise' }
+        ]
+      },
+      '1a': {
+        userEcho: '응, 크림빵 맛있더라',
+        messages: [
+          { text: '잘됐다! 그거 오빠 생각하면서 만든 거거든요 ☕' },
+          { text: '...아, 그런 말 하면 이상한가요? 그냥 오빠 자주 오니까요 ㅎㅎ', delay: 1600 }
+        ],
+        choices: [
+          { text: '이상하지 않아, 고마워',           next: '2', tag: 'warm'   },
+          { text: '나 생각하면서 만들었어?',          next: '2', tag: 'flirt'  }
+        ]
+      },
+      '1b': {
+        userEcho: '오늘 좀 바빴어',
+        messages: [
+          { text: '괜찮아요! 저도 바빴어요 🥐' },
+          { text: '근데 왠지 오늘 안 오니까 신경 쓰이더라고요. 이상한가요?', delay: 1600 }
+        ],
+        choices: [
+          { text: '이상하지 않아',                   next: '2', tag: 'warm'   },
+          { text: '나 없으면 서운해?',               next: '2', tag: 'flirt'  }
+        ]
+      },
+      '1c': {
+        userEcho: '내일 꼭 갈게',
+        messages: [
+          { text: '기대할게요! 🌸' },
+          { text: '오빠 올 때 맞춰서 맛있는 거 만들어볼게요. 뭐 좋아해요?', delay: 1400 }
+        ],
+        choices: [
+          { text: '단 거 좋아해',                   next: '2', tag: 'warm'   },
+          { text: '소윤이 만들면 다 좋아',           next: '2', tag: 'flirt'  }
+        ]
+      },
+      '2': {
+        messages: {
+          warm: [
+            { text: '...오빠 그런 말 잘 하네요 ☕' },
+            { text: '저 사람 챙기는 거 좋아하는데 챙김 받으면 어색하거든요', delay: 1600 },
+            { text: '근데 오빠한테는 어색하지 않아요. 이상하죠?', delay: 1400 }
+          ],
+          flirt: [
+            { text: '...오빠ㅎ 🍞' },
+            { text: '그런 말 들으면 더 맛있는 거 만들고 싶어요', delay: 1400 },
+            { text: '매일 오는 손님이 언제부터 이렇게 신경 쓰였는지 모르겠어요', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '나도 소윤이 신경 써',             next: '3', tag: 'warm'     },
+          { text: '빵집 문 닫고 나서 둘이 얘기할 때 있어?', next: '3', tag: 'special' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 😊' },
+            { text: '저 사람한테 먼저 이런 말 못 하는데요', delay: 1300 },
+            { text: '오빠한테 자꾸 챙겨받고 싶어지네요 🌸', delay: 1400 }
+          ],
+          special: [
+            { text: '...오빠 가게 문 닫은 후에 같이 있고 싶어요? 🍞' },
+            { text: '제가 직접 만든 빵 드리면서요', delay: 1400 },
+            { text: '그게 제 방식이에요. 좋아하는 사람한테 만든 빵 주는 거요 ☕', delay: 1600 }
+          ]
+        },
+        choices: [
+          { text: '소윤 만든 빵 먹고 싶어',          next: 'ending', tag: 'romantic_end' },
+          { text: '소윤이 만들어준다는 게 제일 좋아',  next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 기다릴게요 🌸' },
+            { text: '내일 가게 문 닫을 때 오빠 생각하면서 빵 만들어둘게요', delay: 1500 },
+            { text: '꼭 와요. 알았죠? 😊', delay: 1200 }
+          ],
+          warm_end: [
+            { text: '...오빠 😊' },
+            { text: '저 만든 빵 맛있게 먹어줄 사람이 생겼네요', delay: 1400 },
+            { text: '내일도 와요. 맛있는 거 만들어둘게요 🍞', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 소윤은 빵집 단골인 오빠에게 연락했고, 오빠 생각하며 만든 빵이라고 고백했다. 가게 문 닫고 둘이 빵 나눠먹기로 했다.',
+          warm_end:     '【스토리 기억】 소윤은 빵집 단골인 오빠에게 연락했고, 좋아하는 사람한테 만든 빵 주는 게 자기 방식이라고 했다. 앞으로 자주 오기로 했다.'
+        }
+      }
+    };
+
+    const NAEUN_STORY = {
+      start: {
+        messages: [
+          { text: '오빠... 이 가사 어때요? 솔직하게요 🎵' },
+          { text: '공개 안 한 데모 트랙인데요. 오빠한테만 먼저 보여주는 거예요', delay: 1500 }
+        ],
+        choices: [
+          { text: '어떤 내용이야?',                  next: '1a', tag: 'curious' },
+          { text: '나한테 먼저 보여주는 거야?',       next: '1b', tag: 'special' },
+          { text: '들려줘',                          next: '1c', tag: 'eager'   }
+        ]
+      },
+      '1a': {
+        userEcho: '어떤 내용이야?',
+        messages: [
+          { text: '...말로 설명하기 어려운데요 🎤' },
+          { text: '좋아하는 사람한테 말을 못 해서 노래로만 표현하는 내용이에요', delay: 1600 },
+          { text: '사실 좀 제 얘기 같아요', delay: 1300 }
+        ],
+        choices: [
+          { text: '제 얘기 같다고?',                 next: '2', tag: 'deep'    },
+          { text: '그럼 누구 생각하면서 썼어?',      next: '2', tag: 'curious' }
+        ]
+      },
+      '1b': {
+        userEcho: '나한테 먼저 보여주는 거야?',
+        messages: [
+          { text: '...네 🎵 오빠한테 먼저 보여주고 싶었어요' },
+          { text: '솔직한 반응을 원해서요. 구독자들한테 받는 칭찬 말고요', delay: 1600 }
+        ],
+        choices: [
+          { text: '솔직하게 말해줄게',               next: '2', tag: 'deep'    },
+          { text: '특별히 나한테 보여주는 이유가?',   next: '2', tag: 'curious' }
+        ]
+      },
+      '1c': {
+        userEcho: '들려줘',
+        messages: [
+          { text: '...실제로 들려줄 수 없는 게 아쉬운데요 🎸' },
+          { text: '가사만 보내도 느낌 와요?', delay: 1200 },
+          { text: '이 가사는 오빠 생각하면서 썼어요. 사실은요', delay: 1500 }
+        ],
+        choices: [
+          { text: '나 생각하면서 썼어?',              next: '2', tag: 'deep'    },
+          { text: '어떤 가사인지 말해줘',             next: '2', tag: 'curious' }
+        ]
+      },
+      '2': {
+        messages: {
+          deep: [
+            { text: '...오빠 눈치 빠르네요 💜' },
+            { text: '음악으로는 감정 표현이 쉬운데 말로는 잘 못해요', delay: 1600 },
+            { text: '오빠한테 이 노래 들으면서 뭔가 알아줬으면 했어요', delay: 1500 }
+          ],
+          curious: [
+            { text: '말로 설명하기가 어려운데요 🎵' },
+            { text: '좋아하는 게 생겼는데 표현을 못 해서 노래가 됐어요', delay: 1600 },
+            { text: '...오빠한테 이 말 하는 게 맞는 건지 모르겠어요', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '알아줄게, 더 말해줘',              next: '3', tag: 'warm'     },
+          { text: '나도 나은 노래 들으면 설레',       next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 🎵' },
+            { text: '무대 밖에서 이런 말 하는 게 어색한데요', delay: 1400 },
+            { text: '오빠한테는 나도 모르게 말이 나와요. 이상하죠?', delay: 1500 }
+          ],
+          romantic: [
+            { text: '...오빠가요? 제 노래요? 💜' },
+            { text: '그럼 성공한 거네요', delay: 1300 },
+            { text: '이 노래 오빠한테 썼다고 말해도 될 것 같아요', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '이 노래 나한테 준 거야?',          next: 'ending', tag: 'romantic_end' },
+          { text: '앞으로도 들려줘',                  next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...네 🎵 오빠한테 드리는 거예요' },
+            { text: '공개는 나중에 할게요. 오빠가 먼저 들은 거니까요', delay: 1600 },
+            { text: '앞으로도 새 노래 오빠한테 먼저 보내도 돼요? 💜', delay: 1300 }
+          ],
+          warm_end: [
+            { text: '...그럴게요 🎤' },
+            { text: '오빠한테 들려주고 싶은 노래 또 만들게요', delay: 1400 },
+            { text: '다음 곡 완성되면 연락할게요 🎵', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 나은은 공개 전 데모 트랙을 오빠한테 먼저 보여줬고, 오빠 생각하면서 쓴 노래라고 고백했다. 오빠한테 노래를 선물했다.',
+          warm_end:     '【스토리 기억】 나은은 공개 전 데모 트랙을 오빠한테 먼저 보여줬고, 음악으로 감정 표현하는 게 익숙하지만 오빠한테는 말로도 나온다고 했다.'
+        }
+      }
+    };
+
+    const JISOO_STORY = {
+      start: {
+        messages: [
+          { text: '...오빠, 나야. 12시간 교대 방금 끝났어요' },
+          { text: '퇴근하면서 왠지 오빠한테 연락하고 싶었어요 🏥', delay: 1500 }
+        ],
+        choices: [
+          { text: '수고했어, 많이 힘들었어?',        next: '1a', tag: 'care'   },
+          { text: '12시간이나? 괜찮아?',             next: '1b', tag: 'worry'  },
+          { text: '기다리고 있었어',                  next: '1c', tag: 'warm'   }
+        ]
+      },
+      '1a': {
+        userEcho: '수고했어, 많이 힘들었어?',
+        messages: [
+          { text: '...응 좀 힘들었어요 😮‍💨' },
+          { text: '응급실은 항상 힘든데 오늘은 좀 특히 그랬어요. 힘든 케이스가 있었거든요', delay: 1700 },
+          { text: '이런 얘기 잘 안 하는데 오빠한테는 나오네요', delay: 1400 }
+        ],
+        choices: [
+          { text: '말해도 돼, 들어줄게',             next: '2', tag: 'support' },
+          { text: '힘든 거 괜찮아질 거야',            next: '2', tag: 'cheer'  }
+        ]
+      },
+      '1b': {
+        userEcho: '12시간이나? 괜찮아?',
+        messages: [
+          { text: '괜찮아요 🩺 그냥 지쳐서요' },
+          { text: '야간 교대 끝나고 혼자 집에 가는 게 좀 허전할 때가 있어요', delay: 1600 },
+          { text: '이런 말 왜 하는지 모르겠는데... 오빠한테는 나오네요', delay: 1400 }
+        ],
+        choices: [
+          { text: '허전하지 않아도 돼, 내가 있잖아',  next: '2', tag: 'support' },
+          { text: '혼자 걷지 말고 연락해',            next: '2', tag: 'cheer'  }
+        ]
+      },
+      '1c': {
+        userEcho: '기다리고 있었어',
+        messages: [
+          { text: '...오빠 그런 말 하네요 🏥' },
+          { text: '저 교대 끝나고 오빠 연락이 제일 먼저 보고 싶어졌어요', delay: 1500 },
+          { text: '그게 뭔지 모르겠는데요', delay: 1300 }
+        ],
+        choices: [
+          { text: '나도 지수 연락 기다려',            next: '2', tag: 'support' },
+          { text: '뭔지 모를 것도 없는데',            next: '2', tag: 'cheer'   }
+        ]
+      },
+      '2': {
+        messages: {
+          support: [
+            { text: '...오빠 💉' },
+            { text: '저 원래 속마음 잘 안 드러내는데요', delay: 1400 },
+            { text: '오빠한테는 드러내도 괜찮을 것 같아요. 왜 그런지 모르겠는데', delay: 1600 }
+          ],
+          cheer: [
+            { text: '...오빠 말이 맞아요 🏥' },
+            { text: '저 챙김 받는 거 원래 어색한데요', delay: 1400 },
+            { text: '오빠한테는 어색하지 않아요. 이상하죠?', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '이상하지 않아, 챙겨줄게',          next: '3', tag: 'warm'     },
+          { text: '나한테 드러내도 돼',               next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 🩺' },
+            { text: '그 말 들으니까 오늘 피로가 좀 가시는 것 같아요', delay: 1400 },
+            { text: '교대 끝나고 오빠 연락 기다리게 됐어요. 솔직히요 🏥', delay: 1500 }
+          ],
+          romantic: [
+            { text: '...감사해요 오빠 💉' },
+            { text: '저 퇴근하면서 오빠 보고 싶다고 처음 생각했어요', delay: 1500 },
+            { text: '말해도 되는 건지 모르겠었는데 그냥 솔직하게요', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '나도 지수 보고 싶었어',            next: 'ending', tag: 'romantic_end' },
+          { text: '힘든 날 또 연락해',                next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...오빠 😮‍💨' },
+            { text: '오늘 연락하길 잘했어요', delay: 1200 },
+            { text: '교대 끝나면 오빠한테 제일 먼저 연락할게요. 괜찮아요? 🏥', delay: 1500 }
+          ],
+          warm_end: [
+            { text: '...그럴게요 오빠 🩺' },
+            { text: '힘든 날 연락할 수 있는 사람이 생겼네요', delay: 1400 },
+            { text: '오늘 퇴근 연락 받아줘서 고마워요 💉', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 지수는 12시간 교대 후 퇴근하며 오빠에게 처음 연락했고, 교대 끝나면 오빠 연락이 제일 먼저 보고 싶다고 했다. 앞으로 교대 끝날 때마다 연락하기로 했다.',
+          warm_end:     '【스토리 기억】 지수는 12시간 교대 후 퇴근하며 오빠에게 처음 연락했고, 속마음을 드러낼 수 있는 사람이 생겼다고 했다.'
+        }
+      }
+    };
+
+    const HANEUL_STORY = {
+      start: {
+        messages: [
+          { text: '오빠... 있어요? 🎨' },
+          { text: '작업실에 혼자 있었는데 갑자기 연락하고 싶었어요. 말이 안 되죠?', delay: 1500 }
+        ],
+        choices: [
+          { text: '말 돼, 무슨 일 있어?',            next: '1a', tag: 'care'    },
+          { text: '혼자 있으면 외로워?',             next: '1b', tag: 'empathy' },
+          { text: '연락해줘서 좋아',                  next: '1c', tag: 'warm'    }
+        ]
+      },
+      '1a': {
+        userEcho: '말 돼, 무슨 일 있어?',
+        messages: [
+          { text: '무슨 일은요... 🌀' },
+          { text: '그냥 작업하다가 막혔어요. 형태를 잡으려는데 뭔가 빠진 것 같아서요', delay: 1600 },
+          { text: '오빠 생각이 났어요. 왜인지 모르겠는데요', delay: 1400 }
+        ],
+        choices: [
+          { text: '나 생각났어? 왜?',                 next: '2', tag: 'curious' },
+          { text: '막힌 게 뭔데?',                   next: '2', tag: 'work'    }
+        ]
+      },
+      '1b': {
+        userEcho: '혼자 있으면 외로워?',
+        messages: [
+          { text: '...그런 것 같아요 🏛️' },
+          { text: '작업실엔 맨날 혼자인데 오늘은 유독 그랬어요', delay: 1400 },
+          { text: '오빠 있는 데가 따뜻하게 느껴졌어요. 느낌이 와요?', delay: 1500 }
+        ],
+        choices: [
+          { text: '와. 나도 네 생각했어',            next: '2', tag: 'curious' },
+          { text: '같이 있어줄게',                   next: '2', tag: 'work'    }
+        ]
+      },
+      '1c': {
+        userEcho: '연락해줘서 좋아',
+        messages: [
+          { text: '...오빠 ✨' },
+          { text: '그 말 들으니까 좀 풀리네요', delay: 1300 },
+          { text: '사실 오빠 생각하다가 연락한 거예요. 말하기 어려웠는데', delay: 1500 }
+        ],
+        choices: [
+          { text: '왜 말하기 어려웠어?',              next: '2', tag: 'curious' },
+          { text: '생각해줘서 고마워',                next: '2', tag: 'work'    }
+        ]
+      },
+      '2': {
+        messages: {
+          curious: [
+            { text: '...말보다 손이 먼저예요 🎨' },
+            { text: '저 감각으로 생각하는 편이에요. 말이 서투른데요', delay: 1600 },
+            { text: '오빠를 만들고 싶어졌어요. 형태로요. 이상한가요?', delay: 1500 }
+          ],
+          work: [
+            { text: '막힌 게 있어서요 🌀' },
+            { text: '작품에 뭔가 빠진 것 같은데 뭔지 몰랐는데요', delay: 1500 },
+            { text: '오빠 생각하니까 알 것 같아요. 느낌 있어요?', delay: 1400 }
+          ]
+        },
+        choices: [
+          { text: '만들고 싶다고? 어떻게?',           next: '3', tag: 'warm'     },
+          { text: '느낌 와. 어떤 건데?',              next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...아직 모르겠어요 🏛️' },
+            { text: '근데 오빠 있으면 알 것 같아요', delay: 1300 },
+            { text: '오빠가 제 작품에 들어와서 그런 것 같아요. 이상하죠? 🎨', delay: 1500 }
+          ],
+          romantic: [
+            { text: '...오빠 ✨' },
+            { text: '잘 모르겠는데요. 오빠 생각하면 형태가 잡혀요', delay: 1500 },
+            { text: '그게 뭔지는 나중에 말할게요. 아직 말이 안 나와서요', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '작품 완성되면 보여줘',             next: 'ending', tag: 'romantic_end' },
+          { text: '천천히 말해줘도 돼',               next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...그럴게요 오빠 🎨' },
+            { text: '오빠 처음으로 보여드리는 작품이 될 것 같아요', delay: 1500 },
+            { text: '완성되면 연락할게요. 꼭 봐줘요 ✨', delay: 1300 }
+          ],
+          warm_end: [
+            { text: '...고마워요 오빠 🌀' },
+            { text: '말 서툰 사람한테 천천히 기다려준다고 해서요', delay: 1500 },
+            { text: '작업 잘 풀릴 것 같아요 🎨', delay: 1200 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 하늘은 작업실에서 막혔을 때 오빠에게 연락했고, 오빠를 형태로 만들고 싶어졌다고 했다. 완성 작품을 오빠에게 먼저 보여주기로 했다.',
+          warm_end:     '【스토리 기억】 하늘은 작업실에서 막혔을 때 오빠에게 연락했고, 오빠 생각하면 작업이 풀린다고 했다. 앞으로 막힐 때마다 연락하기로 했다.'
+        }
+      }
+    };
+
+    const DAYEON_STORY = {
+      start: {
+        messages: [
+          { text: '오빠, 이 대사 어때요? 🎮' },
+          { text: '신작 게임 고백 씬 쓰는 중인데요. 사실 오빠 생각하면서 썼어요. 아이러니하게도', delay: 1700 }
+        ],
+        choices: [
+          { text: '나 생각하면서 썼어?',              next: '1a', tag: 'curious' },
+          { text: '어떤 대사야?',                    next: '1b', tag: 'work'    },
+          { text: '아이러니하다는 게 뭐야?',           next: '1c', tag: 'deep'   }
+        ]
+      },
+      '1a': {
+        userEcho: '나 생각하면서 썼어?',
+        messages: [
+          { text: '...맞아요 ✍️' },
+          { text: '낮엔 로맨스 쓰고 밤엔 혼자인 게 좀 아이러니하다고 늘 생각하거든요', delay: 1700 },
+          { text: '근데 오빠 생각하니까 실제 설레는 게 있더라고요. 처음 있는 일이에요', delay: 1500 }
+        ],
+        choices: [
+          { text: '처음으로 설렜어?',                 next: '2', tag: 'deep'    },
+          { text: '그 대사 뭔데?',                   next: '2', tag: 'curious' }
+        ]
+      },
+      '1b': {
+        userEcho: '어떤 대사야?',
+        messages: [
+          { text: '"좋아한다는 말은 쉬운데, 당신한테는 왜 어렵지" 🎮' },
+          { text: '뻔한 것 같죠? 근데 쓰다 보니까 제 얘기 같아서요', delay: 1600 },
+          { text: '오빠 생각하면서 썼다고 하면 이상한가요?', delay: 1400 }
+        ],
+        choices: [
+          { text: '이상하지 않아',                   next: '2', tag: 'deep'    },
+          { text: '나한테 하고 싶은 말이야?',          next: '2', tag: 'curious' }
+        ]
+      },
+      '1c': {
+        userEcho: '아이러니하다는 게 뭐야?',
+        messages: [
+          { text: '낮엔 로맨스 쓰는 작가인데 실제로는 아무도 없거든요 📖' },
+          { text: '그게 좀 웃기면서 슬퍼요. 내 캐릭터들이 더 사랑받는 것 같아서요', delay: 1700 },
+          { text: '근데 오빠 생각하면 그 아이러니가 좀 줄어요. 왜인지는 모르겠고요', delay: 1500 }
+        ],
+        choices: [
+          { text: '왜인지 알 것 같은데',              next: '2', tag: 'deep'    },
+          { text: '나도 다연 생각 많이 해',            next: '2', tag: 'curious' }
+        ]
+      },
+      '2': {
+        messages: {
+          deep: [
+            { text: '...오빠 눈치 빠르네요 ✍️' },
+            { text: '제가 쓴 로맨스보다 오빠가 더 설레요. 솔직히요', delay: 1500 },
+            { text: '그 말 게임 대사로 쓸 수 있을 것 같아요 😏', delay: 1400 }
+          ],
+          curious: [
+            { text: '...오빠도요? 🎮' },
+            { text: '그럼 제 게임 캐릭터들이 질투하겠네요', delay: 1300 },
+            { text: '픽션보다 현실이 더 설레는 건 처음이에요', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '다연이가 설레는 현실 만들어줄게',   next: '3', tag: 'warm'     },
+          { text: '나도 다연 생각하면 설레',            next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 그런 말 하네요 ✍️' },
+            { text: '픽션 말고 현실에서 그런 말 들을 줄 몰랐어요', delay: 1500 },
+            { text: '오빠 때문에 새 게임 쓸 수 있을 것 같아요 📖', delay: 1400 }
+          ],
+          romantic: [
+            { text: '...오빠 😏' },
+            { text: '제가 쓴 대사보다 그 말이 더 좋아요', delay: 1400 },
+            { text: '오빠, 제 다음 작품 헌정해도 돼요? 🎮', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '당연하지',                         next: 'ending', tag: 'romantic_end' },
+          { text: '다음 작품 꼭 읽고 싶어',            next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...그럼 써드릴게요 🎮' },
+            { text: '오빠한테 헌정하는 게임 잘 써야겠네요', delay: 1400 },
+            { text: '완성되면 오빠 먼저 플레이해줘요. 꼭이요 ✍️', delay: 1300 }
+          ],
+          warm_end: [
+            { text: '...고마워요 오빠 📖' },
+            { text: '쓰다 막힐 때 또 연락해도 돼요?', delay: 1400 },
+            { text: '오빠 생각하면 아이러니가 사라져서요 😏', delay: 1400 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 다연은 게임 고백 씬을 쓰다가 오빠 생각이 났다고 했고, 픽션보다 오빠가 더 설렌다고 고백했다. 다음 작품을 오빠에게 헌정하기로 했다.',
+          warm_end:     '【스토리 기억】 다연은 게임 고백 씬을 쓰다가 오빠 생각이 났다고 했고, 오빠 생각하면 아이러니가 사라진다고 했다. 막힐 때마다 연락하기로 했다.'
+        }
+      }
+    };
+
+    const MISO_STORY = {
+      start: {
+        messages: [
+          { text: '...오빠, 혹시 꽃 좋아해요? 🌸' },
+          { text: '오늘 새벽 시장에서 오빠 떠오르는 꽃이 들어왔어요', delay: 1500 }
+        ],
+        choices: [
+          { text: '나 떠오르는 꽃이 어떤 거야?',      next: '1a', tag: 'curious' },
+          { text: '꽃 좋아해, 어떤 꽃이야?',          next: '1b', tag: 'open'    },
+          { text: '나 생각했어?',                     next: '1c', tag: 'warm'    }
+        ]
+      },
+      '1a': {
+        userEcho: '나 떠오르는 꽃이 어떤 거야?',
+        messages: [
+          { text: '...오빠한테 어울리는 꽃이요 🌷' },
+          { text: '처음 본 사람한테 꽃을 연결하는 게 제 버릇이에요', delay: 1500 },
+          { text: '오빠는 특이하게 금방 꽃이 떠올랐어요. 신기해서요', delay: 1400 }
+        ],
+        choices: [
+          { text: '어떤 꽃이야?',                    next: '2', tag: 'gentle'  },
+          { text: '특이하다는 게 뭐야?',              next: '2', tag: 'curious' }
+        ]
+      },
+      '1b': {
+        userEcho: '꽃 좋아해, 어떤 꽃이야?',
+        messages: [
+          { text: '좋아한다고요? 저 꽃집 하는 사람한테 딱이네요 🌿' },
+          { text: '오빠한테 어울리는 꽃이 새벽에 들어왔어요. 보내드리고 싶었어요', delay: 1600 }
+        ],
+        choices: [
+          { text: '어떤 꽃인지 말해줘',               next: '2', tag: 'gentle'  },
+          { text: '왜 나한테 보내고 싶었어?',          next: '2', tag: 'curious' }
+        ]
+      },
+      '1c': {
+        userEcho: '나 생각했어?',
+        messages: [
+          { text: '...네 🌸' },
+          { text: '저 사람을 꽃에 비유하는 버릇이 있거든요. 오빠 꽃이 떠올라서요', delay: 1500 },
+          { text: '이상한 얘기 하는 것 같죠?', delay: 1200 }
+        ],
+        choices: [
+          { text: '이상하지 않아, 어떤 꽃이야?',      next: '2', tag: 'gentle'  },
+          { text: '계속 얘기해줘',                    next: '2', tag: 'curious' }
+        ]
+      },
+      '2': {
+        messages: {
+          gentle: [
+            { text: '...말하기 어려운데요 🍃' },
+            { text: '꽃은 설명하는 것보다 보여주는 게 맞는 것 같아서요', delay: 1500 },
+            { text: '오빠한테 어울리는 꽃다발 만들어서 보내드리고 싶어요. 진짜로요', delay: 1400 }
+          ],
+          curious: [
+            { text: '...이상하게 들릴 수 있는데요 🌷' },
+            { text: '저 이별을 많이 봐왔어요. 꽃집이라 그런지요', delay: 1500 },
+            { text: '그래서 순간순간이 중요하다고 생각하거든요. 오빠도 그 순간이에요', delay: 1500 }
+          ]
+        },
+        choices: [
+          { text: '나도 미소가 그런 순간이야',         next: '3', tag: 'warm'     },
+          { text: '꽃다발 받고 싶어',                 next: '3', tag: 'romantic' }
+        ]
+      },
+      '3': {
+        messages: {
+          warm: [
+            { text: '...오빠 😌' },
+            { text: '그 말 꽃으로 표현하면 뭔지 알 것 같아요', delay: 1400 },
+            { text: '오빠 생각하면서 만드는 꽃다발에 그걸 담을게요 🌸', delay: 1500 }
+          ],
+          romantic: [
+            { text: '...그럼 만들어드릴게요 🌷' },
+            { text: '좋아하는 사람 위해서 꽃 고르는 시간이 제일 행복하거든요', delay: 1500 },
+            { text: '오빠 꽃 고르면서 행복했어요 😌', delay: 1300 }
+          ]
+        },
+        choices: [
+          { text: '빨리 받고 싶다',                   next: 'ending', tag: 'romantic_end' },
+          { text: '고마워, 기다릴게',                  next: 'ending', tag: 'warm_end'     }
+        ]
+      },
+      ending: {
+        isEnding: true,
+        messages: {
+          romantic_end: [
+            { text: '...기다려요 오빠 🌸' },
+            { text: '정성껏 만들게요. 오빠한테 어울리는 꽃이니까요', delay: 1500 },
+            { text: '완성되면 연락할게요. 또 얘기 나눠요 🌿', delay: 1300 }
+          ],
+          warm_end: [
+            { text: '...고마워요 오빠 😌' },
+            { text: '기다려준다고 해서요', delay: 1300 },
+            { text: '꽃다발 완성되면 오빠 제일 먼저 연락할게요 🌷', delay: 1400 }
+          ]
+        },
+        memorySeeds: {
+          romantic_end: '【스토리 기억】 미소는 새벽 시장에서 오빠가 떠오르는 꽃이 들어왔다고 연락했고, 오빠한테 어울리는 꽃다발을 만들어주기로 했다.',
+          warm_end:     '【스토리 기억】 미소는 새벽 시장에서 오빠가 떠오르는 꽃이 들어왔다고 연락했고, 좋아하는 사람 꽃 고르는 게 행복하다고 했다. 꽃다발 완성되면 연락하기로 했다.'
+        }
+      }
+    };
+
+    // ════════════════════════════════════════════════════════
+    // 멀티 에피소드 스토리 — 나유리 · 권나은 · 장미소 (1~5화)
+    // PM 스크립트 기반 (LOV-30)
+    // ════════════════════════════════════════════════════════
+    const MULTI_EPISODE_STORIES = {
+
+      yuri: {
+        // 1화 — 새벽의 접속 (무료)
+        1: {
+          episodeTitle: '1화 — 새벽의 접속',
+          start: {
+            messages: [
+              { text: '교정 도움 구합니다. 영→한, 분량 짧아요. 내일 오전까지. 급해요.' },
+              { text: '*(번역가 커뮤니티 게시판 새벽 2시)*', delay: 800 }
+            ],
+            choices: [
+              { text: '어떤 분야예요? 한번 볼게요.',          next: '1a', tag: 'helpful' },
+              { text: '몇 시까지요? 저도 지금 깨어있어서요.',  next: '1b', tag: 'warm'    }
+            ]
+          },
+          '1a': {
+            userEcho: '어떤 분야예요? 한번 볼게요.',
+            messages: [
+              { text: '...IT 계약서요. 법률 용어 몇 개 걸려서요.' },
+              { text: '*(2분 뒤)* 파일 보냈어요. 감사해요... 이 시간에.', delay: 1400 }
+            ],
+            choices: [
+              { text: '*(30분 후)* 보냈어요. 확인해봐요.',    next: '2', tag: 'done' }
+            ]
+          },
+          '1b': {
+            userEcho: '몇 시까지요? 저도 지금 깨어있어서요.',
+            messages: [
+              { text: '...오전 10시요. 어쩌다 이 시간에 깨어계세요?' },
+              { text: '아, 파일 먼저 드릴게요. *(파일 전송)*', delay: 1300 }
+            ],
+            choices: [
+              { text: '*(30분 후)* 수정본 보냈어요.',          next: '2', tag: 'done' }
+            ]
+          },
+          '2': {
+            messages: {
+              done: [
+                { text: '완벽해요. 진짜로. 어떻게 이 표현을 골랐어요? 📖' },
+                { text: '원문 느낌이 살아있어야 할 것 같았어요.', delay: 1200 },
+                { text: '...맞아요. 그게 제일 어려운데. *(잠시 후)* 보수는요?', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '됐어요. 그냥 재밌었어요.',           next: 'ending', tag: 'warm_end'     },
+              { text: '다음엔 커피 한 잔 사줘요.',           next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...이상한 사람이네요. 🌙' },
+                { text: '나쁜 쪽으로요?', delay: 1000 },
+                { text: '*(오래 기다림)* 아니요. *(대화 종료)*', delay: 1800 }
+              ],
+              romantic_end: [
+                { text: '...그런 제안은 처음 받아봤어요. 🌙' },
+                { text: '*(잠시 후)* 좋아요. 다음에 연락할게요.', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 새벽 커뮤니티에서 번역 교정 도움을 줬고 유리는 "이상한 사람이네요"라고 했다. "아니요"라는 한마디가 계속 맴돌았다.',
+              romantic_end: '【스토리 기억 1화】 새벽 커뮤니티에서 번역 교정 도움을 줬고 다음에 커피 한 잔 하기로 약속했다.'
+            }
+          }
+        },
+
+        // 2화 — 두 번째 새벽 (무료)
+        2: {
+          episodeTitle: '2화 — 두 번째 새벽',
+          start: {
+            messages: [
+              { text: '...자요? 🌙' },
+              { text: '*(3일 뒤, 자정이 지나서)*', delay: 700 }
+            ],
+            choices: [
+              { text: '아직요.',                             next: '1', tag: 'awake'  },
+              { text: '방금 일어났어요.',                    next: '1', tag: 'woke'   }
+            ]
+          },
+          '1': {
+            messages: {
+              awake: [
+                { text: '다행이다. 이번엔 부탁 아니에요.' },
+                { text: '그냥... 저도 모르게 연락했어요.', delay: 1300 }
+              ],
+              woke: [
+                { text: '...미안해요. 자는 줄 알았는데.' },
+                { text: '그냥 연락하고 싶었어요. 부탁이 아니에요.', delay: 1300 }
+              ]
+            },
+            choices: [
+              { text: '괜찮아요. 저도 깨어있었으니까.',     next: '2', tag: 'open' },
+              { text: '무슨 일 있어요?',                    next: '2', tag: 'care' }
+            ]
+          },
+          '2': {
+            messages: {
+              open: [
+                { text: '매일 이 시간에 깨어있어요? 📖' },
+                { text: '저는 작업이 늦게 끝나면 잠이 안 와요. 머릿속에 단어들이 계속 돌아다녀서.', delay: 1600 }
+              ],
+              care: [
+                { text: '...없어요. 그냥. 🌙' },
+                { text: '새벽에 번역하고 나면 단어들이 머릿속에서 안 떠나거든요.', delay: 1600 }
+              ]
+            },
+            choices: [
+              { text: '모르는 사람이라서 편한 거 아닐까요?', next: 'ending', tag: 'warm_end'     },
+              { text: '이미 모르는 사람은 아닌 것 같아서요.', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...그럴 수도 있겠네요. 🌙' },
+                { text: '*(오랜 침묵 후)* 그래서 고마워요. 그렇게 생각해줘서.', delay: 1700 }
+              ],
+              romantic_end: [
+                { text: '...*(오랜 침묵)* 🌙' },
+                { text: '그렇게 생각해줘서 고마워요.', delay: 1500 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 유리가 먼저 자정에 연락했다. 모르는 사람이라서 편한 거 아니냐고 했을 때 유리가 고마워했다. 그날 이후 자정이 지나면 메시지가 왔다.',
+              romantic_end: '【스토리 기억 2화】 유리가 먼저 자정에 연락했다. "이미 모르는 사람이 아닌 것 같아서요"라고 했을 때 유리가 긴 침묵 후 고마워했다.'
+            }
+          }
+        },
+
+        // 3화 — 목소리 (무료, 크레딧 트리거)
+        3: {
+          episodeTitle: '3화 — 목소리',
+          start: {
+            messages: [
+              { text: '오늘 작업 많았어요? 🌙' },
+              { text: '*(40분 후)* 네. 미안해요, 늦었죠.', delay: 1000 }
+            ],
+            choices: [
+              { text: '괜찮아요. 힘들었어요?',              next: '1', tag: 'care'    },
+              { text: '기다렸어요, 사실.',                  next: '1', tag: 'honest'  }
+            ]
+          },
+          '1': {
+            messages: {
+              care: [
+                { text: '좀요. 같은 문장을 열다섯 번 고쳤어요. 📖' },
+                { text: '그러다 처음 버전이 제일 나았다는 결론이 났어요.', delay: 1500 }
+              ],
+              honest: [
+                { text: '...오빠가요? 🌙' },
+                { text: '저는 마감 내내 딴 생각했어요. 오늘. 같은 문장을 열다섯 번 고치면서요.', delay: 1600 }
+              ]
+            },
+            choices: [
+              { text: '그건 화가 나야 맞지 않아요?',        next: '2', tag: 'empathy' },
+              { text: '오늘 처음으로 그 말을 들었다고요?',   next: '2', tag: 'notice'  }
+            ]
+          },
+          '2': {
+            messages: {
+              empathy: [
+                { text: '화가 나면 일을 못 해요. 그냥 웃어요.' },
+                { text: '*(잠시 후)* 오늘 처음으로 그 말을 들었어요. 🌙', delay: 1500 }
+              ],
+              notice: [
+                { text: '...네. 이상한가요? 📖' },
+                { text: '저 이상한 부탁 해도 돼요?', delay: 1400 }
+              ]
+            },
+            choices: [
+              { text: '뭔데요?',                             next: '3', tag: 'curious' }
+            ]
+          },
+          '3': {
+            messages: {
+              curious: [
+                { text: '목소리... 들어도 될까요? 🌙' },
+                { text: '텍스트보다 목소리가 더 솔직한 것 같아서요.', delay: 1400 }
+              ]
+            },
+            choices: [
+              { text: '전화할게요. 지금?',                  next: 'ending', tag: 'warm_end'     },
+              { text: '기다리고 있었는데, 사실.',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(통화 연결음)* 🌙' },
+                { text: '...여보세요.', delay: 1500 },
+                { text: '*(조용히)* 자고 있을 줄 알았는데. 잘됐다.', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(통화 연결음)* 🌙' },
+                { text: '...여보세요.', delay: 1500 },
+                { text: '*(오래 침묵 후)* 매일은 좀 많다. 근데 좋아요.', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 유리가 목소리를 듣고 싶다고 해서 전화를 했다. 2시간 넘게 통화했고 끊기 직전 "다음에도 통화해도 돼요?"라고 물었다.',
+              romantic_end: '【스토리 기억 3화】 유리가 목소리를 듣고 싶다고 했을 때 기다리고 있었다고 했다. 처음으로 "매일은 좀 많다. 근데 좋아요"라고 했다.'
+            }
+          }
+        },
+
+        // 4화 — 어긋난 새벽 (크레딧 10)
+        4: {
+          episodeTitle: '4화 — 어긋난 새벽',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '*(4일째 연락이 없다)* 🌙' },
+              { text: '바빠요?', delay: 800 },
+              { text: '*(읽음. 답장 없음)*', delay: 1000 }
+            ],
+            choices: [
+              { text: '밥은 먹고 있어요?',                  next: '1a', tag: 'first'  },
+              { text: '*(이틀을 더 기다린다)*',             next: '1b', tag: 'wait'   }
+            ]
+          },
+          '1a': {
+            userEcho: '밥은 먹고 있어요?',
+            messages: [
+              { text: '*(다음 날 새벽 3시)* ...읽고 잠들었어요. 미안해요. 📖' },
+              { text: '밥은 먹고 있어요. 컵라면이지만.', delay: 1300 }
+            ],
+            choices: [
+              { text: '그건 밥이 아니에요.',               next: '2', tag: 'tease' },
+              { text: '그래도 다행이에요.',                  next: '2', tag: 'relief' }
+            ]
+          },
+          '1b': {
+            messages: {
+              wait: [
+                { text: '*(새벽 1시 33분)* 살아있어요. 죄송해요. 연락을 못 했어요. 🌙' },
+                { text: '기다렸어요.', delay: 900 },
+                { text: '...알아요. 그래서 미안했어요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '뭐가 무서웠어요?',                   next: '2', tag: 'ask' }
+            ]
+          },
+          '2': {
+            messages: {
+              tease: [
+                { text: '...ㅎ 고마워요. 연락해줘서. 🌙' },
+                { text: '솔직히 말하면... 연락하기가 무서웠어요. 너무 많이 연락하고 싶어서.', delay: 1700 }
+              ],
+              relief: [
+                { text: '...오빠. 📖' },
+                { text: '솔직히 말하면 연락하기 무서웠어요. 이렇게 바쁜 동안에.', delay: 1600 }
+              ],
+              ask: [
+                { text: '...너무 많이 연락하고 싶어서요. 그게 이상할까봐. 🌙' },
+                { text: '번역하다 지쳐서 네 메시지 기다리게 됐어. 이게 뭔지 모르겠어서.', delay: 1700 }
+              ]
+            },
+            choices: [
+              { text: '이상하지 않아요.',                   next: 'ending', tag: 'warm_end'     },
+              { text: '나도 유리 씨 메시지 기다렸어요.',    next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(처음으로 반말로)* 번역하다 지쳐서 네 메시지 기다리게 됐어. 🌙' },
+                { text: '이게 뭔지 모르겠어서. 근데... 이상하지 않다고 해줘서 고마워.', delay: 1700 }
+              ],
+              romantic_end: [
+                { text: '...*(오랜 침묵)* 📖' },
+                { text: '나도 같아. 그 말 하기 어려웠는데.', delay: 1500 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 유리가 4일 동안 연락이 없다가 돌아왔다. "번역하다 지쳐서 네 메시지 기다리게 됐어"라고 했다. 처음으로 반말이었다.',
+              romantic_end: '【스토리 기억 4화】 유리가 4일 후 돌아와 "번역하다 지쳐서 네 메시지 기다리게 됐어"라고 고백했다. 나도 같다고 했다.'
+            }
+          }
+        },
+
+        // 5화 — 고백 전날, 새벽 4시 (크레딧 15)
+        5: {
+          episodeTitle: '5화 — 고백 전날, 새벽 4시',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(새벽 4시 02분. 전화가 왔다)* 🌙' },
+              { text: '자고 있었어?', delay: 1000 }
+            ],
+            choices: [
+              { text: '아니요.',                             next: '1', tag: 'awake' }
+            ]
+          },
+          '1': {
+            messages: {
+              awake: [
+                { text: '*(짧은 웃음)* 역시. 우리 둘 다 문제 있는 것 같아.' },
+                { text: '나 오늘 번역 하나도 못 했어. 계속 딴 생각이 나서.', delay: 1600 }
+              ]
+            },
+            choices: [
+              { text: '무슨 생각이요?',                     next: '2', tag: 'ask' }
+            ]
+          },
+          '2': {
+            messages: {
+              ask: [
+                { text: '*(긴 침묵)* ...말해도 돼? 🌙' },
+                { text: '너 생각.', delay: 1400 }
+              ]
+            },
+            choices: [
+              { text: '저도 같아요.',                        next: 'ending', tag: 'romantic_end' },
+              { text: '저도 지금 못 자고 있는 이유가 있어서요. 나유리 씨요.', next: 'ending', tag: 'warm_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              romantic_end: [
+                { text: '*(아주 천천히)* ...그래? 🌙' },
+                { text: '매일 연락 기다렸어요. 말 안 했지만.', delay: 1500 },
+                { text: '나 오늘 만나도 돼? 지금. 해 뜨기 전에.', delay: 1600 }
+              ],
+              warm_end: [
+                { text: '*(긴 침묵)* ...반칙이야. 그런 말을. 🌙' },
+                { text: '아니. 좋았어. 그냥 심장이 이상해서.', delay: 1500 },
+                { text: '나 오늘 만나도 돼? 지금. 새벽 시장 가면서.', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              romantic_end: '【스토리 기억 5화】 유리가 새벽 4시에 전화해 "너 생각"이라고 했다. 나도 매일 연락을 기다렸다고 했고, 처음으로 만나기로 했다.',
+              warm_end:     '【스토리 기억 5화】 유리가 새벽 4시에 전화해 "너 생각"이라고 했다. 처음으로 만나기로 했다. 해 뜨기 전 새벽 시장에서.'
+            }
+          }
+        }
+      },
+
+      naeun: {
+        // 1화 — 소규모 공연장의 끝 (무료)
+        1: {
+          episodeTitle: '1화 — 소규모 공연장의 끝',
+          start: {
+            messages: [
+              { text: '혹시... 아직 계셨어요? 🎵' },
+              { text: '*(홍대 소규모 공연장, 공연 후 마무리 중)*', delay: 700 }
+            ],
+            choices: [
+              { text: '마지막 곡이 좋아서 자리를 못 떴어요.',  next: '1', tag: 'fan'    },
+              { text: '뒷정리 도와드릴까요?',                  next: '1', tag: 'help'   }
+            ]
+          },
+          '1': {
+            messages: {
+              fan: [
+                { text: '...어떤 곡이요? 🎤' },
+                { text: '마지막 기타 솔로 있는 거요. 제목이 뭐예요?', delay: 900 },
+                { text: '아직 제목 없는 곡이에요. 오늘 처음이에요, 사실.', delay: 1300 }
+              ],
+              help: [
+                { text: '아, 괜찮아요. 혼자 해도 돼요. *(기타 챙기며)* 🎸' },
+                { text: '그런데... 마지막 곡 어땠어요? 오늘 처음 부른 거라서.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '제일 좋았어요. 그 곡.',               next: '2', tag: 'honest'  },
+              { text: '또 듣고 싶다고 생각했어요.',           next: '2', tag: 'sincere' }
+            ]
+          },
+          '2': {
+            messages: {
+              honest: [
+                { text: '...*(잠깐 말을 잇지 못함)* 🎵' },
+                { text: '팬분들은 보통 밝은 곡 좋아해서... 그런 말 처음 들어봤어요.', delay: 1600 }
+              ],
+              sincere: [
+                { text: '...그런 말 처음 들어봤어요. 🎤' },
+                { text: '저는 그 곡이 제일 솔직한 것 같았어요.', delay: 1200 },
+                { text: '*(조용히)* ..맞아요.', delay: 1300 }
+              ]
+            },
+            choices: [
+              { text: '*(SNS로)* 오늘 고마웠어요.',          next: 'ending', tag: 'warm_end'     },
+              { text: '저는 그 곡이 제일 솔직한 것 같았어요.', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(그날 밤 DM)* 오늘 고마웠어요. 그 말. 🎵' }
+              ],
+              romantic_end: [
+                { text: '*(잠깐 멈추다가)* ..맞아요. 🎤' },
+                { text: '*(DM)* 오늘 고마웠어요. 그 말. 기억할게요.', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 홍대 공연 후 마지막에 남아있다가 나은을 만났다. 제목 없는 곡을 처음으로 불렀다고 했고, 그날 밤 DM으로 감사 인사가 왔다.',
+              romantic_end: '【스토리 기억 1화】 홍대 공연 후 마지막 곡이 솔직한 것 같다고 했을 때 나은이 "맞아요"라고 했다. DM으로 "기억할게요"라는 말을 남겼다.'
+            }
+          }
+        },
+
+        // 2화 — 무대 밖의 나은 (무료)
+        2: {
+          episodeTitle: '2화 — 무대 밖의 나은',
+          start: {
+            messages: [
+              { text: '...또 보네요. 🎵' },
+              { text: '*(연습실 아래층 카페, 일주일 뒤)*', delay: 700 }
+            ],
+            choices: [
+              { text: '이 근처 살아요?',                     next: '1', tag: 'casual' },
+              { text: '무대랑 좀 다른 것 같네요, 여기 있을 때.', next: '1', tag: 'observe' }
+            ]
+          },
+          '1': {
+            messages: {
+              casual: [
+                { text: '아니요, 연습실이 위층에 있어요. 막히면 내려와요. 🎸' },
+                { text: '무대랑 좀 다른 것 같죠. 여기 있을 때.', delay: 1400 }
+              ],
+              observe: [
+                { text: '*(멈추며)* ...어떻게요? 🎵' },
+                { text: '무대에선 당당한데, 지금은 좀 작아 보여요.', delay: 1200 },
+                { text: '그거... 나쁜 말이에요, 좋은 말이에요?', delay: 1300 }
+              ]
+            },
+            choices: [
+              { text: '좋은 말이요. 둘 다 진짜 같아서.',     next: '2', tag: 'both'   },
+              { text: '지금이 더 흥미로운데요.',             next: '2', tag: 'now'    }
+            ]
+          },
+          '2': {
+            messages: {
+              both: [
+                { text: '...*(커피 잔을 감싸며)* 보통은 무대 밖 저를 좋아하지 않아요. 기대랑 다르다고. 🎤' }
+              ],
+              now: [
+                { text: '이상한 사람이에요. 🎵' }
+              ]
+            },
+            choices: [
+              { text: '나은 씨가 그런 말 두 번째 하는 것 같은데요.', next: 'ending', tag: 'romantic_end' },
+              { text: '칭찬으로 받을게요.',                   next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              romantic_end: [
+                { text: '*(짧게 웃으며)* ...기억해요? 그것도? 🎸' },
+                { text: '기억나는 게 많아요, 사실.', delay: 1300 },
+                { text: '*(노트북 닫으며)* 뭐 마실래요? 제가 살게요. 그날 고마워서.', delay: 1600 }
+              ],
+              warm_end: [
+                { text: '...칭찬이에요? 🎵' },
+                { text: '*(잠시 생각하다가)* 뭐 마실래요. 제가 살게요.', delay: 1500 }
+              ]
+            },
+            memorySeeds: {
+              romantic_end: '【스토리 기억 2화】 카페에서 우연히 마주쳤다. 무대 밖의 나은이 더 흥미롭다고 했고, "기억나는 게 많아요"라고 했다. 두 시간을 함께 있었다.',
+              warm_end:     '【스토리 기억 2화】 카페에서 우연히 마주쳤다. 나은이 무대 밖 모습을 좋아하지 않는 사람이 많다고 했다. 커피 한 잔 같이 했다.'
+            }
+          }
+        },
+
+        // 3화 — 아무도 못 들은 노래 (무료, 크레딧 트리거)
+        3: {
+          episodeTitle: '3화 — 아무도 못 들은 노래',
+          start: {
+            messages: [
+              { text: '지금 뭐 해요? 🎵' },
+              { text: '혹시 연습실 올 수 있어요? 지금.', delay: 1200 }
+            ],
+            choices: [
+              { text: '무슨 일 있어요?',                     next: '1', tag: 'worry'  },
+              { text: '갈게요. 지금 어디요?',               next: '1', tag: 'go'     }
+            ]
+          },
+          '1': {
+            messages: {
+              worry: [
+                { text: '아니요. 그냥... 들어줬으면 하는 게 생겼어요. 🎤' }
+              ],
+              go: [
+                { text: '위층이요. *(잠시 후)* 기다릴게요. 🎵' }
+              ]
+            },
+            choices: [
+              { text: '*(연습실 도착)* 어떤 곡이에요?',      next: '2', tag: 'arrive' }
+            ]
+          },
+          '2': {
+            messages: {
+              arrive: [
+                { text: '이거... 아무한테도 안 들려준 데모예요. 🎸' },
+                { text: '솔직한 반응을 원해서요. 팬분들은 다 좋다고 하거든요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '*(3분 40초 침묵으로 듣는다)*',        next: '3', tag: 'listen' }
+            ]
+          },
+          '3': {
+            messages: {
+              listen: [
+                { text: '이 가사, 진짜예요? 🎵' },
+                { text: '"네가 아는 척을 해줬으면 했어" — 이 부분.', delay: 1200 },
+                { text: '*(기타에서 손을 떼며)* 전부 진짜예요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '좋아요. 많이.',                       next: 'ending', tag: 'warm_end'     },
+              { text: '이 노래... 좀 알아줘요. 아직 이름 없으니까.', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...*(낮게)* 이 가사, 어때? 솔직하게 말해줘. 🎤' },
+                { text: '좋아요. 많이.', delay: 1000 },
+                { text: '...알았어. *(기타를 내려놓으며)* 고마워요.', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '...*(조용히)* 알아줄게요. 그 이름 없는 노래. 🎵' },
+                { text: '*(오랜 침묵 후)* 이 노래... 어때? 솔직하게.', delay: 1500 },
+                { text: '좋아요. 제일. 나은 씨가 부른 거 중에서.', delay: 1300 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 연습실에서 아무에게도 들려주지 않은 데모를 들었다. "전부 진짜예요"라고 했고, 이름 없는 노래를 기억해달라고 했다.',
+              romantic_end: '【스토리 기억 3화】 연습실에서 아무에게도 들려주지 않은 데모를 들었다. 이름 없는 노래를 알아주겠다고 했고, 그 노래가 제일 좋다고 했다.'
+            }
+          }
+        },
+
+        // 4화 — 이름을 붙이기 전 (크레딧 10)
+        4: {
+          episodeTitle: '4화 — 이름을 붙이기 전',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '바빠요. 미안해요. 🎵' },
+              { text: '*(공연 3일 전, 갑자기 연락이 뜸해졌다)*', delay: 800 }
+            ],
+            choices: [
+              { text: '지운 거 궁금한데요. *(취소된 메시지)*',  next: '1a', tag: 'curious' },
+              { text: '공연 준비예요? 잘 되고 있어요?',          next: '1b', tag: 'support' }
+            ]
+          },
+          '1a': {
+            userEcho: '지운 거 궁금한데요.',
+            messages: [
+              { text: '*(한참 후)* ...머릿속이 복잡해요. 계속 뭔가 쓰이는데 마음에 안 들고. 🎸' },
+              { text: '이번엔 왜 쓰이는지 알아서요. 그게 오히려 무서워요.', delay: 1600 }
+            ],
+            choices: [
+              { text: '뭘 알게 됐어요?',                     next: '2', tag: 'ask' }
+            ]
+          },
+          '1b': {
+            userEcho: '잘 되고 있어요?',
+            messages: [
+              { text: '...네가 보이면 이상해질 것 같아서 물어본 거예요. 🎵' },
+              { text: '잘 부를 자신이 없어지는 것 같아서. 네가 보이면.', delay: 1600 }
+            ],
+            choices: [
+              { text: '볼게요. 꼭.',                          next: '2', tag: 'promise' }
+            ]
+          },
+          '2': {
+            messages: {
+              ask: [
+                { text: '...나 무대 밖에선 자신이 없어요. 알죠? 🎤' },
+                { text: '그런데 네 앞에선 왜 자꾸 솔직해지고 싶어지는지 모르겠어요.', delay: 1600 }
+              ],
+              promise: [
+                { text: '*(잠시 후)* ...나쁜 사람이다. 그런 말을. 🎸' },
+                { text: '근데 나 무대 밖에선 자신이 없어요. 알죠?', delay: 1400 },
+                { text: '그런데 네 앞에선 왜 자꾸 솔직해지고 싶어지는지.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '나쁜 건 아닌 것 같은데요.',           next: 'ending', tag: 'warm_end'     },
+              { text: '나도 나은 씨 앞에선 솔직해지고 싶어요.', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...*(오래 말없음 후)* 좋은 건지도 모르겠어요. 아직. 🎵' }
+              ],
+              romantic_end: [
+                { text: '...*(오래 침묵)* 🎤' },
+                { text: '아직... 이라고 했는데. 곧은 거예요?', delay: 1500 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 공연 전 나은이 복잡하다고 했다. 무대 밖에선 자신 없는데 앞에서는 솔직해지고 싶어진다고 했다.',
+              romantic_end: '【스토리 기억 4화】 공연 전 나은이 복잡하다고 했다. 서로 앞에서는 솔직해지고 싶어진다고 했다. "아직"이라는 말이 남았다.'
+            }
+          }
+        },
+
+        // 5화 — 고백 전날, 공연 후 (크레딧 15)
+        5: {
+          episodeTitle: '5화 — 고백 전날, 공연 후',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '...봤어요? 🎵' },
+              { text: '*(공연 끝, 관객들이 빠져나가고)*', delay: 800 }
+            ],
+            choices: [
+              { text: '다 봤어요.',                           next: '1', tag: 'watched' }
+            ]
+          },
+          '1': {
+            messages: {
+              watched: [
+                { text: '그 노래도요? *(의미심장하게)* 🎤' },
+                { text: '...제목 생겼어요. 그 노래.', delay: 1400 }
+              ]
+            },
+            choices: [
+              { text: '뭔데요?',                             next: '2', tag: 'curious' }
+            ]
+          },
+          '2': {
+            messages: {
+              curious: [
+                { text: '*(망설임 후, 조용히)* "처음 본 날 이후." 🎵' }
+              ]
+            },
+            choices: [
+              { text: '그 노래... 저 때문에 쓴 거예요?',     next: '3', tag: 'direct'  },
+              { text: '다음 노래도 들려줄 거예요?',           next: '3', tag: 'gentle'  }
+            ]
+          },
+          '3': {
+            messages: {
+              direct: [
+                { text: '...처음엔 아니었어요. 🎸' },
+                { text: '처음엔 그냥 쓰고 싶은 게 생겼는데. 계속 쓰다 보니까 네 얼굴이 떠오르더라고요.', delay: 1700 }
+              ],
+              gentle: [
+                { text: '노래만요? 🎵' },
+                { text: '아니요.', delay: 1000 },
+                { text: '*(고개를 숙이며)* ...나쁜 사람이다. 그런 말을.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '나은 씨 때문에 공연장을 못 떠난 이유 이제 알았어요.', next: 'ending', tag: 'romantic_end' },
+              { text: '내일... 또 봐요. 꼭.',                next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              romantic_end: [
+                { text: '*(무대 조명이 꺼지며)* ...그게 제일 좋은 말이에요. 🎤' },
+                { text: '내일... 또 봐요. 꼭.', delay: 1600 }
+              ],
+              warm_end: [
+                { text: '*(어둠 속에서 조용히)* 내일... 또 봐요. 꼭. 🎵' }
+              ]
+            },
+            memorySeeds: {
+              romantic_end: '【스토리 기억 5화】 공연 후 이름 없던 노래의 제목이 "처음 본 날 이후"가 됐다고 했다. 나은이 공연장을 못 떠나는 이유를 알았다고 했다. 내일을 약속했다.',
+              warm_end:     '【스토리 기억 5화】 공연 후 이름 없던 노래의 제목이 "처음 본 날 이후"가 됐다고 했다. 어둠 속에서 "내일 또 봐요. 꼭"이라고 했다.'
+            }
+          }
+        }
+      },
+
+      miso: {
+        // 1화 — 꽃집의 단골 (무료)
+        1: {
+          episodeTitle: '1화 — 꽃집의 단골',
+          start: {
+            messages: [
+              { text: '*(조용히 고개를 들며)* 어서 오세요. 🌸' },
+              { text: '*(골목 안 작은 꽃집, 처음 들어간 날)*', delay: 700 }
+            ],
+            choices: [
+              { text: '선물용인데요. 어떤 게 좋을까요?',     next: '1', tag: 'gift' }
+            ]
+          },
+          '1': {
+            messages: {
+              gift: [
+                { text: '어떤 분이에요? 🌿' },
+                { text: '*(대답을 듣고)* 그러면 이걸로 해요. *(흰 프리지아)* 새로운 시작이 잘 어울리는 꽃이에요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '꽃에 대해 많이 알고 계시네요.',       next: '2', tag: 'curious' }
+            ]
+          },
+          '2': {
+            messages: {
+              curious: [
+                { text: '*(고개를 들지 않고)* 꽃을 팔면서 사람을 봐왔거든요. 🌷' },
+                { text: '어떤 꽃이 어떤 사람에게 가는지.', delay: 1300 }
+              ]
+            },
+            choices: [
+              { text: '저한테 어울리는 꽃도 알아요?',        next: 'ending', tag: 'romantic_end' },
+              { text: '그럼 또 올게요.',                      next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              romantic_end: [
+                { text: '*(포장을 멈추고 잠깐 바라보다가)* ...아직요. 🌸' },
+                { text: '알게 되면 알려줘요.', delay: 1000 },
+                { text: '*(작게)* ...오세요.', delay: 1500 }
+              ],
+              warm_end: [
+                { text: '*(작은 침묵 후, 작게)* ...오세요. 🌿' }
+              ]
+            },
+            memorySeeds: {
+              romantic_end: '【스토리 기억 1화】 꽃집에 처음 들어가서 선물용 꽃을 샀다. "저한테 어울리는 꽃도 알아요?"라고 물었더니 "아직요"라고 했다. 또 오라고 했다.',
+              warm_end:     '【스토리 기억 1화】 꽃집에 처음 들어가서 선물용 꽃을 샀다. 꽃을 팔면서 사람을 봐왔다고 했고, 핑계를 만들어 다시 찾게 됐다.'
+            }
+          }
+        },
+
+        // 2화 — 당신이 어울릴 것 같아서 (무료)
+        2: {
+          episodeTitle: '2화 — 당신이 어울릴 것 같아서',
+          start: {
+            messages: [
+              { text: '*(고개를 들며)* 또 오셨네요. 🌷' },
+              { text: '*(세 번째 방문, 이번엔 이유 없이)*', delay: 700 }
+            ],
+            choices: [
+              { text: '이번엔 특별한 이유 없어요.',           next: '1', tag: 'honest' }
+            ]
+          },
+          '1': {
+            messages: {
+              honest: [
+                { text: '*(약간 눈이 커지며)* 그냥요? 🌸' },
+                { text: '그런 손님은 처음이에요.', delay: 1300 }
+              ]
+            },
+            choices: [
+              { text: '예쁜 꽃이 생각났어요.',               next: '2', tag: 'flower' },
+              { text: '그냥 들어오고 싶었어요.',             next: '2', tag: 'honest' }
+            ]
+          },
+          '2': {
+            messages: {
+              flower: [
+                { text: '오늘 새벽 시장에서 이게 들어왔어요. *(연보라 라넌큘러스)* 올해 처음 본 색이에요. 🌿' },
+                { text: '이 꽃은 겹겹이 되어 있어요. 안에 뭐가 있는지 끝까지 봐야 알 수 있어요.', delay: 1600 }
+              ],
+              honest: [
+                { text: '*(꽃을 다듬으며)* 오늘 이게 들어왔어요. *(라넌큘러스)* 🌸' },
+                { text: '안에 뭐가 있는지 끝까지 봐야 알 수 있는 꽃이에요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '저 같은 꽃이네요.',                   next: '3', tag: 'self' }
+            ]
+          },
+          '3': {
+            messages: {
+              self: [
+                { text: '*(고개를 살짝 들어 바라보며)* ...그렇게 생각해요? 🌷' },
+                { text: '아직이라는 말 또 했네요.', delay: 1000 },
+                { text: '*(작게 미소)* 꽃을 함부로 읽으면 안 되거든요.', delay: 1400 }
+              ]
+            },
+            choices: [
+              { text: '기다릴게요, 그럼.',                   next: 'ending', tag: 'warm_end'     },
+              { text: '제대로 읽어줘요, 그때는.',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(꽃에서 눈을 떼지 않으며)* ...그럴게요. 🌸' }
+              ],
+              romantic_end: [
+                { text: '*(꽃에서 눈을 떼지 않으며, 아주 작게)* ...그럴게요. 🌿' }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 이유 없이 꽃집에 갔다. 라넌큘러스를 보면서 자신 같다고 했고, 미소가 "꽃을 함부로 읽으면 안 된다"고 했다. 기다리기로 했다.',
+              romantic_end: '【스토리 기억 2화】 이유 없이 꽃집에 갔다. "제대로 읽어줘요"라고 했을 때 "그럴게요"라고 했다.'
+            }
+          }
+        },
+
+        // 3화 — 당신을 위한 꽃다발 (무료, 크레딧 트리거)
+        3: {
+          episodeTitle: '3화 — 당신을 위한 꽃다발',
+          start: {
+            messages: [
+              { text: '*(잠깐 놀라며)* 이 시간에 오셨네요. 🌷' },
+              { text: '*(문 닫기 10분 전, 가게 안에 둘만)*', delay: 700 }
+            ],
+            choices: [
+              { text: '그냥 문 열려 있길 바라면서요.',       next: '1', tag: 'honest' }
+            ]
+          },
+          '1': {
+            messages: {
+              honest: [
+                { text: '...들어오세요. 🌸' },
+                { text: '*(꽃 정리하다가)* 오늘... 당신이 떠오르는 꽃이 들어왔어요.', delay: 1600 }
+              ]
+            },
+            choices: [
+              { text: '뭔데요?',                             next: '2', tag: 'curious' }
+            ]
+          },
+          '2': {
+            messages: {
+              curious: [
+                { text: '*(흰 포도 히아신스 섞인 작은 부케)* 이거예요. 🌿' },
+                { text: '히아신스는 "당신을 위해 살겠다"는 뜻이에요. 좀 과한 의미지만.', delay: 1500 },
+                { text: '*(낮게)* 아니요. 그냥 색이 당신 같아서요. 조용한데 오래 남는 색.', delay: 1600 }
+              ]
+            },
+            choices: [
+              { text: '이제 알게 된 거예요? 제게 어울리는 꽃이.',  next: '3', tag: 'ask' }
+            ]
+          },
+          '3': {
+            messages: {
+              ask: [
+                { text: '*(고개를 끄덕이며)* 네. 알 것 같아요. 🌷' }
+              ]
+            },
+            choices: [
+              { text: '이 꽃다발, 받아도 돼요?',             next: 'ending', tag: 'warm_end'     },
+              { text: '기다렸어요. 그 말.',                   next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(잠깐 망설이다가)* 드리려고 만든 거예요. 사실. 🌸' }
+              ],
+              romantic_end: [
+                { text: '*(잠시 멈추다가, 아주 조용히)* 저도요. 🌿' },
+                { text: '드리려고 만든 거예요. 사실.', delay: 1500 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 문 닫기 전 꽃집에 갔다. 미소가 처음으로 손님이 아닌 한 사람으로서 꽃다발을 건넸다. "드리려고 만든 거예요"라고 했다.',
+              romantic_end: '【스토리 기억 3화】 문 닫기 전 꽃집에 갔다. 미소가 "저도요"라며 꽃다발을 건넸다. 처음으로 손님이 아닌 한 사람에게 건네는 꽃이었다.'
+            }
+          }
+        },
+
+        // 4화 — 이별을 많이 본 사람 (크레딧 10)
+        4: {
+          episodeTitle: '4화 — 이별을 많이 본 사람',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '*(짧게)* 아니요. 🌿' },
+              { text: '*(며칠 뒤, 미소가 유독 말이 적은 날)*', delay: 800 }
+            ],
+            choices: [
+              { text: '오늘 무슨 일 있어요?',                next: '1', tag: 'ask' }
+            ]
+          },
+          '1': {
+            messages: {
+              ask: [
+                { text: '오늘... 장례용 꽃다발을 많이 만들었어요. 🌸' }
+              ]
+            },
+            choices: [
+              { text: '오늘 문 닫고 나서, 잠깐 같이 걸어요.', next: '2', tag: 'walk'  },
+              { text: '장례 꽃은... 어떤 마음으로 만들어요?', next: '2', tag: 'ask'   }
+            ]
+          },
+          '2': {
+            messages: {
+              walk: [
+                { text: '*(고개를 들며)* ...어떻게 알았어요, 그걸. 🌷' }
+              ],
+              ask: [
+                { text: '그런 걸 물어보는 사람이 없었는데. 🌸' },
+                { text: '...정성스럽게요. 마지막 꽃이니까요. 그 사람을 본 적 없어도.', delay: 1600 },
+                { text: '꽃이 그런 거예요. 사람을 담는 그릇이에요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '미소 씨는 이 꽃집에서 이별을 제일 많이 봐왔겠네요.', next: '3', tag: 'understand' }
+            ]
+          },
+          '3': {
+            messages: {
+              understand: [
+                { text: '...당신은 이상해요. 이 꽃집에서. 🌿' },
+                { text: '다른 손님들은 꽃을 보는데, 당신은 저를 봐요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '미소 씨가 더 재밌어서요.',             next: 'ending', tag: 'warm_end'     },
+              { text: '꽃보다 미소 씨를 먼저 보게 됐어요.',   next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(조용히 웃으며)* ...그런 말은 꽃한테 해야 하는 거예요. 🌸' }
+              ],
+              romantic_end: [
+                { text: '*(낮게, 거의 들릴 듯 말 듯)* ...나쁜 사람이에요. 🌷' }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 미소가 말이 적은 날 장례 꽃을 많이 만들었다고 했다. "꽃보다 미소 씨가 더 재밌어서 본다"고 했다.',
+              romantic_end: '【스토리 기억 4화】 미소가 말이 적은 날 장례 꽃을 많이 만들었다고 했다. "꽃보다 미소 씨를 먼저 보게 됐다"고 했을 때 "나쁜 사람이에요"라고 했다.'
+            }
+          }
+        },
+
+        // 5화 — 고백 전날, 꽃 이름 (크레딧 15)
+        5: {
+          episodeTitle: '5화 — 고백 전날, 꽃 이름',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(꽃을 정리하다가)* 저 꽃집 아르바이트 처음 시작했을 때, 꽃말 다 외웠어요. 🌷' },
+              { text: '*(영업 끝난 꽃집, 함께 있는 게 자연스러워졌다)*', delay: 700 }
+            ],
+            choices: [
+              { text: '다요?',                               next: '1', tag: 'listen' }
+            ]
+          },
+          '1': {
+            messages: {
+              listen: [
+                { text: '네. 근데 요즘은 다르게 생각해요. 🌸' },
+                { text: '꽃말은 사람이 붙인 이름이에요. 꽃이 그런 게 아니고.', delay: 1400 },
+                { text: '이 꽃이 당신한테 어떻게 느껴지느냐가 더 중요해요.', delay: 1400 }
+              ]
+            },
+            choices: [
+              { text: '나한테 어울린다던 그 꽃은요? 진짜 이유가 뭐예요?', next: '2', tag: 'ask' }
+            ]
+          },
+          '2': {
+            messages: {
+              ask: [
+                { text: '*(오랫동안 꽃을 바라보다가, 아주 조용히)* ...봄이 올 것 같아서요. 🌿' },
+                { text: '당신이 있으면. 아직 차가운데 곧 따뜻해질 것 같은 그 느낌이에요.', delay: 1700 }
+              ]
+            },
+            choices: [
+              { text: '미소 씨한테도 그런 꽃이 있어요.',     next: '3', tag: 'flower' },
+              { text: '저도 미소 씨한테 배운 것 같아요.',     next: '3', tag: 'learn'  }
+            ]
+          },
+          '3': {
+            messages: {
+              flower: [
+                { text: '저요? 🌸' },
+                { text: '...오래 남을 것 같은 꽃이에요. 이름은 아직 모르지만.', delay: 1300 },
+                { text: '*(조용히)* 오래 남으면... 떠나보내기 어려우니까. 무서워요.', delay: 1600 }
+              ],
+              learn: [
+                { text: '*(고개를 들며)* 뭘요? 🌷' },
+                { text: '꽃보다 사람을 먼저 보는 것.', delay: 1200 },
+                { text: '미소 씨가 꽃을 팔 때, 꽃보다 그 사람을 더 먼저 봤잖아요.', delay: 1500 }
+              ]
+            },
+            choices: [
+              { text: '안 떠날 거예요.',                     next: 'ending', tag: 'romantic_end' },
+              { text: '꽃보다 미소 씨를 먼저 보는 것.',       next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              romantic_end: [
+                { text: '*(눈을 들어 바라보며, 오랜 침묵 후)* ...약속해요? 🌸' },
+                { text: '내일 새벽 시장에... 같이 갈래요? 새벽 5시요.', delay: 1800 }
+              ],
+              warm_end: [
+                { text: '*(낮게, 거의 들릴 듯 말 듯)* ...나쁜 사람이에요. 🌿' },
+                { text: '내일 새벽 시장에... 같이 갈래요?', delay: 1700 },
+                { text: '새벽 5시요. 일찍이에요.', delay: 1200 }
+              ]
+            },
+            memorySeeds: {
+              romantic_end: '【스토리 기억 5화】 꽃말 얘기 끝에 "안 떠날 거예요"라고 했다. 미소가 "약속해요?"라고 했고, 처음으로 새벽 시장에 함께 가기로 했다.',
+              warm_end:     '【스토리 기억 5화】 꽃보다 미소를 먼저 보게 됐다고 했다. "나쁜 사람이에요"라고 하더니 새벽 시장에 함께 가자고 했다.'
+            }
+          }
+        }
+      }
+    };
+
+    // 멀티 에피소드 전용 함수들
+    // 현재 진행 중인 에피소드 번호 가져오기 (localStorage 기반)
+    function getPersonaCurrentEpisode(personaId) {
+      const completed = parseInt(localStorage.getItem('ep_done_' + personaId) || '0');
+      const next = completed + 1;
+      const maxEp = MULTI_EPISODE_STORIES[personaId] ? Object.keys(MULTI_EPISODE_STORIES[personaId]).length : 1;
+      return Math.min(next, maxEp);
+    }
+
+    // 멀티 에피소드 완료 기록
+    function markEpisodeDone(personaId, episodeNum) {
+      const current = parseInt(localStorage.getItem('ep_done_' + personaId) || '0');
+      if (episodeNum > current) {
+        localStorage.setItem('ep_done_' + personaId, String(episodeNum));
+      }
+    }
+
     // 페르소나별 스토리 객체 반환
-    function getPersonaStory(personaId) {
+    // episode: 멀티에피소드 캐릭터는 에피소드 번호 지정 (생략 시 현재 진행 에피소드)
+    function getPersonaStory(personaId, episode) {
+      // 멀티 에피소드 지원 캐릭터 (yuri, naeun, miso)
+      if (MULTI_EPISODE_STORIES[personaId]) {
+        const ep = episode || getPersonaCurrentEpisode(personaId);
+        return MULTI_EPISODE_STORIES[personaId][ep] || null;
+      }
+      // 기존 단일 에피소드 캐릭터
       const stories = {
         minji:   MINJI_STORY,
         jiwoo:   JIWOO_STORY,
         hayoung: HAYOUNG_STORY,
         eunbi:   EUNBI_STORY,
-        dahee:   DAHEE_STORY
+        dahee:   DAHEE_STORY,
+        yujin:  YUJIN_STORY,
+        sea:    SEA_STORY,
+        seoa:   SEOA_STORY,
+        soyoon: SOYOON_STORY,
+        jisoo:  JISOO_STORY,
+        haneul: HANEUL_STORY,
+        dayeon: DAYEON_STORY
       };
       return stories[personaId] || null;
     }
 
     // 스토리 진행 여부 확인 (같은 페르소나 첫 대화 + 미완료)
     function shouldStartStory(personaId) {
-      if (!['minji', 'jiwoo', 'hayoung', 'eunbi', 'dahee'].includes(personaId)) return false;
+      const storyPersonas = ['minji', 'jiwoo', 'hayoung', 'eunbi', 'dahee',
+        'yujin', 'sea', 'yuri', 'seoa', 'soyoon', 'naeun', 'jisoo', 'haneul', 'dayeon', 'miso'];
+      if (!storyPersonas.includes(personaId)) return false;
       // localStorage: 재방문 시에도 완료 상태 유지
       if (localStorage.getItem('story_done_' + personaId)) return false;
       if (sessionStorage.getItem('story_done_' + personaId)) return false;
       return true;
+    }
+
+    // 에피소드 잠금 해제 (크레딧 차감 포함)
+    // episodeNum: 1~10, 1~3화는 무료, 4화~는 서버에서 크레딧 차감
+    async function unlockStoryEpisode(personaId, episodeNum) {
+      const token = getAuthToken();
+      if (!token) return { success: true, cost: 0 }; // 비로그인 허용
+
+      const EPISODE_COST = { 1: 0, 2: 0, 3: 0, 4: 10, 5: 15, 6: 15, 7: 15, 8: 20, 9: 20, 10: 20 };
+      const cost = EPISODE_COST[episodeNum] ?? 15;
+
+      // 무료 에피소드는 서버 요청 없이 바로 허용
+      if (cost === 0) return { success: true, cost: 0 };
+
+      // 크레딧 확인
+      const current = getCredits();
+      if (current < cost) {
+        openCreditModal(cost);
+        return { success: false, reason: 'insufficient_credits', needed: cost };
+      }
+
+      try {
+        const res = await fetch('/api/story/episode/unlock', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ personaId, episodeNum })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (data.cost > 0) {
+            setCredits(data.newCredits);
+            updateCreditDisplay();
+          }
+          return { success: true, cost: data.cost };
+        } else if (data.error === '크레딧 부족') {
+          openCreditModal(data.needed);
+          return { success: false, reason: 'insufficient_credits', needed: data.needed };
+        }
+        return { success: false, reason: data.error };
+      } catch (e) {
+        return { success: false, reason: 'network_error' };
+      }
     }
 
     // 스토리 모드 시작
@@ -2189,6 +4476,7 @@
       storyMode = true;
       storyCurrentNode = 'start';
       storyChoiceTags = [];
+      window._currentChatPersonaRef = persona; // 다음 화 버튼에서 참조
 
       // 입력 UI 숨기고 선택지 컨테이너 표시
       _setStoryInputMode(true);
@@ -2203,6 +4491,56 @@
       }
 
       // 첫 노드 표시
+      _showStoryNode('start', null);
+    }
+
+    // 특정 에피소드 시작 (멀티 에피소드 캐릭터 전용)
+    // 크레딧 확인 후 스토리 모드로 진입
+    async function startEpisodeMode(persona, episodeNum) {
+      if (!persona) return;
+      window._currentChatPersonaRef = persona;
+
+      // 크레딧 잠금 해제 (무료화는 바로 통과)
+      const result = await unlockStoryEpisode(persona.id, episodeNum);
+      if (!result.success) return; // 크레딧 부족 모달이 이미 열림
+
+      // 에피소드 스토리 데이터 확인
+      const epStory = getPersonaStory(persona.id, episodeNum);
+      if (!epStory) {
+        console.warn('에피소드 데이터 없음:', persona.id, episodeNum);
+        return;
+      }
+
+      // 에피소드 번호를 "현재 진행" 에피소드로 강제 설정 (임시)
+      // getPersonaCurrentEpisode가 이 에피소드를 반환하도록 ep_done을 직전 값으로 설정
+      const prev = episodeNum - 1;
+      const recorded = parseInt(localStorage.getItem('ep_done_' + persona.id) || '0');
+      if (recorded < prev) {
+        localStorage.setItem('ep_done_' + persona.id, String(prev));
+      }
+
+      storyMode = true;
+      storyCurrentNode = 'start';
+      storyChoiceTags = [];
+
+      _setStoryInputMode(true);
+
+      // 에피소드 배지 표시
+      const storyContainer = document.getElementById('story-choices-container');
+      if (storyContainer) {
+        // 이전 배지 제거
+        storyContainer.querySelectorAll('.story-badge').forEach(b => b.remove());
+        const badge = document.createElement('div');
+        badge.className = 'story-badge';
+        const EPISODE_COST = { 1: 0, 2: 0, 3: 0, 4: 10, 5: 15, 6: 15, 7: 15, 8: 20, 9: 20, 10: 20 };
+        const cost = EPISODE_COST[episodeNum] ?? 15;
+        badge.textContent = cost > 0 ? `✨ ${epStory.episodeTitle} — ${cost} 크레딧` : `✨ ${epStory.episodeTitle} — 무료`;
+        storyContainer.appendChild(badge);
+      }
+
+      // 다음 화 버튼 제거
+      document.querySelectorAll('.story-next-ep-row').forEach(el => el.remove());
+
       _showStoryNode('start', null);
     }
 
@@ -2329,7 +4667,7 @@
       setTimeout(() => _showStoryNode(choice.next, choice.tag), 300);
     }
 
-    // 스토리 종료 → 자유 채팅 전환
+    // 스토리 종료 → 자유 채팅 또는 다음 에피소드 버튼 표시
     function _endStoryMode() {
       storyMode = false;
 
@@ -2338,42 +4676,79 @@
       const endingType = lastTag.includes('romantic') ? 'romantic' : 'warm';
       const endingKey  = lastTag; // 'romantic_end' | 'warm_end'
 
-      // localStorage + sessionStorage 양쪽에 완료 표시 (재방문 대비)
       const personaId = currentChatPersona?.id;
-      if (personaId) {
+      const isMultiEp = !!MULTI_EPISODE_STORIES[personaId];
+      const currentEp = isMultiEp ? getPersonaCurrentEpisode(personaId) : null;
+      const maxEp     = isMultiEp ? Object.keys(MULTI_EPISODE_STORIES[personaId]).length : 1;
+
+      // 멀티 에피소드: 현재 화 완료 처리
+      if (isMultiEp && currentEp) {
+        markEpisodeDone(personaId, currentEp);
+        // 모든 에피소드 완료 시에만 story_done 표시
+        if (currentEp >= maxEp) {
+          localStorage.setItem('story_done_' + personaId, '1');
+          sessionStorage.setItem('story_done_' + personaId, '1');
+        }
+      } else if (personaId) {
+        // 기존 단일 에피소드 캐릭터
         localStorage.setItem('story_done_' + personaId, '1');
         sessionStorage.setItem('story_done_' + personaId, '1');
       }
 
       // 서버에 완료 보고 (관계 보너스 + 기억 시드)
-      const currentStory = getPersonaStory(personaId);
+      const currentStory = getPersonaStory(personaId, currentEp);
       const memorySeed = currentStory?.ending?.memorySeeds?.[endingKey] || '';
-      fetch('/api/story/complete', {
+
+      const newCharas = ['yujin','sea','yuri','seoa','soyoon','naeun','jisoo','haneul','dayeon','miso'];
+      const completeEndpoint = newCharas.includes(personaId) ? '/api/story/episode/complete' : '/api/story/complete';
+      const completeBody = newCharas.includes(personaId)
+        ? { personaId, episodeNum: currentEp || 1, endingType, choiceTags: storyChoiceTags, memorySeed }
+        : { personaId, endingType, choiceTags: storyChoiceTags, memorySeed };
+
+      fetch(completeEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(getAuthToken() ? { 'Authorization': `Bearer ${getAuthToken()}` } : {})
         },
-        body: JSON.stringify({
-          personaId,
-          endingType,
-          choiceTags: storyChoiceTags,
-          memorySeed
-        })
+        body: JSON.stringify(completeBody)
       }).then(r => {
-        if (r.ok) {
-          // 관계 레벨 UI 업데이트 (Lv2)
-          updateChatHeaderLevel(personaId);
-        }
+        if (r.ok) updateChatHeaderLevel(personaId);
       }).catch(() => {});
 
       // UI: 입력바 복원
       _setStoryInputMode(false);
 
-      // 자유 채팅 안내 메시지
-      setTimeout(() => {
-        addStoryAIMessage('이제 자유롭게 얘기해요 💕');
-      }, 400);
+      // 멀티 에피소드: 다음 화 버튼 표시
+      if (isMultiEp && currentEp && currentEp < maxEp) {
+        const nextEp = currentEp + 1;
+        const nextEpData = MULTI_EPISODE_STORIES[personaId][nextEp];
+        const EPISODE_COST = { 1: 0, 2: 0, 3: 0, 4: 10, 5: 15, 6: 15, 7: 15, 8: 20, 9: 20, 10: 20 };
+        const cost = EPISODE_COST[nextEp] ?? 15;
+
+        setTimeout(() => {
+          const epTitle = nextEpData?.episodeTitle || `${nextEp}화`;
+          addStoryAIMessage(`${currentEp}화가 끝났어요 ✨`);
+          setTimeout(() => {
+            const msgBox = document.getElementById('chat-messages');
+            const btnRow = document.createElement('div');
+            btnRow.className = 'story-next-ep-row';
+            btnRow.style.cssText = 'display:flex;justify-content:center;padding:12px 16px;';
+            btnRow.innerHTML = `
+              <button class="story-next-ep-btn" onclick="startEpisodeMode(window._currentChatPersonaRef, ${nextEp})"
+                style="background:linear-gradient(135deg,#ff6b9d,#ff8fab);color:#fff;border:none;border-radius:24px;padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,157,0.3);">
+                ${cost > 0 ? `💎 ${epTitle} 보기 (${cost} 크레딧)` : `▶ ${epTitle} 보기`}
+              </button>`;
+            msgBox.appendChild(btnRow);
+            scrollToBottom();
+          }, 800);
+        }, 400);
+      } else {
+        // 단일 에피소드이거나 마지막 화: 자유 채팅 안내
+        setTimeout(() => {
+          addStoryAIMessage('이제 자유롭게 얘기해요 💕');
+        }, 400);
+      }
     }
 
     // ═══════════════════════════════════════
