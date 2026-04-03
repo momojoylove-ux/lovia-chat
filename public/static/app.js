@@ -4373,6 +4373,1896 @@
             }
           }
         }
+      },
+
+      // ─── YUJIN ─────────────────────────────────────────────────────────────
+      yujin: {
+        1: {
+          episodeTitle: '1화 — 첫 대화',
+          start: {
+            messages: [
+              { text: '...오빠, 공간 취향 있어요? 인테리어 말고요.' },
+              { text: '어떤 분위기에서 제일 편한지 궁금해서요 😌', delay: 1400 }
+            ],
+            choices: [
+              { text: '따뜻하고 아늑한 게 좋아',           next: '1a', tag: 'cozy'    },
+              { text: '깔끔하고 정돈된 공간이 편해',         next: '1b', tag: 'minimal' }
+            ]
+          },
+          '1a': {
+            userEcho: '따뜻하고 아늑한 게 좋아',
+            messages: [
+              { text: '...그럼 오빠 공간엔 사람 냄새가 나겠네요 🏠' },
+              { text: '저는 너무 깔끔하게 해두다 보니 오히려 공허해진 적이 있어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '공허한 게 무슨 느낌인지 알아요',     next: 'ending', tag: 'warm_end'     },
+              { text: '같이 채워가면 되지 않아요',           next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '깔끔하고 정돈된 공간이 편해',
+            messages: [
+              { text: '...취향 비슷하네요 ✏️' },
+              { text: '저도 미니멀한 거 좋아하는데, 가끔 너무 비어있다는 느낌이 들어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '채워야 할 무언가가 있다는 거죠?',    next: 'ending', tag: 'warm_end'     },
+              { text: '나도 그 느낌 알아요',                 next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...맞아요. 물건이 아닌 것 같아요 😌' },
+                { text: '오빠랑 얘기하다 보니 제 공간에 뭐가 빠진지 알 것 같아요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '...오빠, 그 말 어떻게 알았어요? 🏠' },
+                { text: '제 작업실 한번 보러 와요. 오빠 눈으로 보면 다를 것 같아서요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 유진이 공간 취향 이야기를 꺼냈다. 공간에 무언가 빠진 느낌이 든다고 했다.',
+              romantic_end: '【스토리 기억 1화】 유진이 작업실에 초대하고 싶다고 했다. 오빠 눈으로 보면 다를 것 같다고 했다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 작업실',
+          start: {
+            messages: [
+              { text: '*(유진의 작업실. 스케치들이 벽을 채우고 있다.)*' },
+              { text: '어때요? 저 처음 데려온 사람이에요 ✏️', delay: 1200 }
+            ],
+            choices: [
+              { text: '유진이 여기서 만들어지는 것 같아',   next: '1a', tag: 'deep' },
+              { text: '생각보다 훨씬 따뜻한데',              next: '1b', tag: 'warm' }
+            ]
+          },
+          '1a': {
+            userEcho: '유진이 여기서 만들어지는 것 같아',
+            messages: [
+              { text: '...그렇게 봐줘요? 😌' },
+              { text: '여기 있으면 제가 제일 저다운 것 같아요. 오빠 말 들으니 그게 맞는 것 같고', delay: 1600 }
+            ],
+            choices: [
+              { text: '그 유진이 제일 좋아',                 next: 'ending', tag: 'romantic_end' },
+              { text: '자주 와도 돼요?',                     next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          '1b': {
+            userEcho: '생각보다 훨씬 따뜻한데',
+            messages: [
+              { text: '...따뜻하다는 말 처음 들어요 🏠' },
+              { text: '항상 차갑다는 말을 들었는데, 오빠 눈엔 다르게 보이나봐요', delay: 1600 }
+            ],
+            choices: [
+              { text: '유진이 만든 공간이 그러니까',         next: 'ending', tag: 'warm_end'     },
+              { text: '공간보다 유진이 더 따뜻해',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...고마워요, 오빠 😌' },
+                { text: '새 작업 시작할 때마다 보여주고 싶어요. 다음에 또 와요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 말 들으니까 여기가 더 좋아졌어요 🏠' },
+                { text: '*(조용히)* 오빠 있을 때 제가 제일 잘 돼요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 유진의 작업실에 처음 초대받았다. 새 작업 시작할 때마다 보여주고 싶다고 했다.',
+              romantic_end: '【스토리 기억 2화】 유진의 작업실에서 "오빠 있을 때 제가 제일 잘 된다"고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 야간 카페',
+          start: {
+            messages: [
+              { text: '*(밤 11시. 카페 마감 직전.)*' },
+              { text: '오늘 클라이언트 미팅이 좀 이상했어요 ✏️', delay: 1200 }
+            ],
+            choices: [
+              { text: '무슨 일 있었어요?',                   next: '1a', tag: 'care'   },
+              { text: '표정 보니까 알겠어',                   next: '1b', tag: 'notice' }
+            ]
+          },
+          '1a': {
+            userEcho: '무슨 일 있었어요?',
+            messages: [
+              { text: '제 공간 개념을 이해 못 하는 클라이언트예요 😌' },
+              { text: '...근데 이상하게 오빠한텐 다 말하고 싶어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '다 말해요. 들을게',                   next: 'ending', tag: 'warm_end'     },
+              { text: '나한테 얘기하면 좀 풀려요?',           next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '표정 보니까 알겠어',
+            messages: [
+              { text: '...오빠 이제 제 표정 읽어요? 🏠' },
+              { text: '솔직히 말하면, 오늘 오빠 보고 싶어서 연락했어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '나도 만나고 싶었어',                   next: 'ending', tag: 'romantic_end' },
+              { text: '잘됐다, 나도 연락하려고 했어',          next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 옆에 있으면 다 괜찮아요 ✏️' },
+                { text: '힘들 때 바로 연락해도 돼요?', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...이상하게 오빠랑 있으면 힘이 나요 🏠' },
+                { text: '*(낮게)* 오늘... 오래 있어도 돼요?', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 힘든 미팅 후 오빠 옆에 있으면 다 괜찮다고 했다. 앞으로 힘들 때 바로 연락하겠다고 했다.',
+              romantic_end: '【스토리 기억 3화】 유진이 오늘 오빠 보고 싶어서 연락했다고 고백했다. "오래 있어도 돼요?"라고 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 위기',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '*(밤 1시. 메시지.)*' },
+              { text: '오빠... 나 프로젝트 취소될 것 같아요 😌', delay: 1000 }
+            ],
+            choices: [
+              { text: '지금 어디 있어요?',                   next: '1a', tag: 'present' },
+              { text: '무슨 일이에요, 갑자기',               next: '1b', tag: 'ask'     }
+            ]
+          },
+          '1a': {
+            userEcho: '지금 어디 있어요?',
+            messages: [
+              { text: '작업실이요. 혼자 있어요 ✏️' },
+              { text: '...오빠 목소리 들으면 좀 나아질 것 같아서요', delay: 1400 }
+            ],
+            choices: [
+              { text: '전화할게요',                          next: 'ending', tag: 'warm_end'     },
+              { text: '지금 갈게요',                         next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '무슨 일이에요, 갑자기',
+            messages: [
+              { text: '클라이언트가 전체 방향 바꾸자고 했어요 🏠' },
+              { text: '제 설계를 다 엎으라는 거잖아요... 처음 우는 것 같아요', delay: 1800 }
+            ],
+            choices: [
+              { text: '울어요. 참지 말고',                   next: 'ending', tag: 'warm_end'     },
+              { text: '나 지금 갈게요',                      next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(한참 침묵 후)* ...고마워요, 오빠 😌' },
+                { text: '오빠한테 기댈 수 있어서 다행이에요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(문 열리는 소리)* ...왜 온 거예요 🏠' },
+                { text: '*(눈물 닦으며)* 고마워요. 진심으로', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 유진이 밤에 프로젝트 위기로 울었다. 기댈 수 있어서 다행이라고 했다.',
+              romantic_end: '【스토리 기억 4화】 유진이 힘들 때 직접 찾아갔다. "고마워요 진심으로"라고 눈물을 닦으며 말했다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 채워진 공간',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(완성된 공간. 마지막 빈 벽 하나.)*' },
+              { text: '오빠, 저 여기 마지막 벽 뭘 놓을지 아직 못 정했어요 ✏️', delay: 1200 }
+            ],
+            choices: [
+              { text: '같이 골라요',                         next: '1a', tag: 'together' },
+              { text: '비워두는 것도 방법 아니에요?',         next: '1b', tag: 'leave'   }
+            ]
+          },
+          '1a': {
+            userEcho: '같이 골라요',
+            messages: [
+              { text: '...같이요? 😌' },
+              { text: '오빠가 자주 오니까, 오빠 취향도 들어가야 맞겠죠', delay: 1600 }
+            ],
+            choices: [
+              { text: '내가 계속 여기 있을 거니까',           next: 'ending', tag: 'romantic_end' },
+              { text: '그게 더 의미 있을 것 같아',            next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          '1b': {
+            userEcho: '비워두는 것도 방법 아니에요?',
+            messages: [
+              { text: '...그게 전략이에요, 오빠 🏠' },
+              { text: '근데 저는 오빠가 채워줬으면 해요. 이 공간이 아니라... 저요', delay: 1800 }
+            ],
+            choices: [
+              { text: '나도 유진한테 빈 자리가 있어',         next: 'ending', tag: 'romantic_end' },
+              { text: '기꺼이 채울게요',                      next: 'ending', tag: 'warm_end'     }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 덕분에 이 공간이 완성됐어요 ✏️' },
+                { text: '앞으로도 자주 와요. 오빠 있는 게 제일 잘 어울려요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '*(조용히)* 오빠... 나 좋아해요 😌' },
+                { text: '이 공간에 오빠 생각이 제일 많이 들어가 있어요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 유진이 완성된 작업실 빈 벽을 함께 채우자고 했다. 오빠 있는 게 제일 잘 어울린다고 했다.',
+              romantic_end: '【스토리 기억 5화】 유진이 "나 좋아해요"라고 고백했다. 이 공간에 오빠 생각이 제일 많이 들어가 있다고 했다.'
+            }
+          }
+        }
+      },
+
+      // ─── SEA ───────────────────────────────────────────────────────────────
+      sea: {
+        1: {
+          episodeTitle: '1화 — 여행 DM',
+          start: {
+            messages: [
+              { text: '안녕하세요! 영상 재미있게 봤어요 📸' },
+              { text: '근데 저도 그 여행지 가봤는데 오빠 영상 보니까 너무 반갑더라고요', delay: 1400 }
+            ],
+            choices: [
+              { text: '어느 영상이요?',                     next: '1a', tag: 'curious' },
+              { text: '구독자예요?',                         next: '1b', tag: 'tease'   }
+            ]
+          },
+          '1a': {
+            userEcho: '어느 영상이요?',
+            messages: [
+              { text: '제주도 이세돌 영상이요! 저도 거기서 비 맞았어요 😂 ✈️' },
+              { text: '오빠는 혼자 여행 다녀요?', delay: 1200 }
+            ],
+            choices: [
+              { text: '주로 혼자요. 자유롭게 다니려고',     next: 'ending', tag: 'warm_end'     },
+              { text: '같이 가면 더 재밌지 않아요?',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '구독자예요?',
+            messages: [
+              { text: '맞아요! 오래됐어요 🌏' },
+              { text: '근데 사실 DM은 처음 보내봐요. 오빠 영상이 유독 진짜 같아서요', delay: 1600 }
+            ],
+            choices: [
+              { text: '편집 많이 해요, 사실',               next: 'ending', tag: 'warm_end'     },
+              { text: '진짜 느낌이라니까 기분 좋은데',       next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '진짜라서 좋은 거예요 📸' },
+                { text: '저는 편집 없는 게 제일 좋아요. 사람도요. 오빠처럼', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '...그 말 진심으로 들려요 ✈️' },
+                { text: '저 사실 DM 보내려고 3번 지웠는데 잘 보냈나봐요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 세아가 오빠 영상에서 진짜 느낌이 난다고 DM을 보냈다. 편집 없는 게 제일 좋다고 했다.',
+              romantic_end: '【스토리 기억 1화】 세아가 3번 지웠다가 DM을 보냈다고 했다. 오빠 영상이 유독 진짜 같다고 했다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 카메라 밖',
+          start: {
+            messages: [
+              { text: '오늘 영상 촬영 망했어요 🎬' },
+              { text: '카메라 켜면 자꾸 다른 사람이 되는 것 같아서요', delay: 1400 }
+            ],
+            choices: [
+              { text: '카메라 밖에선 어때요?',              next: '1a', tag: 'real'    },
+              { text: '어떤 다른 사람이요?',                 next: '1b', tag: 'curious' }
+            ]
+          },
+          '1a': {
+            userEcho: '카메라 밖에선 어때요?',
+            messages: [
+              { text: '카메라 밖에선 그냥... 이래요 ✈️' },
+              { text: '지금처럼요. 오빠한테 투정 부리는 거요', delay: 1400 }
+            ],
+            choices: [
+              { text: '이게 더 좋아요',                      next: 'ending', tag: 'warm_end'     },
+              { text: '카메라 밖 세아가 더 예뻐요',          next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '어떤 다른 사람이요?',
+            messages: [
+              { text: '늘 밝고 신나는 척하는 사람이요 📸' },
+              { text: '사실 지금 좀 지쳐요. 오빠한테만 하는 말이에요', delay: 1600 }
+            ],
+            choices: [
+              { text: '말해줘서 고마워요',                   next: 'ending', tag: 'warm_end'     },
+              { text: '나한테는 그러지 않아도 돼요',         next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠한테 말하니까 좀 나아요 🌏' },
+                { text: '앞으로 지칠 때 연락해도 돼요?', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠는 왜 이렇게 편해요 ✈️' },
+                { text: '카메라 꺼진 나도 좋아해줘서 고마워요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 세아가 카메라 밖에서는 지쳐있다고 솔직하게 말했다. 지칠 때 연락하겠다고 했다.',
+              romantic_end: '【스토리 기억 2화】 세아가 카메라 꺼진 자신도 좋아해줘서 고맙다고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 비밀 장소',
+          start: {
+            messages: [
+              { text: '오빠, 저 아직 유튜브에 안 올린 장소 있어요 🗺️' },
+              { text: '혼자만 알고 싶은 곳이에요. 오빠한테만 알려줄게요', delay: 1400 }
+            ],
+            choices: [
+              { text: '어디예요?',                           next: '1a', tag: 'curious' },
+              { text: '나한테만 알려줘도 돼요?',             next: '1b', tag: 'special' }
+            ]
+          },
+          '1a': {
+            userEcho: '어디예요?',
+            messages: [
+              { text: '남해 끝 작은 포구예요 🌅' },
+              { text: '거기 일몰이 진짜 아무도 모르는데... 같이 가면 어때요?', delay: 1400 }
+            ],
+            choices: [
+              { text: '좋아요, 언제 가요?',                  next: 'ending', tag: 'warm_end'     },
+              { text: '세아랑 같이면 더 좋겠다',              next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '나한테만 알려줘도 돼요?',
+            messages: [
+              { text: '...돼요. 오빠한테는 뭐든 말하고 싶으니까 📸' },
+              { text: '남해 끝에 아무도 모르는 포구예요. 같이 가고 싶어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '비밀 지킬게요',                       next: 'ending', tag: 'warm_end'     },
+              { text: '꼭 같이 가요, 우리 둘이',              next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠는 제 비밀 다 받아줄 것 같아요 🌅' },
+                { text: '꼭 같이 가요. 그 일몰, 오빠랑 보고 싶어서요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(설레는 목소리로)* 진짜요? 날짜 정해요 ✈️' },
+                { text: '편집 없이 그냥 오빠랑 있고 싶어요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 세아가 유튜브에 안 올린 비밀 장소 남해 포구를 알려줬다. 그 일몰을 오빠와 함께 보고 싶다고 했다.',
+              romantic_end: '【스토리 기억 3화】 세아가 편집 없이 오빠랑 있고 싶다고 했다. 남해 포구 여행을 같이 가기로 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 논란',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '*(조회수 조작 논란 댓글 폭발.)*' },
+              { text: '오빠... 저 지금 많이 무서워요 📸', delay: 1000 }
+            ],
+            choices: [
+              { text: '지금 혼자예요?',                     next: '1a', tag: 'care'    },
+              { text: '댓글 보지 마요',                      next: '1b', tag: 'protect' }
+            ]
+          },
+          '1a': {
+            userEcho: '지금 혼자예요?',
+            messages: [
+              { text: '네. 핸드폰 내려놓을 수가 없어요 🌏' },
+              { text: '오빠 목소리 듣고 싶어요', delay: 1200 }
+            ],
+            choices: [
+              { text: '전화할게요',                          next: 'ending', tag: 'warm_end'     },
+              { text: '바로 갈게요',                         next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '댓글 보지 마요',
+            messages: [
+              { text: '...알아요. 근데 자꾸 보게 돼요 ✈️' },
+              { text: '저 잘못한 거 없는데 왜 이렇게 무너지는 건지', delay: 1600 }
+            ],
+            choices: [
+              { text: '잘못한 거 없어요. 내가 아니까',       next: 'ending', tag: 'warm_end'     },
+              { text: '나 옆에 있을게요',                    next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(긴 통화 후)* ...오빠 덕분에 버텼어요 📸' },
+                { text: '나 아는 사람이 있으니까 괜찮아요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(조용히)* 오빠... 고마워요 🌅' },
+                { text: '오빠가 옆에 있어서 버틸 수 있어요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 논란으로 힘들 때 긴 통화를 했다. 오빠 덕분에 버텼다고 했다.',
+              romantic_end: '【스토리 기억 4화】 논란으로 힘들 때 옆에 있어줬다. 오빠가 있어서 버틸 수 있다고 했다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 편집 없는 우리',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(남해 포구. 일몰 직전.)*' },
+              { text: '오빠, 저 여기서 카메라 꺼놓을게요 🌅', delay: 1200 }
+            ],
+            choices: [
+              { text: '오늘은 그냥 같이 있자',               next: '1a', tag: 'present' },
+              { text: '카메라 없는 세아가 더 좋아',          next: '1b', tag: 'real'    }
+            ]
+          },
+          '1a': {
+            userEcho: '오늘은 그냥 같이 있자',
+            messages: [
+              { text: '...오빠 말이 제일 좋아요 ✈️' },
+              { text: '저 유튜브 하면서 처음으로 카메라 없어도 된다고 느꼈어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '앞으로도 그런 순간 같이 있고 싶어',   next: 'ending', tag: 'warm_end'     },
+              { text: '나는 항상 편집 없는 세아가 좋아',      next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '카메라 없는 세아가 더 좋아',
+            messages: [
+              { text: '...오빠 그 말, 왜 이렇게 울컥해요 📸' },
+              { text: '저 항상 밝은 척만 했는데, 오빠한테는 그러고 싶지 않아요', delay: 1600 }
+            ],
+            choices: [
+              { text: '그러지 않아도 돼요, 나한테는',        next: 'ending', tag: 'warm_end'     },
+              { text: '나도 세아 좋아해요',                  next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(일몰)* ...오빠 이 장면 편집 안 해도 될 것 같아요 🌅' },
+                { text: '우리 이야기, 제일 좋은 여행 같아요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '*(노을 빛 아래)* 오빠... 나 좋아해요 ✈️' },
+                { text: '이건 편집도 못 해요. 진짜니까', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 남해 포구 일몰을 함께 봤다. 우리 이야기가 제일 좋은 여행 같다고 했다.',
+              romantic_end: '【스토리 기억 5화】 남해 일몰 아래 세아가 "나 좋아해요"라고 고백했다. "이건 편집도 못 해요. 진짜니까"라고 했다.'
+            }
+          }
+        }
+      },
+
+      // ─── SEOA ──────────────────────────────────────────────────────────────
+      seoa: {
+        1: {
+          episodeTitle: '1화 — 야근 DM',
+          start: {
+            messages: [
+              { text: '야근 중이에요. 커피 한 잔 남았어요 💼' },
+              { text: '오빠는 이 시간에 뭐 해요?', delay: 1200 }
+            ],
+            choices: [
+              { text: '나도 야근 중이에요',                  next: '1a', tag: 'same'    },
+              { text: '서아는 왜 야근해요?',                 next: '1b', tag: 'curious' }
+            ]
+          },
+          '1a': {
+            userEcho: '나도 야근 중이에요',
+            messages: [
+              { text: '...동료예요, 어쩐지 ⚖️' },
+              { text: '야근하는 사람들끼리는 왠지 연대감이 생기더라고요', delay: 1400 }
+            ],
+            choices: [
+              { text: '커피 한 잔 더 마실 용기 생겼어요',   next: 'ending', tag: 'warm_end'     },
+              { text: '이런 시간에 오빠가 있어서 좋아요',    next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '서아는 왜 야근해요?',
+            messages: [
+              { text: '계약서 검토예요. 내일 아침까지 📑' },
+              { text: '...솔직히 말하면 좀 지쳐요. 약한 소리 하는 거 별로 안 좋아하는데', delay: 1600 }
+            ],
+            choices: [
+              { text: '약한 소리 해도 돼요',                 next: 'ending', tag: 'warm_end'     },
+              { text: '나한테는 지쳐도 괜찮아요',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...고마워요, 오빠 💼' },
+                { text: '야근 끝나면 연락할게요. 살아있는지 확인해줘요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...이상하게 오빠한테는 솔직하게 말하게 돼요 ⚖️' },
+                { text: '마감 끝나고 연락해요. 오빠 목소리 듣고 싶어서요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 서아가 야근 중 연락했다. 지쳐도 괜찮다는 말에 고마워했다.',
+              romantic_end: '【스토리 기억 1화】 서아가 야근 중 오빠한테는 솔직하게 말하게 된다고 했다. 마감 끝나고 다시 연락하기로 했다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 점심 약속',
+          start: {
+            messages: [
+              { text: '오빠, 혹시 이 근처 밥 먹어요? 💼' },
+              { text: '오늘 점심 같이 먹을 사람이 없어서요', delay: 1200 }
+            ],
+            choices: [
+              { text: '같이 먹어요. 어디예요?',              next: '1a', tag: 'yes'   },
+              { text: '서아가 먼저 연락할 줄은 몰랐어요',    next: '1b', tag: 'tease' }
+            ]
+          },
+          '1a': {
+            userEcho: '같이 먹어요. 어디예요?',
+            messages: [
+              { text: '...진짜요? 로펌 앞 이탈리안이에요 📑' },
+              { text: '저 이런 거 처음 제안해봐요. 오빠라서 가능했어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '또 제안해요. 나는 좋으니까',          next: 'ending', tag: 'warm_end'     },
+              { text: '처음이라니까 더 반가운데',             next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '서아가 먼저 연락할 줄은 몰랐어요',
+            messages: [
+              { text: '...저도 몰랐어요 ⚖️' },
+              { text: '그냥 오빠가 떠올라서요. 왜 그런지는 모르겠는데', delay: 1600 }
+            ],
+            choices: [
+              { text: '좋은 이유가 있겠죠',                  next: 'ending', tag: 'warm_end'     },
+              { text: '나도 서아 생각했어요, 사실',           next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 편하다, 진짜 💼' },
+                { text: '다음에 또 연락해도 돼요? 점심 말고도요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 그 말, 왜 설레요 ⚖️' },
+                { text: '다음엔 내가 맛있는 데 예약해줄게요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 서아가 처음으로 점심 약속을 제안했다. 다음에 또 연락하겠다고 했다.',
+              romantic_end: '【스토리 기억 2화】 점심 약속 후 서아가 "다음엔 내가 맛있는 데 예약해줄게요"라고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 와인',
+          start: {
+            messages: [
+              { text: '*(퇴근 후 와인바.)*' },
+              { text: '오빠, 오늘 제가 살게요 🍷', delay: 1200 }
+            ],
+            choices: [
+              { text: '무슨 일 있었어요?',                   next: '1a', tag: 'care'  },
+              { text: '서아가 술을 산다고요?',               next: '1b', tag: 'tease' }
+            ]
+          },
+          '1a': {
+            userEcho: '무슨 일 있었어요?',
+            messages: [
+              { text: '파트너 변호사한테 무시당했어요 ⚖️' },
+              { text: '...오빠한테는 말할 수 있어요. 다른 데선 표 안 냈어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '표 내도 돼요, 나한테는',              next: 'ending', tag: 'warm_end'     },
+              { text: '내가 그 사람보다 서아 더 잘 알아요',  next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '서아가 술을 산다고요?',
+            messages: [
+              { text: '...그 정도로 힘들었어요, 오늘 💼' },
+              { text: '사실 아무한테도 말 못 했는데. 오빠한테만요', delay: 1600 }
+            ],
+            choices: [
+              { text: '다 말해요. 여기서는 괜찮아',          next: 'ending', tag: 'warm_end'     },
+              { text: '오빠한테 말한 거 잘했어요',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(와인 한 모금)* ...고마워요, 오빠 🍷' },
+                { text: '오빠 앞에서만 좀 약해도 될 것 같아요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(조용히)* 오빠 앞에선 강한 척 안 해도 되는 것 같아요 ⚖️' },
+                { text: '그게 좋아요. 진짜로', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 퇴근 후 와인바에서 힘들었던 하루를 털어놨다. 오빠 앞에서만 약해도 될 것 같다고 했다.',
+              romantic_end: '【스토리 기억 3화】 서아가 오빠 앞에선 강한 척 안 해도 된다고 했다. "그게 좋아요 진짜로"라고 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 계약 실패',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '*(밤 10시. 메시지.)*' },
+              { text: '오빠... 계약 연장 안 됐어요 💼', delay: 1000 }
+            ],
+            choices: [
+              { text: '서아, 지금 어때요?',                  next: '1a', tag: 'care'   },
+              { text: '거기 있어요, 잠깐 기다려요',          next: '1b', tag: 'action' }
+            ]
+          },
+          '1a': {
+            userEcho: '서아, 지금 어때요?',
+            messages: [
+              { text: '...괜찮다고 해야 되는데 안 괜찮아요 ⚖️' },
+              { text: '1년 동안 잘 하려고 했는데. 오빠한테만 말해요', delay: 1600 }
+            ],
+            choices: [
+              { text: '잘했어요, 충분히',                    next: 'ending', tag: 'warm_end'     },
+              { text: '나는 다 봤어요. 서아 얼마나 열심히 했는지', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '거기 있어요, 잠깐 기다려요',
+            messages: [
+              { text: '*(30분 후)* ...오빠 왜 왔어요 📑' },
+              { text: '이런 것도 해줘요?', delay: 1200 }
+            ],
+            choices: [
+              { text: '서아한테는 그러고 싶어요',             next: 'ending', tag: 'warm_end'     },
+              { text: '서아가 힘들면 나도 가만 못 있어',      next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...고마워요, 오빠 💼' },
+                { text: '오빠 있어서 버텼어요. 진짜로', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(눈물 참으며)* 오빠... 나 약해도 돼요? ⚖️' },
+                { text: '오빠한테만요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 계약 연장이 안 됐다. 오빠가 있어서 버텼다고 했다.',
+              romantic_end: '【스토리 기억 4화】 계약 실패로 힘들 때 "오빠한테만 약해도 되냐"고 물었다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 강한 척 끝',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(새 직장 첫 출근 전날 밤.)*' },
+              { text: '오빠, 저 내일 새 직장 첫날이에요 ⚖️', delay: 1200 }
+            ],
+            choices: [
+              { text: '잘 될 거예요',                        next: '1a', tag: 'cheer' },
+              { text: '서아는 잘 해왔잖아요, 항상',          next: '1b', tag: 'trust' }
+            ]
+          },
+          '1a': {
+            userEcho: '잘 될 거예요',
+            messages: [
+              { text: '...오빠가 그렇게 말하면 믿어지네요 💼' },
+              { text: '저한테 제일 솔직한 사람이 오빠예요. 그래서 믿어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '앞으로도 그럴게요',                   next: 'ending', tag: 'warm_end'     },
+              { text: '나는 서아 편이에요. 항상',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '서아는 잘 해왔잖아요, 항상',
+            messages: [
+              { text: '...오빠 저 제대로 봐줘요 📑' },
+              { text: '강한 척만 봤을 텐데 그 뒤도 알아요?', delay: 1600 }
+            ],
+            choices: [
+              { text: '다 봤어요. 그 뒤도',                  next: 'ending', tag: 'warm_end'     },
+              { text: '강한 척하는 서아도, 그 뒤 서아도 다 좋아요', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🍷' },
+                { text: '이제 강한 척 좀 내려놔도 될 것 같아요. 오빠 옆에서는요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '*(오래 침묵 후)* 오빠... 나 좋아해요 ⚖️' },
+                { text: '약한 소리 하는 거 싫어하는데, 이건 약한 소리가 아닌 것 같아서요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 새 직장 전날 밤, 오빠 옆에서 강한 척 내려놔도 될 것 같다고 했다.',
+              romantic_end: '【스토리 기억 5화】 서아가 "나 좋아해요"라고 고백했다. 이건 약한 소리가 아닌 것 같다고 했다.'
+            }
+          }
+        }
+      },
+
+      // ─── SOYOON ────────────────────────────────────────────────────────────
+      soyoon: {
+        1: {
+          episodeTitle: '1화 — 단골 손님',
+          start: {
+            messages: [
+              { text: '오늘 오빠 생각하면서 만든 빵이에요 🍞' },
+              { text: '단팥이 들어간 크루아상인데... 맛있었으면 좋겠다', delay: 1400 }
+            ],
+            choices: [
+              { text: '나 생각하면서 만들었다고요?',         next: '1a', tag: 'curious' },
+              { text: '항상 이렇게 손님 생각해요?',          next: '1b', tag: 'tease'   }
+            ]
+          },
+          '1a': {
+            userEcho: '나 생각하면서 만들었다고요?',
+            messages: [
+              { text: '...네, 이상한가요? 🥐' },
+              { text: '오빠 좋아할 것 같은 게 들어왔을 때 자꾸 생각나더라고요', delay: 1400 }
+            ],
+            choices: [
+              { text: '이상한 거 아니에요. 고마워요',        next: 'ending', tag: 'warm_end'     },
+              { text: '그럼 나도 소윤 생각하면서 먹을게',     next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '항상 이렇게 손님 생각해요?',
+            messages: [
+              { text: '...아니요 ☕' },
+              { text: '오빠한테만요. 솔직히 말하면', delay: 1400 }
+            ],
+            choices: [
+              { text: '솔직하게 말해줘서 고마워요',          next: 'ending', tag: 'warm_end'     },
+              { text: '나도 빵집 오면 소윤 생각해요',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 좋은 사람이에요 🍞' },
+                { text: '내일도 와요. 오빠 좋아할 것 같은 거 더 만들어둘게요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 그 말, 저 얼굴 빨개졌어요 🥐' },
+                { text: '내일도 와요. 꼭요', delay: 1200 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 소윤이 오빠 생각하며 만든 빵을 줬다. 내일도 오빠 좋아할 것 같은 거 만들어두겠다고 했다.',
+              romantic_end: '【스토리 기억 1화】 소윤이 오빠한테만 손님 생각을 한다고 고백했다. 내일도 꼭 오라고 했다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 마감 빵',
+          start: {
+            messages: [
+              { text: '오빠, 마감 10분 전이에요 🏪' },
+              { text: '오늘 남은 빵 가져가요. 오빠한테 드리려고 남겨뒀어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '나 위해 남겨뒀어요?',                 next: '1a', tag: 'touched' },
+              { text: '매일 이렇게 챙겨줘요?',               next: '1b', tag: 'tease'   }
+            ]
+          },
+          '1a': {
+            userEcho: '나 위해 남겨뒀어요?',
+            messages: [
+              { text: '...그냥 오빠 올 것 같아서요 🍞' },
+              { text: '이상하죠? 근데 오면 좋고, 안 오면 제가 먹으면 되니까요', delay: 1600 }
+            ],
+            choices: [
+              { text: '이상하지 않아요. 잘 왔죠',            next: 'ending', tag: 'warm_end'     },
+              { text: '앞으로 꼭 올게요. 소윤 빵 먹으러',    next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '매일 이렇게 챙겨줘요?',
+            messages: [
+              { text: '...아니요, 오빠만요 ☕' },
+              { text: '오빠가 오면 기분이 좋아져서요. 뭔가 알아줄 것 같아서요', delay: 1600 }
+            ],
+            choices: [
+              { text: '알아요. 소윤 빵이 맛있다는 거',       next: 'ending', tag: 'warm_end'     },
+              { text: '소윤 기분 좋게 해주고 싶어요',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🥐' },
+                { text: '내일 아침 빵 좀 더 맛있게 구울 수 있을 것 같아요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 그런 말 잘해요 🍞' },
+                { text: '*(환하게)* 내일 아침 일찍 와요. 제일 좋은 거 줄게요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 소윤이 오빠 올 것 같아서 마감 빵을 남겨뒀다고 했다.',
+              romantic_end: '【스토리 기억 2화】 소윤이 오빠가 오면 기분이 좋아진다고 했다. 내일 아침 일찍 오라고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 함께 반죽',
+          start: {
+            messages: [
+              { text: '오빠, 빵 만들어볼래요? 쉬운 거로 🥐' },
+              { text: '마감 끝나고 가끔 혼자 만드는데 오빠 같이 하면 재밌을 것 같아서요', delay: 1400 }
+            ],
+            choices: [
+              { text: '좋아요. 어떤 거요?',                  next: '1a', tag: 'yes'   },
+              { text: '잘 못 만드는데 괜찮아요?',            next: '1b', tag: 'doubt' }
+            ]
+          },
+          '1a': {
+            userEcho: '좋아요. 어떤 거요?',
+            messages: [
+              { text: '식빵이요! 오래 걸리는데 기다리는 게 좋아요 🍞' },
+              { text: '반죽할 때 손으로 하면 따뜻해요. 이상하게 기분이 좋아지거든요', delay: 1600 }
+            ],
+            choices: [
+              { text: '그 기분 나도 느껴볼게요',              next: 'ending', tag: 'warm_end'     },
+              { text: '소윤이 좋아하는 거 나도 좋아질 것 같아', next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '잘 못 만드는데 괜찮아요?',
+            messages: [
+              { text: '...괜찮아요, 같이 하면 되니까요 ☕' },
+              { text: '제가 이렇게 집에 데려온 사람 없어요. 오빠라서 가능한 거예요', delay: 1600 }
+            ],
+            choices: [
+              { text: '고마워요. 잘 배워볼게요',              next: 'ending', tag: 'warm_end'     },
+              { text: '소윤이 초대해줘서 좋아요',             next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(반죽 끝)* 오빠 솜씨 좋은데요 🍞' },
+                { text: '이제 오빠 만든 빵이에요. 제가 구워줄게요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(함께 반죽하며)* 오빠 손 따뜻해요 🥐' },
+                { text: '...저도요. 이 시간이 좋아요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 소윤의 빵집에서 함께 식빵을 만들었다. 오빠 솜씨가 좋다고 했다.',
+              romantic_end: '【스토리 기억 3화】 함께 반죽하다 "오빠 손 따뜻해요"라고 했다. 이 시간이 좋다고 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 빵집 위기',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '*(밤 9시. 문자.)*' },
+              { text: '오빠... 건물 임대료 오른대요. 두 배로 🏪', delay: 1000 }
+            ],
+            choices: [
+              { text: '어떻게 됐어요, 계약은',               next: '1a', tag: 'ask'  },
+              { text: '지금 빵집이에요? 거기 있어요',        next: '1b', tag: 'come' }
+            ]
+          },
+          '1a': {
+            userEcho: '어떻게 됐어요, 계약은',
+            messages: [
+              { text: '아직 협의 중이에요 🍞' },
+              { text: '...못 버틸 것 같아요. 오늘 처음 그 생각 했어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '같이 생각해봐요',                     next: 'ending', tag: 'warm_end'     },
+              { text: '내가 도울 수 있는 거 있으면 말해요',  next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '지금 빵집이에요? 거기 있어요',
+            messages: [
+              { text: '*(10분 후)* ...오빠 왜 와요 🥐' },
+              { text: '문 닫으려고 했는데', delay: 1200 }
+            ],
+            choices: [
+              { text: '소윤 혼자 있으면 안 될 것 같아서',    next: 'ending', tag: 'warm_end'     },
+              { text: '소윤 힘들면 나도 있어야지',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🍞' },
+                { text: '이 빵집 포기 못 하는 이유가 하나 더 생겼어요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(눈물 글썽이며)* 오빠... 🥐' },
+                { text: '같이 있어줘서 고마워요. 이 빵집 꼭 지킬게요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 빵집 임대료 위기에 오빠가 함께했다. 빵집 포기 못 하는 이유가 하나 더 생겼다고 했다.',
+              romantic_end: '【스토리 기억 4화】 빵집 위기에 오빠가 달려와 함께 있었다. 이 빵집 꼭 지키겠다고 했다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 새벽 배달',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(새벽 5시. 메시지.)*' },
+              { text: '오빠, 지금 일어났어요? 🌅', delay: 800 }
+            ],
+            choices: [
+              { text: '방금 일어났어요',                     next: '1a', tag: 'awake'   },
+              { text: '소윤, 이 시간에 무슨 일이에요?',      next: '1b', tag: 'worried' }
+            ]
+          },
+          '1a': {
+            userEcho: '방금 일어났어요',
+            messages: [
+              { text: '문 앞에 두고 왔어요. 오빠 좋아하는 것 🍞' },
+              { text: '...첫 번째 굽는 거 오빠한테 주고 싶었어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '소윤... 고마워요',                    next: 'ending', tag: 'warm_end'     },
+              { text: '나도 소윤 생각하면서 먹을게요',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '소윤, 이 시간에 무슨 일이에요?',
+            messages: [
+              { text: '빵 두고 왔어요. 오빠 집 앞에 ☕' },
+              { text: '오늘 아침은 오빠한테 드리고 싶었어요. 이유는... 그냥요', delay: 1600 }
+            ],
+            choices: [
+              { text: '이유 없어도 고마워요',                next: 'ending', tag: 'warm_end'     },
+              { text: '그냥이 아닌 것 같은데요',              next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠가 잘 먹어줬으면 좋겠어요 🥐' },
+                { text: '오늘 빵집 오면 커피 한 잔 줄게요. 꼭 와요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 앞에서 솔직하게 말할게요 🍞' },
+                { text: '오빠가 좋아요. 오빠 아침이 맛있었으면 해서요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 소윤이 새벽 5시에 첫 번째 빵을 오빠 집 앞에 두고 왔다. 오늘 빵집 오면 커피 한 잔 주겠다고 했다.',
+              romantic_end: '【스토리 기억 5화】 소윤이 새벽에 빵을 가져다주며 "오빠가 좋아요"라고 고백했다.'
+            }
+          }
+        }
+      },
+
+      // ─── JISOO ─────────────────────────────────────────────────────────────
+      jisoo: {
+        1: {
+          episodeTitle: '1화 — 야근 문자',
+          start: {
+            messages: [
+              { text: '오늘 힘들었는데... 오빠 얘기 듣고 싶어 🌙' },
+              { text: '야간 끝나고 나왔어요. 별거 아닌 얘기도 괜찮아요?', delay: 1200 }
+            ],
+            choices: [
+              { text: '당연하죠. 다 들을게요',               next: '1a', tag: 'open' },
+              { text: '얼마나 힘들었어요?',                  next: '1b', tag: 'care' }
+            ]
+          },
+          '1a': {
+            userEcho: '당연하죠. 다 들을게요',
+            messages: [
+              { text: '...오빠 그 말 진짜 좋아요 🏥' },
+              { text: '오늘 환자분이 많이 힘드셨는데, 저도 같이 힘들었어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '지수가 잘 해줬을 거예요',             next: 'ending', tag: 'warm_end'     },
+              { text: '지수도 힘들었으면 말해요, 나한테',     next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '얼마나 힘들었어요?',
+            messages: [
+              { text: '많이요 💉' },
+              { text: '근데 오빠한테 연락하니까 좀 낫네요. 이상하죠?', delay: 1400 }
+            ],
+            choices: [
+              { text: '이상하지 않아요',                     next: 'ending', tag: 'warm_end'     },
+              { text: '나도 연락받으니까 좋으니까요',         next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠, 고마워요 🌙' },
+                { text: '이런 시간에 받아줘서요. 다음에 또 연락해도 돼요?', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 그 말에 또 힘이 나요 🏥' },
+                { text: '퇴근하면 오빠 생각 제일 먼저 나요. 이상한 건지', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 지수가 야간 근무 후 힘들어서 연락했다. 다음에 또 연락하겠다고 했다.',
+              romantic_end: '【스토리 기억 1화】 지수가 퇴근하면 오빠 생각이 제일 먼저 난다고 했다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 편의점 야식',
+          start: {
+            messages: [
+              { text: '오빠, 편의점 어때요? 지금 🌙' },
+              { text: '퇴근하고 혼자 먹기 뭔가 그래서요', delay: 1200 }
+            ],
+            choices: [
+              { text: '좋아요. 어디예요?',                   next: '1a', tag: 'yes'   },
+              { text: '지수가 연락할 줄은 몰랐어요',         next: '1b', tag: 'tease' }
+            ]
+          },
+          '1a': {
+            userEcho: '좋아요. 어디예요?',
+            messages: [
+              { text: '병원 앞 편의점이요 🌙' },
+              { text: '...오빠 진짜 바로 온다고 해줄 줄 몰랐어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '지수가 연락하면 가야죠',              next: 'ending', tag: 'warm_end'     },
+              { text: '지수가 부르면 어디든 가요',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '지수가 연락할 줄은 몰랐어요',
+            messages: [
+              { text: '...저도요 💉' },
+              { text: '근데 오빠 생각이 나서요. 같이 먹고 싶어서', delay: 1400 }
+            ],
+            choices: [
+              { text: '잘 연락했어요',                       next: 'ending', tag: 'warm_end'     },
+              { text: '나도 지수 보고 싶었어요',              next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(편의점 봉지 들고)* 고마워요, 오빠 🌙' },
+                { text: '퇴근 후 이 시간이 제일 좋아요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(편의점 앉아서)* 오빠 옆에 있으니까 배가 덜 고파요 🏥' },
+                { text: '...이상한가요? 그냥 진짜로 그래요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 퇴근 후 편의점에서 야식을 함께 먹었다. 퇴근 후 이 시간이 제일 좋다고 했다.',
+              romantic_end: '【스토리 기억 2화】 편의점에서 오빠 옆에 있으니까 배가 덜 고프다고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 힘든 통화',
+          start: {
+            messages: [
+              { text: '*(밤 11시. 전화 벨소리.)*' },
+              { text: '오빠... 나 지금 많이 울었어요 🌙', delay: 1000 }
+            ],
+            choices: [
+              { text: '무슨 일이에요?',                     next: '1a', tag: 'care' },
+              { text: '거기 있어요. 갈게요',               next: '1b', tag: 'come' }
+            ]
+          },
+          '1a': {
+            userEcho: '무슨 일이에요?',
+            messages: [
+              { text: '환자분이 오늘 돌아가셨어요 💉' },
+              { text: '...이 일 몇 년 했는데 아직도 적응이 안 돼요', delay: 1600 }
+            ],
+            choices: [
+              { text: '적응 안 해도 돼요',                  next: 'ending', tag: 'warm_end'     },
+              { text: '그래야 지수답지',                     next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '거기 있어요. 갈게요',
+            messages: [
+              { text: '...오빠 진짜 와요? 🏥' },
+              { text: '그냥 목소리만 들으려고 했는데', delay: 1200 }
+            ],
+            choices: [
+              { text: '지수 울면 나도 있어야 해요',          next: 'ending', tag: 'warm_end'     },
+              { text: '지수한테는 그러고 싶어요',             next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🌙' },
+                { text: '내일 또 출근할 수 있을 것 같아요. 오빠 덕분에', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(오래 침묵 후)* 오빠... 나 좋아해요 💉' },
+                { text: '퇴근하면 오빠 생각 제일 먼저 난다는 게 그 뜻이었어요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 힘든 밤 오빠와 긴 통화를 했다. 오빠 덕분에 내일도 출근할 수 있다고 했다.',
+              romantic_end: '【스토리 기억 3화】 지수가 "나 좋아해요"라고 고백했다. 퇴근하면 오빠 생각 제일 먼저 난다는 게 그 뜻이었다고 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 번아웃',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '오빠, 저 휴직 신청했어요 🩺' },
+              { text: '...아무한테도 말 못 했어요. 오빠한테만요', delay: 1200 }
+            ],
+            choices: [
+              { text: '잘했어요',                            next: '1a', tag: 'affirm' },
+              { text: '힘들었구나, 많이',                    next: '1b', tag: 'care'   }
+            ]
+          },
+          '1a': {
+            userEcho: '잘했어요',
+            messages: [
+              { text: '...그 말 기다렸어요 🌙' },
+              { text: '다들 걱정할 것 같아서 말 못 했는데, 오빠는 잘했다고 해주네요', delay: 1600 }
+            ],
+            choices: [
+              { text: '지수가 쉬어야 한다고 생각해서요',     next: 'ending', tag: 'warm_end'     },
+              { text: '지수가 하는 일은 다 잘하는 거야',     next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '힘들었구나, 많이',
+            messages: [
+              { text: '네... 많이요 🏥' },
+              { text: '오빠한테는 솔직하게 말할 수 있어서요. 고마워요', delay: 1400 }
+            ],
+            choices: [
+              { text: '항상 말해요. 나한테',                 next: 'ending', tag: 'warm_end'     },
+              { text: '지수 쉬는 동안 내가 있을게요',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🩺' },
+                { text: '쉬는 동안 오빠랑 자주 볼 수 있겠네요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 있어서 다행이에요 🌙' },
+                { text: '쉬는 동안 매일 보면 안 돼요?', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 지수가 번아웃으로 휴직 신청을 했다. 오빠한테만 말했고 쉬는 동안 자주 보자고 했다.',
+              romantic_end: '【스토리 기억 4화】 지수가 휴직 신청 사실을 말하며 쉬는 동안 매일 보면 안 되냐고 물었다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 퇴근하면 너한테',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(복직 첫날. 밤 11시.)*' },
+              { text: '오빠, 나 오늘 복직했어요 🌙', delay: 800 }
+            ],
+            choices: [
+              { text: '수고했어요. 어때요?',                 next: '1a', tag: 'care'   },
+              { text: '기다렸어요',                          next: '1b', tag: 'honest' }
+            ]
+          },
+          '1a': {
+            userEcho: '수고했어요. 어때요?',
+            messages: [
+              { text: '...오빠 보고 싶어서 왔어요 🏥' },
+              { text: '복직하는 날 오빠 제일 먼저 보고 싶었어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '잘 왔어요',                           next: 'ending', tag: 'warm_end'     },
+              { text: '나도 제일 먼저 보고 싶었어요',         next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '기다렸어요',
+            messages: [
+              { text: '...진짜요? 💉' },
+              { text: '저도요. 퇴근하면 오빠한테 오고 싶었어요. 매일', delay: 1600 }
+            ],
+            choices: [
+              { text: '와요, 매일',                          next: 'ending', tag: 'warm_end'     },
+              { text: '나도 기다릴게요. 매일',               next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🌙' },
+                { text: '퇴근하면 오빠한테 오는 게 루틴이 됐으면 좋겠어요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '*(조용히)* 오빠... 나 좋아해요 🩺' },
+                { text: '퇴근하면 오빠한테 가고 싶다는 게 그 뜻이었어요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 복직 첫날 오빠에게 달려왔다. 퇴근하면 오빠한테 오는 것이 루틴이 됐으면 좋겠다고 했다.',
+              romantic_end: '【스토리 기억 5화】 지수가 복직 첫날 "나 좋아해요"라고 고백했다. 퇴근하면 오빠한테 가고 싶다는 게 그 뜻이었다고 했다.'
+            }
+          }
+        }
+      },
+
+      // ─── HANEUL ────────────────────────────────────────────────────────────
+      haneul: {
+        1: {
+          episodeTitle: '1화 — 전시회',
+          start: {
+            messages: [
+              { text: '말로 설명하기 어려운데... 오빠, 이거 어때요? 🏛️' },
+              { text: '제 작품이에요. 아직 아무한테도 안 보여줬어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '느낌이 와요',                         next: '1a', tag: 'feel'    },
+              { text: '어떤 마음으로 만들었어요?',            next: '1b', tag: 'curious' }
+            ]
+          },
+          '1a': {
+            userEcho: '느낌이 와요',
+            messages: [
+              { text: '...진짜요? 🎨' },
+              { text: '설명 못 해도 느낌이 온다고 해준 사람 오빠가 처음이에요', delay: 1600 }
+            ],
+            choices: [
+              { text: '하늘이 만든 거라 그런 것 같아요',     next: 'ending', tag: 'warm_end'     },
+              { text: '더 보고 싶어요. 다른 작품도',          next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '어떤 마음으로 만들었어요?',
+            messages: [
+              { text: '...모르겠어요. 그냥 손이 먼저 움직여서요 ✨' },
+              { text: '오빠한테 보여주고 싶었어요. 처음에 생각이 났거든요', delay: 1600 }
+            ],
+            choices: [
+              { text: '처음에 나를요?',                      next: 'ending', tag: 'warm_end'     },
+              { text: '잘 보여줬어요',                        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠, 이상하지 않아요? 🎨' },
+                { text: '아직 말 서툰데. 오빠한테만 이야기하고 싶어요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...작업실 보러 와요 🏛️' },
+                { text: '다른 작품도 오빠한테 먼저 보여주고 싶어요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 하늘이 아무한테도 안 보여준 작품을 처음으로 보여줬다. 오빠한테만 이야기하고 싶다고 했다.',
+              romantic_end: '【스토리 기억 1화】 하늘이 작품을 만들 때 오빠 생각이 났다고 했다. 작업실에 초대했다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 작업실',
+          start: {
+            messages: [
+              { text: '*(하늘의 작업실. 흙과 조각들.)*' },
+              { text: '...더럽죠? 작업실이 항상 이래요 🪨', delay: 1200 }
+            ],
+            choices: [
+              { text: '이게 하늘이네요',                     next: '1a', tag: 'accept' },
+              { text: '작품들이 오빠를 보는 것 같아요',      next: '1b', tag: 'sense'  }
+            ]
+          },
+          '1a': {
+            userEcho: '이게 하늘이네요',
+            messages: [
+              { text: '...그 말 좋아요 🎨' },
+              { text: '정리된 공간에선 작업이 안 돼요. 오빠는 이해해줄 것 같았어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '다 이해해요',                         next: 'ending', tag: 'warm_end'     },
+              { text: '이 공간이 좋아요. 하늘 느낌이 나서',  next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '작품들이 오빠를 보는 것 같아요',
+            messages: [
+              { text: '...오빠 감각 있어요 ✨' },
+              { text: '이 작품들 다 제 이야기예요. 오빠한테 읽혀도 괜찮아요', delay: 1600 }
+            ],
+            choices: [
+              { text: '천천히 읽을게요',                     next: 'ending', tag: 'warm_end'     },
+              { text: '하늘 이야기 듣고 싶어요',             next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 다음에 또 와요 🪨' },
+                { text: '새 작업 시작하면 제일 먼저 보여줄게요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(흙 묻은 손으로)* 오빠... 🎨' },
+                { text: '여기 있는 게 편해요. 처음이에요', delay: 1400 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 하늘의 작업실에 방문했다. 새 작업 시작하면 제일 먼저 보여주겠다고 했다.',
+              romantic_end: '【스토리 기억 2화】 작업실에서 "여기 있는 게 편해요. 처음이에요"라고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 전시 동행',
+          start: {
+            messages: [
+              { text: '오빠, 이 전시 같이 보러 갈래요? 🖼️' },
+              { text: '혼자 가면 말할 사람이 없어서요', delay: 1200 }
+            ],
+            choices: [
+              { text: '좋아요. 언제요?',                     next: '1a', tag: 'yes'   },
+              { text: '말할 사람으로 뽑혔네요',              next: '1b', tag: 'tease' }
+            ]
+          },
+          '1a': {
+            userEcho: '좋아요. 언제요?',
+            messages: [
+              { text: '이번 주 토요일이요 🎨' },
+              { text: '...오빠가 어떻게 보는지 궁금해요. 제 눈이랑 같은지', delay: 1400 }
+            ],
+            choices: [
+              { text: '같을 수도, 다를 수도 있겠죠',         next: 'ending', tag: 'warm_end'     },
+              { text: '하늘이 보는 게 더 궁금해요',          next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '말할 사람으로 뽑혔네요',
+            messages: [
+              { text: '...네 🏛️' },
+              { text: '오빠가 제일 잘 들어줄 것 같아서요. 솔직히', delay: 1400 }
+            ],
+            choices: [
+              { text: '잘 들을게요',                         next: 'ending', tag: 'warm_end'     },
+              { text: '하늘 얘기는 다 재밌어요',             next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '*(전시 끝)* ...오빠 덕분에 다르게 봤어요 ✨' },
+                { text: '같은 거 보고 다르게 느끼는 사람이 좋아요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(전시 보며)* 오빠... 이 작품 볼 때 오빠 생각 났어요 🖼️' },
+                { text: '오빠가 이 작품 같아요. 말로 설명 못 하는데 느낌이 와서요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 전시회를 함께 갔다. 같은 거 보고 다르게 느끼는 사람이 좋다고 했다.',
+              romantic_end: '【스토리 기억 3화】 전시회에서 오빠가 어느 작품 같다고 했다. "말로 설명 못 하는데 느낌이 와서요"라고 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 심사',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '오빠... 졸업 심사 망했어요 🪨' },
+              { text: '교수님이 제 작품을 이해 못 한다고 했어요', delay: 1200 }
+            ],
+            choices: [
+              { text: '어떤 말 들었어요?',                   next: '1a', tag: 'ask'    },
+              { text: '교수님이 틀린 거예요',                next: '1b', tag: 'defend' }
+            ]
+          },
+          '1a': {
+            userEcho: '어떤 말 들었어요?',
+            messages: [
+              { text: '개념이 불명확하다고요 🎨' },
+              { text: '...제 작품이 제 마음이랑 다르게 읽힌다는 게 제일 무서워요', delay: 1600 }
+            ],
+            choices: [
+              { text: '나한테는 정확히 왔어요',              next: 'ending', tag: 'warm_end'     },
+              { text: '나한테 설명해봐요. 들을게요',         next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '교수님이 틀린 거예요',
+            messages: [
+              { text: '...오빠 그렇게 말해줘요? ✨' },
+              { text: '다들 이해 못 한다고만 했는데', delay: 1400 }
+            ],
+            choices: [
+              { text: '이해하는 사람이 있으면 돼요',         next: 'ending', tag: 'warm_end'     },
+              { text: '내가 이해해요. 항상',                 next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 🏛️' },
+                { text: '다시 할 수 있을 것 같아요. 오빠한테 이야기했으니까', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '*(조용히)* 오빠... 🎨' },
+                { text: '오빠가 이해해준다는 게 제일 중요해요. 이상하게', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 졸업 심사 실패 후 오빠에게 이야기하고 다시 할 수 있을 것 같다고 했다.',
+              romantic_end: '【스토리 기억 4화】 심사 실패 후 "오빠가 이해해준다는 게 제일 중요해요"라고 했다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 작품에 담긴 이름',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(완성된 작품 앞에서.)*' },
+              { text: '오빠, 이 작품 제목 오빠한테 지어달라고 했잖아요 🖼️', delay: 1200 }
+            ],
+            choices: [
+              { text: '아직 생각하고 있어요',               next: '1a', tag: 'think' },
+              { text: '하늘이 지어요. 오빠 이름으로',        next: '1b', tag: 'give'  }
+            ]
+          },
+          '1a': {
+            userEcho: '아직 생각하고 있어요',
+            messages: [
+              { text: '...오빠가 느낀 대로 해요 🎨' },
+              { text: '이 작품 만드는 내내 오빠 생각 났어요. 그래서 오빠가 이름 지어줬으면 했어요', delay: 1600 }
+            ],
+            choices: [
+              { text: '"하늘"이요',                          next: 'ending', tag: 'warm_end'     },
+              { text: '"우리"가 어떨까요',                   next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '하늘이 지어요. 오빠 이름으로',
+            messages: [
+              { text: '...오빠 이름으로요? ✨' },
+              { text: '그럼 이미 제목이 있어요. 오빠 생각하면서 만들었으니까', delay: 1600 }
+            ],
+            choices: [
+              { text: '내 이름이 들어가는 거예요?',          next: 'ending', tag: 'warm_end'     },
+              { text: '그 제목 좋아요. 그대로 해요',          next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 이름 넣어도 돼요? 🏛️' },
+                { text: '이 작품에 오빠가 들어가는 게 맞는 것 같아요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '*(낮은 목소리로)* 오빠... 좋아해요 🎨' },
+                { text: '이 작품 안에 오빠가 있어요. 처음부터요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 완성된 작품 제목에 오빠 이름을 넣고 싶다고 했다. 작품 안에 오빠가 들어가는 게 맞는 것 같다고 했다.',
+              romantic_end: '【스토리 기억 5화】 하늘이 "오빠 좋아해요"라고 고백했다. 이 작품 안에 오빠가 처음부터 있었다고 했다.'
+            }
+          }
+        }
+      },
+
+      // ─── DAYEON ────────────────────────────────────────────────────────────
+      dayeon: {
+        1: {
+          episodeTitle: '1화 — 같은 게임',
+          start: {
+            messages: [
+              { text: '오빠도 이 게임 해요? 🎮' },
+              { text: '인게임에서 봤는데 닉네임이 딱 봐도 오빠일 것 같아서요', delay: 1400 }
+            ],
+            choices: [
+              { text: '어떻게 알았어요?',                   next: '1a', tag: 'curious' },
+              { text: '맞아요. 어디서 봤어요?',             next: '1b', tag: 'open'    }
+            ]
+          },
+          '1a': {
+            userEcho: '어떻게 알았어요?',
+            messages: [
+              { text: '시나리오 작가 감이에요 📖' },
+              { text: '사람 읽는 게 일이라서요. 오빠 플레이 스타일이 딱 그래요', delay: 1600 }
+            ],
+            choices: [
+              { text: '나를 어떻게 읽었는지 말해봐요',       next: 'ending', tag: 'warm_end'     },
+              { text: '다연이 읽는 나는 어때요?',            next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '맞아요. 어디서 봤어요?',
+            messages: [
+              { text: '2구역 전투에서요 🎲' },
+              { text: '오빠 혼자 막던 거 봤어요. 제 시나리오 캐릭터 같아서요', delay: 1600 }
+            ],
+            choices: [
+              { text: '좋은 쪽이에요?',                     next: 'ending', tag: 'warm_end'     },
+              { text: '다연이 쓴 캐릭터요?',                next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...나쁘지 않아요 📖' },
+                { text: '오빠 같은 캐릭터 쓰면 재밌겠다 싶어요. 내가 보통 좋아하는 타입이라서', delay: 1800 }
+              ],
+              romantic_end: [
+                { text: '...그 캐릭터 주인공이에요 🎮' },
+                { text: '오빠 더 관찰해도 돼요? 시나리오에 쓸 것 같아서요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 1화】 다연이 게임에서 오빠를 발견하고 연락했다. 오빠 같은 캐릭터를 쓰면 재밌겠다고 했다.',
+              romantic_end: '【스토리 기억 1화】 다연이 자신의 시나리오 주인공이 오빠 같다고 했다. 더 관찰해도 되냐고 물었다.'
+            }
+          }
+        },
+
+        2: {
+          episodeTitle: '2화 — 마감 야식',
+          start: {
+            messages: [
+              { text: '마감이에요. 배고파요 ✍️' },
+              { text: '오빠 뭐 먹어요? 같이 먹는 척이라도 해요', delay: 1200 }
+            ],
+            choices: [
+              { text: '치킨 먹고 있어요',                   next: '1a', tag: 'share'  },
+              { text: '배달 시킬게요. 같이 먹어요',          next: '1b', tag: 'action' }
+            ]
+          },
+          '1a': {
+            userEcho: '치킨 먹고 있어요',
+            messages: [
+              { text: '...오빠 치킨 먹는다고 하지 마요 💻' },
+              { text: '시나리오 쓰다 멈추고 치킨 생각만 나요', delay: 1400 }
+            ],
+            choices: [
+              { text: '마감 끝나면 살게요',                  next: 'ending', tag: 'warm_end'     },
+              { text: '지금 가도 돼요. 마감 같이 해요',       next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '배달 시킬게요. 같이 먹어요',
+            messages: [
+              { text: '...진짜요? 🎮' },
+              { text: '오빠 이런 거 잘 해요. 제 시나리오 남주 같아요', delay: 1400 }
+            ],
+            choices: [
+              { text: '다연이 쓴 남주예요?',                 next: 'ending', tag: 'warm_end'     },
+              { text: '남주면 결말이 해피엔딩이겠네요',       next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 📖' },
+                { text: '마감하고 나면 오빠랑 밥 먹고 싶어요. 진짜로요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 그 말 왜 설레요 🎲' },
+                { text: '픽션보다 오빠가 더 재밌어요. 처음이에요', delay: 1600 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 2화】 마감 중 오빠가 야식을 같이 먹자고 했다. 마감 끝나면 오빠랑 밥 먹고 싶다고 했다.',
+              romantic_end: '【스토리 기억 2화】 다연이 오빠가 픽션보다 더 재밌다고 했다. 처음이라고 했다.'
+            }
+          }
+        },
+
+        3: {
+          episodeTitle: '3화 — 픽션과 현실',
+          start: {
+            messages: [
+              { text: '오빠, 제가 쓰는 로맨스 읽어봐요 📖' },
+              { text: '한 챕터만요. 오빠 반응이 궁금해서요', delay: 1200 }
+            ],
+            choices: [
+              { text: '보내줘요',                            next: '1a', tag: 'read'  },
+              { text: '다연이 쓴 거면 설레겠네요',           next: '1b', tag: 'tease' }
+            ]
+          },
+          '1a': {
+            userEcho: '보내줘요',
+            messages: [
+              { text: '*(챕터 전송)* ...어때요? 🎮' },
+              { text: '사실 이 부분은 오빠 생각하면서 썼어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '어느 부분이요?',                     next: 'ending', tag: 'warm_end'     },
+              { text: '다 읽으면서 그럴 것 같았어요',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '다연이 쓴 거면 설레겠네요',
+            messages: [
+              { text: '...그럼 오빠한테 보여주는 게 이상한 건가요? ✍️' },
+              { text: '이 챕터 쓸 때 오빠 생각이 났어요. 그래서요', delay: 1600 }
+            ],
+            choices: [
+              { text: '이상하지 않아요. 보내줘요',           next: 'ending', tag: 'warm_end'     },
+              { text: '오빠 생각 났다는 게 더 설레요',        next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠는 제 독자예요 📖' },
+                { text: '제 로맨스 완결나면 제일 먼저 보내줄게요', delay: 1400 }
+              ],
+              romantic_end: [
+                { text: '...오빠 이상해요 🎲' },
+                { text: '제가 쓴 것보다 오빠랑 하는 대화가 더 설레요. 아이러니하게도', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 3화】 다연이 시나리오를 보여줬다. 오빠를 첫 번째 독자로 삼겠다고 했다.',
+              romantic_end: '【스토리 기억 3화】 다연이 "제가 쓴 것보다 오빠랑 하는 대화가 더 설레요"라고 했다.'
+            }
+          }
+        },
+
+        4: {
+          episodeTitle: '4화 — 번아웃',
+          creditCost: 10,
+          start: {
+            messages: [
+              { text: '오빠... 나 아무것도 못 쓰겠어요 💻' },
+              { text: '화면만 보면 머리가 텅 비어요', delay: 1200 }
+            ],
+            choices: [
+              { text: '언제부터요?',                         next: '1a', tag: 'ask'  },
+              { text: '잠깐 쉬어요',                         next: '1b', tag: 'care' }
+            ]
+          },
+          '1a': {
+            userEcho: '언제부터요?',
+            messages: [
+              { text: '2주 됐어요 ✍️' },
+              { text: '근데 오빠한테 말하니까 뭔가 쓸 수 있을 것 같아요. 이상하죠?', delay: 1600 }
+            ],
+            choices: [
+              { text: '이상하지 않아요. 계속 얘기해요',      next: 'ending', tag: 'warm_end'     },
+              { text: '나 때문이라면 좋겠어요',              next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '잠깐 쉬어요',
+            messages: [
+              { text: '...오빠가 쉬어도 된다고 하니까 쉴 수 있을 것 같아요 🎮' },
+              { text: '항상 혼자 결정했는데 오빠 말이 더 믿어져요', delay: 1600 }
+            ],
+            choices: [
+              { text: '쉬는 동안 같이 있을게요',             next: 'ending', tag: 'warm_end'     },
+              { text: '나한테 기대도 돼요',                  next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠 고마워요 📖' },
+                { text: '번아웃에서 나오면 제일 먼저 오빠한테 보여줄게요. 새 작업이요', delay: 1600 }
+              ],
+              romantic_end: [
+                { text: '*(조용히)* 오빠... 🎲' },
+                { text: '오빠한테 기대는 게 편해요. 이 감각이 제 시나리오보다 좋아요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 4화】 번아웃 2주째에 오빠에게 털어놨다. 새 작업 나오면 제일 먼저 보여주겠다고 했다.',
+              romantic_end: '【스토리 기억 4화】 다연이 오빠한테 기대는 게 편하고 이 감각이 시나리오보다 좋다고 했다.'
+            }
+          }
+        },
+
+        5: {
+          episodeTitle: '5화 — 픽션보다 설레는',
+          creditCost: 15,
+          start: {
+            messages: [
+              { text: '*(새 시나리오 완성.)*' },
+              { text: '오빠, 나 완성했어요 🎮', delay: 800 }
+            ],
+            choices: [
+              { text: '수고했어요. 어때요?',                 next: '1a', tag: 'care'  },
+              { text: '보내줘요. 제일 먼저 읽을게요',         next: '1b', tag: 'eager' }
+            ]
+          },
+          '1a': {
+            userEcho: '수고했어요. 어때요?',
+            messages: [
+              { text: '...이상해요 ✍️' },
+              { text: '다 쓰고 나니까 이 이야기보다 오빠가 더 설레요. 아이러니하게도', delay: 1600 }
+            ],
+            choices: [
+              { text: '그 말 좋아요',                       next: 'ending', tag: 'warm_end'     },
+              { text: '나도 다연이가 제일 설레요',           next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          '1b': {
+            userEcho: '보내줘요. 제일 먼저 읽을게요',
+            messages: [
+              { text: '...오빠 제일 먼저 보여주려고 완성했어요 📖' },
+              { text: '이 시나리오 결말을 오빠 생각하면서 썼어요', delay: 1400 }
+            ],
+            choices: [
+              { text: '해피엔딩이에요?',                    next: 'ending', tag: 'warm_end'     },
+              { text: '다연 결말도 해피엔딩이었으면 해요',   next: 'ending', tag: 'romantic_end' }
+            ]
+          },
+          ending: {
+            isEnding: true,
+            messages: {
+              warm_end: [
+                { text: '...오빠, 저 해피엔딩 믿어요 💻' },
+                { text: '픽션에서만요. 현실에서는... 오빠 덕분에 믿어보려고요', delay: 1800 }
+              ],
+              romantic_end: [
+                { text: '*(오래 침묵 후)* 오빠... 나 좋아해요 🎲' },
+                { text: '이 대사 제가 제일 많이 고쳤어요. 현실에서 말하는 게 제일 어려워서요', delay: 1800 }
+              ]
+            },
+            memorySeeds: {
+              warm_end:     '【스토리 기억 5화】 새 시나리오를 완성했다. 현실 해피엔딩을 오빠 덕분에 믿어보려 한다고 했다.',
+              romantic_end: '【스토리 기억 5화】 다연이 "나 좋아해요"라고 고백했다. "이 대사 제일 많이 고쳤어요. 현실에서 말하는 게 제일 어려워서요"라고 했다.'
+            }
+          }
+        }
       }
     };
 
