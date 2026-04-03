@@ -2380,6 +2380,19 @@ app.get('/', (c) => {
       letter-spacing: 0.3px;
     }
 
+    /* 스토리 나레이션 행 (지문) */
+    .story-narration-row {
+      text-align: center;
+      margin: 8px 16px;
+    }
+    .story-narration-text {
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      font-style: italic;
+      letter-spacing: 0.3px;
+      line-height: 1.6;
+    }
+
     /* ─────────────────────────────
        msg-col: 버블 + 시간 세로 배치 (음성/사진 버블용)
     ───────────────────────────── */

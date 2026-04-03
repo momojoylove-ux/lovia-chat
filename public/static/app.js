@@ -3248,8 +3248,8 @@
     const MISO_STORY = {
       start: {
         messages: [
-          { text: '...오빠, 혹시 꽃 좋아해요? 🌸' },
-          { text: '오늘 새벽 시장에서 오빠 떠오르는 꽃이 들어왔어요', delay: 1500 }
+          { text: '...오빠, 혹시 꽃 좋아해요? 🌸', emotion: 'welcome' },
+          { text: '오늘 새벽 시장에서 오빠 떠오르는 꽃이 들어왔어요', delay: 1500, emotion: 'excited' }
         ],
         choices: [
           { text: '나 떠오르는 꽃이 어떤 거야?',      next: '1a', tag: 'curious' },
@@ -3260,9 +3260,9 @@
       '1a': {
         userEcho: '나 떠오르는 꽃이 어떤 거야?',
         messages: [
-          { text: '...오빠한테 어울리는 꽃이요 🌷' },
-          { text: '처음 본 사람한테 꽃을 연결하는 게 제 버릇이에요', delay: 1500 },
-          { text: '오빠는 특이하게 금방 꽃이 떠올랐어요. 신기해서요', delay: 1400 }
+          { text: '...오빠한테 어울리는 꽃이요 🌷', emotion: 'shy' },
+          { text: '처음 본 사람한테 꽃을 연결하는 게 제 버릇이에요', delay: 1500, emotion: 'focused' },
+          { text: '오빠는 특이하게 금방 꽃이 떠올랐어요. 신기해서요', delay: 1400, emotion: 'surprised' }
         ],
         choices: [
           { text: '어떤 꽃이야?',                    next: '2', tag: 'gentle'  },
@@ -3272,8 +3272,8 @@
       '1b': {
         userEcho: '꽃 좋아해, 어떤 꽃이야?',
         messages: [
-          { text: '좋아한다고요? 저 꽃집 하는 사람한테 딱이네요 🌿' },
-          { text: '오빠한테 어울리는 꽃이 새벽에 들어왔어요. 보내드리고 싶었어요', delay: 1600 }
+          { text: '좋아한다고요? 저 꽃집 하는 사람한테 딱이네요 🌿', emotion: 'happy' },
+          { text: '오빠한테 어울리는 꽃이 새벽에 들어왔어요. 보내드리고 싶었어요', delay: 1600, emotion: 'excited' }
         ],
         choices: [
           { text: '어떤 꽃인지 말해줘',               next: '2', tag: 'gentle'  },
@@ -3283,9 +3283,9 @@
       '1c': {
         userEcho: '나 생각했어?',
         messages: [
-          { text: '...네 🌸' },
-          { text: '저 사람을 꽃에 비유하는 버릇이 있거든요. 오빠 꽃이 떠올라서요', delay: 1500 },
-          { text: '이상한 얘기 하는 것 같죠?', delay: 1200 }
+          { text: '...네 🌸', emotion: 'shy' },
+          { text: '저 사람을 꽃에 비유하는 버릇이 있거든요. 오빠 꽃이 떠올라서요', delay: 1500, emotion: 'focused' },
+          { text: '이상한 얘기 하는 것 같죠?', delay: 1200, emotion: 'shy' }
         ],
         choices: [
           { text: '이상하지 않아, 어떤 꽃이야?',      next: '2', tag: 'gentle'  },
@@ -3295,14 +3295,14 @@
       '2': {
         messages: {
           gentle: [
-            { text: '...말하기 어려운데요 🍃' },
-            { text: '꽃은 설명하는 것보다 보여주는 게 맞는 것 같아서요', delay: 1500 },
-            { text: '오빠한테 어울리는 꽃다발 만들어서 보내드리고 싶어요. 진짜로요', delay: 1400 }
+            { text: '...말하기 어려운데요 🍃', emotion: 'shy' },
+            { text: '꽃은 설명하는 것보다 보여주는 게 맞는 것 같아서요', delay: 1500, emotion: 'focused' },
+            { text: '오빠한테 어울리는 꽃다발 만들어서 보내드리고 싶어요. 진짜로요', delay: 1400, emotion: 'excited' }
           ],
           curious: [
-            { text: '...이상하게 들릴 수 있는데요 🌷' },
-            { text: '저 이별을 많이 봐왔어요. 꽃집이라 그런지요', delay: 1500 },
-            { text: '그래서 순간순간이 중요하다고 생각하거든요. 오빠도 그 순간이에요', delay: 1500 }
+            { text: '...이상하게 들릴 수 있는데요 🌷', emotion: 'shy' },
+            { text: '저 이별을 많이 봐왔어요. 꽃집이라 그런지요', delay: 1500, emotion: 'sad' },
+            { text: '그래서 순간순간이 중요하다고 생각하거든요. 오빠도 그 순간이에요', delay: 1500, emotion: 'happy' }
           ]
         },
         choices: [
@@ -3313,14 +3313,14 @@
       '3': {
         messages: {
           warm: [
-            { text: '...오빠 😌' },
-            { text: '그 말 꽃으로 표현하면 뭔지 알 것 같아요', delay: 1400 },
-            { text: '오빠 생각하면서 만드는 꽃다발에 그걸 담을게요 🌸', delay: 1500 }
+            { text: '...오빠 😌', emotion: 'tearful' },
+            { text: '그 말 꽃으로 표현하면 뭔지 알 것 같아요', delay: 1400, emotion: 'focused' },
+            { text: '오빠 생각하면서 만드는 꽃다발에 그걸 담을게요 🌸', delay: 1500, emotion: 'excited' }
           ],
           romantic: [
-            { text: '...그럼 만들어드릴게요 🌷' },
-            { text: '좋아하는 사람 위해서 꽃 고르는 시간이 제일 행복하거든요', delay: 1500 },
-            { text: '오빠 꽃 고르면서 행복했어요 😌', delay: 1300 }
+            { text: '...그럼 만들어드릴게요 🌷', emotion: 'happy' },
+            { text: '좋아하는 사람 위해서 꽃 고르는 시간이 제일 행복하거든요', delay: 1500, emotion: 'excited' },
+            { text: '오빠 꽃 고르면서 행복했어요 😌', delay: 1300, emotion: 'happy' }
           ]
         },
         choices: [
@@ -3332,14 +3332,14 @@
         isEnding: true,
         messages: {
           romantic_end: [
-            { text: '...기다려요 오빠 🌸' },
-            { text: '정성껏 만들게요. 오빠한테 어울리는 꽃이니까요', delay: 1500 },
-            { text: '완성되면 연락할게요. 또 얘기 나눠요 🌿', delay: 1300 }
+            { text: '...기다려요 오빠 🌸', emotion: 'happy' },
+            { text: '정성껏 만들게요. 오빠한테 어울리는 꽃이니까요', delay: 1500, emotion: 'excited' },
+            { text: '완성되면 연락할게요. 또 얘기 나눠요 🌿', delay: 1300, emotion: 'welcome' }
           ],
           warm_end: [
-            { text: '...고마워요 오빠 😌' },
-            { text: '기다려준다고 해서요', delay: 1300 },
-            { text: '꽃다발 완성되면 오빠 제일 먼저 연락할게요 🌷', delay: 1400 }
+            { text: '...고마워요 오빠 😌', emotion: 'tearful' },
+            { text: '기다려준다고 해서요', delay: 1300, emotion: 'shy' },
+            { text: '꽃다발 완성되면 오빠 제일 먼저 연락할게요 🌷', delay: 1400, emotion: 'happy' }
           ]
         },
         memorySeeds: {
@@ -4045,8 +4045,8 @@
           episodeTitle: '1화 — 꽃집의 단골',
           start: {
             messages: [
-              { text: '*(조용히 고개를 들며)* 어서 오세요. 🌸' },
-              { text: '*(골목 안 작은 꽃집, 처음 들어간 날)*', delay: 700 }
+              { text: '*(조용히 고개를 들며)* 어서 오세요. 🌸', emotion: 'welcome' },
+              { text: '*(골목 안 작은 꽃집에 처음 들어간 날이었죠.)*', delay: 700, emotion: 'neutral' }
             ],
             choices: [
               { text: '선물용인데요. 어떤 게 좋을까요?',     next: '1', tag: 'gift' }
@@ -4055,8 +4055,8 @@
           '1': {
             messages: {
               gift: [
-                { text: '어떤 분이에요? 🌿' },
-                { text: '*(대답을 듣고)* 그러면 이걸로 해요. *(흰 프리지아)* 새로운 시작이 잘 어울리는 꽃이에요.', delay: 1500 }
+                { text: '어떤 분이에요? 🌿', emotion: 'focused' },
+                { text: '*(대답을 듣고)* 그러면 이걸로 해요. *(흰 프리지아)* 새로운 시작이 잘 어울리는 꽃이에요.', delay: 1500, emotion: 'focused' }
               ]
             },
             choices: [
@@ -4066,8 +4066,8 @@
           '2': {
             messages: {
               curious: [
-                { text: '*(고개를 들지 않고)* 꽃을 팔면서 사람을 봐왔거든요. 🌷' },
-                { text: '어떤 꽃이 어떤 사람에게 가는지.', delay: 1300 }
+                { text: '*(고개를 들지 않고)* 꽃을 팔면서 사람을 봐왔거든요. 🌷', emotion: 'focused' },
+                { text: '어떤 꽃이 어떤 사람에게 가는지.', delay: 1300, emotion: 'focused' }
               ]
             },
             choices: [
@@ -4080,12 +4080,12 @@
             cg: '/images/characters/miso/cg/jangmiso_cg_B01_first_meeting.jpg',
             messages: {
               romantic_end: [
-                { text: '*(포장을 멈추고 잠깐 바라보다가)* ...아직요. 🌸' },
-                { text: '알게 되면 알려줘요.', delay: 1000 },
-                { text: '*(작게)* ...오세요.', delay: 1500 }
+                { text: '*(포장을 멈추고 잠깐 바라보다가)* ...아직요. 🌸', emotion: 'shy' },
+                { text: '알게 되면 알려줘요.', delay: 1000, emotion: 'neutral' },
+                { text: '*(작게)* ...오세요.', delay: 1500, emotion: 'happy' }
               ],
               warm_end: [
-                { text: '*(작은 침묵 후, 작게)* ...오세요. 🌿' }
+                { text: '*(작은 침묵 후, 작게)* ...오세요. 🌿', emotion: 'happy' }
               ]
             },
             memorySeeds: {
@@ -4100,8 +4100,8 @@
           episodeTitle: '2화 — 당신이 어울릴 것 같아서',
           start: {
             messages: [
-              { text: '*(고개를 들며)* 또 오셨네요. 🌷' },
-              { text: '*(세 번째 방문, 이번엔 이유 없이)*', delay: 700 }
+              { text: '*(고개를 들며)* 또 오셨네요. 🌷', emotion: 'welcome' },
+              { text: '*(세 번째 방문이었죠. 이번엔 이유도 없이.)*', delay: 700, emotion: 'neutral' }
             ],
             choices: [
               { text: '이번엔 특별한 이유 없어요.',           next: '1', tag: 'honest' }
@@ -4110,8 +4110,8 @@
           '1': {
             messages: {
               honest: [
-                { text: '*(약간 눈이 커지며)* 그냥요? 🌸' },
-                { text: '그런 손님은 처음이에요.', delay: 1300 }
+                { text: '*(약간 눈이 커지며)* 그냥요? 🌸', emotion: 'surprised' },
+                { text: '그런 손님은 처음이에요.', delay: 1300, emotion: 'surprised' }
               ]
             },
             choices: [
@@ -4122,12 +4122,12 @@
           '2': {
             messages: {
               flower: [
-                { text: '오늘 새벽 시장에서 이게 들어왔어요. *(연보라 라넌큘러스)* 올해 처음 본 색이에요. 🌿' },
-                { text: '이 꽃은 겹겹이 되어 있어요. 안에 뭐가 있는지 끝까지 봐야 알 수 있어요.', delay: 1600 }
+                { text: '오늘 새벽 시장에서 이게 들어왔어요. *(연보라 라넌큘러스)* 올해 처음 본 색이에요. 🌿', emotion: 'excited' },
+                { text: '이 꽃은 겹겹이 되어 있어요. 안에 뭐가 있는지 끝까지 봐야 알 수 있어요.', delay: 1600, emotion: 'focused' }
               ],
               honest: [
-                { text: '*(꽃을 다듬으며)* 오늘 이게 들어왔어요. *(라넌큘러스)* 🌸' },
-                { text: '안에 뭐가 있는지 끝까지 봐야 알 수 있는 꽃이에요.', delay: 1500 }
+                { text: '*(꽃을 다듬고 있었죠.)* 오늘 이게 들어왔어요. *(라넌큘러스)* 🌸', emotion: 'focused' },
+                { text: '안에 뭐가 있는지 끝까지 봐야 알 수 있는 꽃이에요.', delay: 1500, emotion: 'focused' }
               ]
             },
             choices: [
@@ -4137,9 +4137,9 @@
           '3': {
             messages: {
               self: [
-                { text: '*(고개를 살짝 들어 바라보며)* ...그렇게 생각해요? 🌷' },
-                { text: '아직이라는 말 또 했네요.', delay: 1000 },
-                { text: '*(작게 미소)* 꽃을 함부로 읽으면 안 되거든요.', delay: 1400 }
+                { text: '*(고개를 살짝 들어 바라보며)* ...그렇게 생각해요? 🌷', emotion: 'surprised' },
+                { text: '아직이라는 말 또 했네요.', delay: 1000, emotion: 'focused' },
+                { text: '*(작게 미소)* 꽃을 함부로 읽으면 안 되거든요.', delay: 1400, emotion: 'shy' }
               ]
             },
             choices: [
@@ -4151,10 +4151,10 @@
             isEnding: true,
             messages: {
               warm_end: [
-                { text: '*(꽃에서 눈을 떼지 않으며)* ...그럴게요. 🌸' }
+                { text: '*(꽃에서 눈을 떼지 않으며)* ...그럴게요. 🌸', emotion: 'shy' }
               ],
               romantic_end: [
-                { text: '*(꽃에서 눈을 떼지 않으며, 아주 작게)* ...그럴게요. 🌿' }
+                { text: '*(꽃에서 눈을 떼지 않으며, 아주 작게)* ...그럴게요. 🌿', emotion: 'shy' }
               ]
             },
             memorySeeds: {
@@ -4169,8 +4169,8 @@
           episodeTitle: '3화 — 당신을 위한 꽃다발',
           start: {
             messages: [
-              { text: '*(잠깐 놀라며)* 이 시간에 오셨네요. 🌷' },
-              { text: '*(문 닫기 10분 전, 가게 안에 둘만)*', delay: 700 }
+              { text: '*(잠깐 놀라며)* 이 시간에 오셨네요. 🌷', emotion: 'surprised' },
+              { text: '*(문 닫기 10분 전이었죠. 가게 안에 둘만.)*', delay: 700, emotion: 'neutral' }
             ],
             choices: [
               { text: '그냥 문 열려 있길 바라면서요.',       next: '1', tag: 'honest' }
@@ -4179,8 +4179,8 @@
           '1': {
             messages: {
               honest: [
-                { text: '...들어오세요. 🌸' },
-                { text: '*(꽃 정리하다가)* 오늘... 당신이 떠오르는 꽃이 들어왔어요.', delay: 1600 }
+                { text: '...들어오세요. 🌸', emotion: 'welcome' },
+                { text: '*(꽃 정리하다가)* 오늘... 당신이 떠오르는 꽃이 들어왔어요.', delay: 1600, emotion: 'excited' }
               ]
             },
             choices: [
@@ -4190,9 +4190,9 @@
           '2': {
             messages: {
               curious: [
-                { text: '*(흰 포도 히아신스 섞인 작은 부케)* 이거예요. 🌿' },
-                { text: '히아신스는 "당신을 위해 살겠다"는 뜻이에요. 좀 과한 의미지만.', delay: 1500 },
-                { text: '*(낮게)* 아니요. 그냥 색이 당신 같아서요. 조용한데 오래 남는 색.', delay: 1600 }
+                { text: '*(흰 포도 히아신스 섞인 작은 부케)* 이거예요. 🌿', emotion: 'focused' },
+                { text: '히아신스는 "당신을 위해 살겠다"는 뜻이에요. 좀 과한 의미지만.', delay: 1500, emotion: 'focused' },
+                { text: '*(낮게)* 아니요. 그냥 색이 당신 같아서요. 조용한데 오래 남는 색.', delay: 1600, emotion: 'shy' }
               ]
             },
             choices: [
@@ -4202,7 +4202,7 @@
           '3': {
             messages: {
               ask: [
-                { text: '*(고개를 끄덕이며)* 네. 알 것 같아요. 🌷' }
+                { text: '*(고개를 끄덕이며)* 네. 알 것 같아요. 🌷', emotion: 'happy' }
               ]
             },
             choices: [
@@ -4215,11 +4215,11 @@
             cg: '/images/characters/miso/cg/jangmiso_cg_B02_bouquet.jpg',
             messages: {
               warm_end: [
-                { text: '*(잠깐 망설이다가)* 드리려고 만든 거예요. 사실. 🌸' }
+                { text: '*(잠깐 망설이다가)* 드리려고 만든 거예요. 사실. 🌸', emotion: 'shy' }
               ],
               romantic_end: [
-                { text: '*(잠시 멈추다가, 아주 조용히)* 저도요. 🌿' },
-                { text: '드리려고 만든 거예요. 사실.', delay: 1500 }
+                { text: '*(잠시 멈추다가, 아주 조용히)* 저도요. 🌿', emotion: 'tearful' },
+                { text: '드리려고 만든 거예요. 사실.', delay: 1500, emotion: 'shy' }
               ]
             },
             memorySeeds: {
@@ -4235,8 +4235,8 @@
           creditCost: 10,
           start: {
             messages: [
-              { text: '*(짧게)* 아니요. 🌿' },
-              { text: '*(며칠 뒤, 미소가 유독 말이 적은 날)*', delay: 800 }
+              { text: '*(짧게)* 아니요. 🌿', emotion: 'neutral' },
+              { text: '*(며칠 뒤였죠. 미소가 유독 말이 적은 날.)*', delay: 800, emotion: 'neutral' }
             ],
             choices: [
               { text: '오늘 무슨 일 있어요?',                next: '1', tag: 'ask' }
@@ -4245,7 +4245,7 @@
           '1': {
             messages: {
               ask: [
-                { text: '오늘... 장례용 꽃다발을 많이 만들었어요. 🌸' }
+                { text: '오늘... 장례용 꽃다발을 많이 만들었어요. 🌸', emotion: 'sad' }
               ]
             },
             choices: [
@@ -4256,12 +4256,12 @@
           '2': {
             messages: {
               walk: [
-                { text: '*(고개를 들며)* ...어떻게 알았어요, 그걸. 🌷' }
+                { text: '*(고개를 들며)* ...어떻게 알았어요, 그걸. 🌷', emotion: 'surprised' }
               ],
               ask: [
-                { text: '그런 걸 물어보는 사람이 없었는데. 🌸' },
-                { text: '...정성스럽게요. 마지막 꽃이니까요. 그 사람을 본 적 없어도.', delay: 1600 },
-                { text: '꽃이 그런 거예요. 사람을 담는 그릇이에요.', delay: 1500 }
+                { text: '그런 걸 물어보는 사람이 없었는데. 🌸', emotion: 'surprised' },
+                { text: '...정성스럽게요. 마지막 꽃이니까요. 그 사람을 본 적 없어도.', delay: 1600, emotion: 'sad' },
+                { text: '꽃이 그런 거예요. 사람을 담는 그릇이에요.', delay: 1500, emotion: 'focused' }
               ]
             },
             choices: [
@@ -4271,8 +4271,8 @@
           '3': {
             messages: {
               understand: [
-                { text: '...당신은 이상해요. 이 꽃집에서. 🌿' },
-                { text: '다른 손님들은 꽃을 보는데, 당신은 저를 봐요.', delay: 1500 }
+                { text: '...당신은 이상해요. 이 꽃집에서. 🌿', emotion: 'surprised' },
+                { text: '다른 손님들은 꽃을 보는데, 당신은 저를 봐요.', delay: 1500, emotion: 'shy' }
               ]
             },
             choices: [
@@ -4284,10 +4284,10 @@
             isEnding: true,
             messages: {
               warm_end: [
-                { text: '*(조용히 웃으며)* ...그런 말은 꽃한테 해야 하는 거예요. 🌸' }
+                { text: '*(조용히 웃으며)* ...그런 말은 꽃한테 해야 하는 거예요. 🌸', emotion: 'happy' }
               ],
               romantic_end: [
-                { text: '*(낮게, 거의 들릴 듯 말 듯)* ...나쁜 사람이에요. 🌷' }
+                { text: '*(낮게, 거의 들릴 듯 말 듯)* ...나쁜 사람이에요. 🌷', emotion: 'shy' }
               ]
             },
             memorySeeds: {
@@ -4303,8 +4303,8 @@
           creditCost: 15,
           start: {
             messages: [
-              { text: '*(꽃을 정리하다가)* 저 꽃집 아르바이트 처음 시작했을 때, 꽃말 다 외웠어요. 🌷' },
-              { text: '*(영업 끝난 꽃집, 함께 있는 게 자연스러워졌다)*', delay: 700 }
+              { text: '*(꽃을 정리하다가)* 저 꽃집 아르바이트 처음 시작했을 때, 꽃말 다 외웠어요. 🌷', emotion: 'focused' },
+              { text: '*(영업이 끝난 꽃집에서, 함께 있는 게 자연스러워졌죠.)*', delay: 700, emotion: 'neutral' }
             ],
             choices: [
               { text: '다요?',                               next: '1', tag: 'listen' }
@@ -4313,9 +4313,9 @@
           '1': {
             messages: {
               listen: [
-                { text: '네. 근데 요즘은 다르게 생각해요. 🌸' },
-                { text: '꽃말은 사람이 붙인 이름이에요. 꽃이 그런 게 아니고.', delay: 1400 },
-                { text: '이 꽃이 당신한테 어떻게 느껴지느냐가 더 중요해요.', delay: 1400 }
+                { text: '네. 근데 요즘은 다르게 생각해요. 🌸', emotion: 'focused' },
+                { text: '꽃말은 사람이 붙인 이름이에요. 꽃이 그런 게 아니고.', delay: 1400, emotion: 'focused' },
+                { text: '이 꽃이 당신한테 어떻게 느껴지느냐가 더 중요해요.', delay: 1400, emotion: 'focused' }
               ]
             },
             choices: [
@@ -4325,8 +4325,8 @@
           '2': {
             messages: {
               ask: [
-                { text: '*(오랫동안 꽃을 바라보다가, 아주 조용히)* ...봄이 올 것 같아서요. 🌿' },
-                { text: '당신이 있으면. 아직 차가운데 곧 따뜻해질 것 같은 그 느낌이에요.', delay: 1700 }
+                { text: '*(오랫동안 꽃을 바라보다가, 아주 조용히.)* ...봄이 올 것 같아서요. 🌿', emotion: 'shy' },
+                { text: '당신이 있으면. 아직 차가운데 곧 따뜻해질 것 같은 그 느낌이에요.', delay: 1700, emotion: 'happy' }
               ]
             },
             choices: [
@@ -4337,14 +4337,14 @@
           '3': {
             messages: {
               flower: [
-                { text: '저요? 🌸' },
-                { text: '...오래 남을 것 같은 꽃이에요. 이름은 아직 모르지만.', delay: 1300 },
-                { text: '*(조용히)* 오래 남으면... 떠나보내기 어려우니까. 무서워요.', delay: 1600 }
+                { text: '저요? 🌸', emotion: 'surprised' },
+                { text: '...오래 남을 것 같은 꽃이에요. 이름은 아직 모르지만.', delay: 1300, emotion: 'focused' },
+                { text: '*(조용히)* 오래 남으면... 떠나보내기 어려우니까. 무서워요.', delay: 1600, emotion: 'sad' }
               ],
               learn: [
-                { text: '*(고개를 들며)* 뭘요? 🌷' },
-                { text: '꽃보다 사람을 먼저 보는 것.', delay: 1200 },
-                { text: '미소 씨가 꽃을 팔 때, 꽃보다 그 사람을 더 먼저 봤잖아요.', delay: 1500 }
+                { text: '*(고개를 들며)* 뭘요? 🌷', emotion: 'surprised' },
+                { text: '꽃보다 사람을 먼저 보는 것.', delay: 1200, emotion: 'focused' },
+                { text: '미소 씨가 꽃을 팔 때, 꽃보다 그 사람을 더 먼저 봤잖아요.', delay: 1500, emotion: 'shy' }
               ]
             },
             choices: [
@@ -4357,13 +4357,13 @@
             cg: '/images/characters/miso/cg/jangmiso_cg_B03_confession_eve.jpg',
             messages: {
               romantic_end: [
-                { text: '*(눈을 들어 바라보며, 오랜 침묵 후)* ...약속해요? 🌸' },
-                { text: '내일 새벽 시장에... 같이 갈래요? 새벽 5시요.', delay: 1800 }
+                { text: '*(눈을 들어 바라보며, 오랜 침묵 후)* ...약속해요? 🌸', emotion: 'tearful' },
+                { text: '내일 새벽 시장에... 같이 갈래요? 새벽 5시요.', delay: 1800, emotion: 'excited' }
               ],
               warm_end: [
-                { text: '*(낮게, 거의 들릴 듯 말 듯)* ...나쁜 사람이에요. 🌿' },
-                { text: '내일 새벽 시장에... 같이 갈래요?', delay: 1700 },
-                { text: '새벽 5시요. 일찍이에요.', delay: 1200 }
+                { text: '*(낮게, 거의 들릴 듯 말 듯)* ...나쁜 사람이에요. 🌿', emotion: 'shy' },
+                { text: '내일 새벽 시장에... 같이 갈래요?', delay: 1700, emotion: 'excited' },
+                { text: '새벽 5시요. 일찍이에요.', delay: 1200, emotion: 'happy' }
               ]
             },
             memorySeeds: {
@@ -4606,7 +4606,7 @@
           showTypingIndicator();
           setTimeout(() => {
             removeTypingIndicator();
-            addStoryAIMessage(m.text);
+            addStoryAIMessage(m.text, m.emotion || 'neutral');
             // 마지막 메시지 뒤 선택지 표시
             if (i === msgs.length - 1) {
               setTimeout(() => _renderChoices(node, storyCurrentNode), 400);
@@ -4616,19 +4616,52 @@
       });
     }
 
+    // 미소 감정 스프라이트 이미지 경로 맵
+    const MISO_SPRITES = {
+      neutral:   '/images/characters/miso/sprites/jangmiso_sprite_A01_neutral.jpg',
+      welcome:   '/images/characters/miso/sprites/jangmiso_sprite_A02_welcome.jpg',
+      focused:   '/images/characters/miso/sprites/jangmiso_sprite_A03_focused.jpg',
+      surprised: '/images/characters/miso/sprites/jangmiso_sprite_A04_surprised.jpg',
+      shy:       '/images/characters/miso/sprites/jangmiso_sprite_A05_shy.jpg',
+      excited:   '/images/characters/miso/sprites/jangmiso_sprite_A06_excited.jpg',
+      sad:       '/images/characters/miso/sprites/jangmiso_sprite_A07_sad.jpg',
+      happy:     '/images/characters/miso/sprites/jangmiso_sprite_A08_happy.jpg',
+      tearful:   '/images/characters/miso/sprites/jangmiso_sprite_A09_tearful.jpg',
+      pouty:     '/images/characters/miso/sprites/jangmiso_sprite_A10_pouty.jpg',
+    };
+
+    function getStorySpriteUrl(personaId, emotion) {
+      if (personaId === 'miso' && emotion && MISO_SPRITES[emotion]) {
+        return MISO_SPRITES[emotion];
+      }
+      return getPersonaImg(currentChatPersona);
+    }
+
     // 스토리 전용 AI 메시지 (D1 저장 안함, 크레딧 차감 안함)
-    function addStoryAIMessage(text) {
+    function addStoryAIMessage(text, emotion) {
       const msgBox = document.getElementById('chat-messages');
-      const time   = getNowTime();
       const row    = document.createElement('div');
-      row.className = 'msg-row from-ai';
       row.style.opacity   = '0';
       row.style.transform = 'translateY(8px)';
-      row.innerHTML = `
-        <img class="msg-avatar" src="${getPersonaImg(currentChatPersona)}" alt="" />
-        <div class="msg-bubble">${escapeHtml(text)}</div>
-        <span class="msg-time">${time}</span>
-      `;
+
+      // *(...)* 패턴 전체가 나레이션인지 확인
+      const isNarration = /^\*\(.*\)\*$/.test(text.trim());
+
+      if (isNarration) {
+        const narrationText = text.trim().replace(/^\*\(|\)\*$/g, '');
+        row.className = 'story-narration-row';
+        row.innerHTML = `<span class="story-narration-text">${escapeHtml(narrationText)}</span>`;
+      } else {
+        const time      = getNowTime();
+        const avatarSrc = getStorySpriteUrl(currentChatPersona?.id, emotion);
+        row.className   = 'msg-row from-ai';
+        row.innerHTML   = `
+          <img class="msg-avatar story-sprite" src="${avatarSrc}" alt="" />
+          <div class="msg-bubble">${escapeHtml(text)}</div>
+          <span class="msg-time">${time}</span>
+        `;
+      }
+
       msgBox.appendChild(row);
       scrollToBottom();
       requestAnimationFrame(() => {
