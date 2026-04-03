@@ -4077,6 +4077,7 @@
           },
           ending: {
             isEnding: true,
+            cg: '/images/characters/miso/cg/jangmiso_cg_B01_first_meeting.jpg',
             messages: {
               romantic_end: [
                 { text: '*(포장을 멈추고 잠깐 바라보다가)* ...아직요. 🌸' },
@@ -4211,6 +4212,7 @@
           },
           ending: {
             isEnding: true,
+            cg: '/images/characters/miso/cg/jangmiso_cg_B02_bouquet.jpg',
             messages: {
               warm_end: [
                 { text: '*(잠깐 망설이다가)* 드리려고 만든 거예요. 사실. 🌸' }
@@ -4352,6 +4354,7 @@
           },
           ending: {
             isEnding: true,
+            cg: '/images/characters/miso/cg/jangmiso_cg_B03_confession_eve.jpg',
             messages: {
               romantic_end: [
                 { text: '*(눈을 들어 바라보며, 오랜 침묵 후)* ...약속해요? 🌸' },
@@ -4564,6 +4567,15 @@
       setTimeout(() => _adjustChatLayout(), 50);
     }
 
+    // CG 전면 오버레이 표시 후 콜백 실행
+    function _showCGOverlay(imgSrc, onClose) {
+      const overlay = document.createElement('div');
+      overlay.className = 'cg-overlay';
+      overlay.innerHTML = `<img src="${imgSrc}" class="cg-img" alt="" /><div class="cg-tap-hint">탭하여 계속</div>`;
+      overlay.onclick = () => { overlay.remove(); onClose(); };
+      document.body.appendChild(overlay);
+    }
+
     // 스토리 노드 렌더링
     function _showStoryNode(nodeId, prevTag) {
       storyCurrentNode = nodeId;
@@ -4571,6 +4583,15 @@
       const node = story?.[nodeId];
       if (!node) return;
 
+      // CG 필드가 있으면 전면 표시 후 메시지 출력
+      if (node.cg) {
+        _showCGOverlay(node.cg, () => _playNodeMessages(node, prevTag));
+      } else {
+        _playNodeMessages(node, prevTag);
+      }
+    }
+
+    function _playNodeMessages(node, prevTag) {
       // 메시지 목록 결정 (분기형 vs 단일형)
       const msgs = Array.isArray(node.messages)
         ? node.messages
@@ -4588,7 +4609,7 @@
             addStoryAIMessage(m.text);
             // 마지막 메시지 뒤 선택지 표시
             if (i === msgs.length - 1) {
-              setTimeout(() => _renderChoices(node, nodeId), 400);
+              setTimeout(() => _renderChoices(node, storyCurrentNode), 400);
             }
           }, 900);
         }, cumDelay - 900);

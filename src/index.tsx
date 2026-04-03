@@ -4568,6 +4568,34 @@ app.get('/', (c) => {
       cursor: pointer; text-decoration: underline;
     }
 
+    /* CG 전면 오버레이 */
+    .cg-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      animation: fadeIn 0.4s ease;
+    }
+    .cg-img {
+      max-width: 100%; max-height: 85vh;
+      object-fit: contain;
+    }
+    .cg-tap-hint {
+      margin-top: 16px;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      letter-spacing: 1px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50%       { opacity: 1; }
+    }
+
   </style>
 </head>
 <body>
