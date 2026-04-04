@@ -6546,16 +6546,19 @@
       const isNarration = /^\*\(.*\)\*$/.test(text.trim());
 
       if (isNarration) {
+        // 전체 줄 나레이션: ( ) 괄호로 감싸서 중앙 표시
         const narrationText = text.trim().replace(/^\*\(|\)\*$/g, '');
         row.className = 'story-narration-row';
-        row.innerHTML = `<span class="story-narration-text">${escapeHtml(narrationText)}</span>`;
+        row.innerHTML = `<span class="story-narration-text">(${escapeHtml(narrationText)})</span>`;
       } else {
+        // 인라인 *(...)* → (텍스트) 형식으로 옅은 흰색 span으로 변환
+        const cleanHtml = escapeHtml(text).replace(/\*\(([^)]*)\)\*/g, '<span class="story-action-text">($1)</span>');
         const time      = getNowTime();
         const avatarSrc = getStorySpriteUrl(currentChatPersona?.id, emotion);
         row.className   = 'msg-row from-ai';
         row.innerHTML   = `
           <img class="msg-avatar story-sprite" src="${avatarSrc}" alt="" />
-          <div class="msg-bubble">${escapeHtml(text)}</div>
+          <div class="msg-bubble">${cleanHtml}</div>
           <span class="msg-time">${time}</span>
         `;
       }
@@ -6994,7 +6997,8 @@
       msgBox.appendChild(row);
       scrollToBottom();
       document.querySelectorAll('.story-choice-btn').forEach(b => b.disabled = true);
-      setTimeout(() => _showTutorialNode(choice.next, choice.tag), 300);
+      const _choiceGen = _chatGeneration;
+      setTimeout(() => { if (_chatGeneration === _choiceGen) _showTutorialNode(choice.next, choice.tag); }, 300);
     }
 
     // 튜토리얼 엔딩 렌더링
@@ -7020,6 +7024,8 @@
 
     // 튜토리얼 노드 렌더링 (메시지 → 사진 → 선택지 순 처리)
     function _showTutorialNode(nodeId, prevTag) {
+      // 튜토리얼 모드가 아니면 즉시 중단 (화면 전환 후 잔여 콜백 방지)
+      if (!tutorialMode) return;
       tutorialCurrentNode = nodeId;
       const node = SUAH_TUTORIAL[nodeId];
       if (!node) return;
@@ -7034,12 +7040,15 @@
       // 턴 6: 음성 메시지 엔딩 (타이핑 → 음성 → 엔딩 UI)
       if (node.isEnding && node.voice) {
         const voiceText = node.voice.text.replace(/\{userName\}/g, userName);
+        const endGen = _chatGeneration;  // 엔딩 경로에도 gen 가드
         setTimeout(() => {
+          if (_chatGeneration !== endGen) return;
           showTypingIndicator();
           setTimeout(() => {
+            if (_chatGeneration !== endGen) { removeTypingIndicator(); return; }
             removeTypingIndicator();
             _addTutorialVoiceMessage(voiceText, node.voice.autoPlay);
-            setTimeout(() => _renderTutorialEnding(node), 1600);
+            setTimeout(() => { if (_chatGeneration === endGen) _renderTutorialEnding(node); }, 1600);
           }, 1800);
         }, 600);
         return;
@@ -7175,8 +7184,9 @@
       showScreenFade('chat-screen');
       setTimeout(() => _adjustChatLayout(), 100);
 
-      // 첫 노드 시작
-      setTimeout(() => _showTutorialNode('start', null), 500);
+      // 첫 노드 시작 — gen을 스케줄 시점에 캡처해 navigate-away 방지
+      const _tutorialStartGen = _chatGeneration;
+      setTimeout(() => { if (_chatGeneration === _tutorialStartGen) _showTutorialNode('start', null); }, 500);
     }
 
     // 페르소나별 더미 AI 첫 인사
@@ -7354,7 +7364,9 @@
       msgBox.innerHTML = '';
 
       // 로그인 유저: D1에서 히스토리 로드 시도 → 없으면 sessionStorage → 없으면 첫 인사/스토리
+      const _loadGen = _chatGeneration;
       loadAndRenderHistoryFromD1(persona, msgBox).then(loadedFromD1 => {
+        if (_chatGeneration !== _loadGen) return; // 화면 전환됨 — 콜백 무효화
         if (loadedFromD1) return; // D1 로드 성공 → 완료
 
         // D1 실패 또는 비로그인 → sessionStorage 확인
@@ -7392,7 +7404,8 @@
 
           // 스토리 모드 or 일반 첫 인사
           if (shouldStartStory(persona.id)) {
-            setTimeout(() => startStoryMode(persona), 500);
+            const _storyStartGen = _chatGeneration;
+            setTimeout(() => { if (_chatGeneration === _storyStartGen) startStoryMode(persona); }, 500);
           } else {
             // 일반 첫 인사 (AI) + 허브 이력 업데이트
             const greets = FIRST_GREET[persona.id] || ['안녕하세요! 💕'];
@@ -7576,11 +7589,32 @@
       // ★ 버튼 재활성화는 callAIChat 완료 후 처리 (unlockSendBtn 호출)
     }
 
+    // AudioContext 사전 unlock — Chrome autoplay 정책 우회
+    // audio.play()가 async fetch 이후에 호출되면 autoplay 차단이 발생할 수 있으므로
+    // 사용자 제스처 컨텍스트 안에서 즉시 AudioContext를 activate한다.
+    function _unlockAudioContext() {
+      try {
+        const Ctor = window.AudioContext || window.webkitAudioContext;
+        if (!Ctor) return;
+        const ctx = new Ctor();
+        ctx.resume().catch(() => {});
+        // 무음 버퍼 재생으로 unlock 확정
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+      } catch (_) {}
+    }
+
     // ─── 음성 메시지 요청 (5C) ───
     async function requestVoiceMessage() {
       if (!currentChatPersona) return;
       if (!spendCredit(VOICE_COST)) return;
       addCreditHistory('spend', currentChatPersona.name + ' 음성 메시지', VOICE_COST);
+
+      // 사용자 제스처 컨텍스트 안에서 즉시 AudioContext unlock
+      _unlockAudioContext();
 
       // AI에게 "음성 메시지 보내줘" 메시지를 보내고 응답을 TTS로 변환
       const triggerMsg = '음성 메시지로 한 마디 해줘 💌';
@@ -7672,12 +7706,24 @@
           <div class="msg-bubble ai voice-msg-bubble">
             <span class="voice-icon">🎙️</span>
             <span class="voice-msg-text">${escapeHtml(text)}</span>
-            <button class="voice-replay-btn" onclick="webSpeechFallback('${text.replace(/'/g, "\\'")}')">▶ 재생</button>
+            <button class="voice-replay-btn" onclick="_replayVoice(this)">▶ 재생</button>
           </div>
           <div class="msg-time">${getNowTime()}</div>
         </div>
       `;
+      // data 속성으로 text/personaId 저장 (XSS 방지, onclick inline 직접 삽입 제거)
+      const btn = row.querySelector('.voice-replay-btn');
+      btn.dataset.text = text;
+      btn.dataset.personaId = persona.id;
       msgBox.appendChild(row);
+    }
+
+    // 재생 버튼 클릭 핸들러 — ElevenLabs TTS 우선, fallback은 Web Speech
+    function _replayVoice(btn) {
+      _unlockAudioContext();
+      const text = btn.dataset.text;
+      const personaId = btn.dataset.personaId;
+      playTTS(text, personaId);
     }
 
     // ─── 특별 사진 인라인 요청 (10C) ───
