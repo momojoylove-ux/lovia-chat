@@ -6946,18 +6946,21 @@
       row.className = 'msg-row from-ai';
       row.style.opacity = '0';
       row.style.transform = 'translateY(8px)';
-      const safeText = text.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       row.innerHTML = `
         <img class="msg-avatar" src="${getPersonaImg(SUAH_PERSONA)}" alt="" onerror="this.style.opacity='0'" />
         <div class="msg-col">
           <div class="msg-bubble voice-msg-bubble">
             <span class="voice-icon">🎙️</span>
             <span class="voice-msg-text">${escapeHtml(text)}</span>
-            <button class="voice-replay-btn" onclick="webSpeechFallback('${safeText}')">▶ 재생</button>
+            <button class="voice-replay-btn" onclick="_replayVoice(this)">▶ 재생</button>
           </div>
           <div class="msg-time">${getNowTime()}</div>
         </div>
       `;
+      // data 속성으로 text/personaId 저장 (XSS 방지)
+      const btn = row.querySelector('.voice-replay-btn');
+      btn.dataset.text = text;
+      btn.dataset.personaId = SUAH_PERSONA.id;
       msgBox.appendChild(row);
       requestAnimationFrame(() => {
         row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -6966,7 +6969,9 @@
       });
       scrollToBottom();
       if (autoPlay) {
-        setTimeout(() => webSpeechFallback(text), 400);
+        // 제스처 없이 자동 재생: AudioContext unlock 후 TTS 시도
+        _unlockAudioContext();
+        setTimeout(() => playTTS(text, SUAH_PERSONA.id), 400);
       }
     }
 
@@ -7592,17 +7597,19 @@
     // AudioContext 사전 unlock — Chrome autoplay 정책 우회
     // audio.play()가 async fetch 이후에 호출되면 autoplay 차단이 발생할 수 있으므로
     // 사용자 제스처 컨텍스트 안에서 즉시 AudioContext를 activate한다.
+    // 공유 AudioContext — 사용자 제스처 시 unlock, 이후 async 재생에서도 재사용
+    let _sharedAudioCtx = null;
     function _unlockAudioContext() {
       try {
         const Ctor = window.AudioContext || window.webkitAudioContext;
         if (!Ctor) return;
-        const ctx = new Ctor();
-        ctx.resume().catch(() => {});
+        if (!_sharedAudioCtx) _sharedAudioCtx = new Ctor();
+        _sharedAudioCtx.resume().catch(() => {});
         // 무음 버퍼 재생으로 unlock 확정
-        const buf = ctx.createBuffer(1, 1, 22050);
-        const src = ctx.createBufferSource();
+        const buf = _sharedAudioCtx.createBuffer(1, 1, 22050);
+        const src = _sharedAudioCtx.createBufferSource();
         src.buffer = buf;
-        src.connect(ctx.destination);
+        src.connect(_sharedAudioCtx.destination);
         src.start(0);
       } catch (_) {}
     }
@@ -7613,10 +7620,11 @@
       if (!spendCredit(VOICE_COST)) return;
       addCreditHistory('spend', currentChatPersona.name + ' 음성 메시지', VOICE_COST);
 
-      // 사용자 제스처 컨텍스트 안에서 즉시 AudioContext unlock
+      // 사용자 제스처 컨텍스트 안에서 Audio 객체 미리 생성 (autoplay 정책 우회 핵심)
       _unlockAudioContext();
+      const primedAudio = new Audio();
+      primedAudio.load();  // 제스처 컨텍스트에서 priming
 
-      // AI에게 "음성 메시지 보내줘" 메시지를 보내고 응답을 TTS로 변환
       const triggerMsg = '음성 메시지로 한 마디 해줘 💌';
       addMyMessage(triggerMsg);
       showTypingIndicator();
@@ -7644,22 +7652,21 @@
         const aiText = data.reply || '...';
 
         removeTypingIndicator();
-        // AI 메시지 버블 추가 (음성 재생 버튼 포함)
         addAIMessageWithVoice(aiText, currentChatPersona);
         chatHistory.push({ role: 'ai', text: aiText });
         saveChatHistory(currentChatPersona.id, chatHistory);
         scrollToBottom();
 
-        // TTS 재생 시도
-        playTTS(aiText, currentChatPersona.id);
+        // 미리 생성한 Audio 객체로 TTS 재생
+        playTTS(aiText, currentChatPersona.id, primedAudio);
       } catch(e) {
         removeTypingIndicator();
         addAIMessage('음성 메시지를 준비하는 중에 오류가 생겼어요... 😢');
       }
     }
 
-    // TTS 재생 함수 (서버 TTS 또는 Web Speech API fallback)
-    async function playTTS(text, personaId) {
+    // TTS 재생 함수 — primedAudio(제스처 컨텍스트에서 생성)로 autoplay 정책 우회
+    async function playTTS(text, personaId, primedAudio) {
       try {
         const res = await fetch('/api/tts', {
           method: 'POST',
@@ -7669,17 +7676,52 @@
           },
           body: JSON.stringify({ text, personaId })
         });
-        const data = await res.json();
+        console.log('[TTS] HTTP 상태:', res.status, res.headers.get('Content-Type'));
 
-        if (data.audioContent) {
-          // 서버 TTS MP3 재생
-          const audio = new Audio('data:audio/mpeg;base64,' + data.audioContent);
-          audio.play().catch(() => webSpeechFallback(text));
+        const contentType = res.headers.get('Content-Type') || '';
+        if (res.ok && contentType.startsWith('audio/')) {
+          // 서버가 바이너리 WAV를 직접 반환
+          const arrayBuf = await res.arrayBuffer();
+          console.log('[TTS] 오디오 수신:', contentType, arrayBuf.byteLength, 'bytes');
+          const blob = new Blob([arrayBuf], { type: contentType });
+          const blobUrl = URL.createObjectURL(blob);
+          const audio = primedAudio || new Audio();
+          audio.src = blobUrl;
+          audio.play().then(() => {
+            console.log('[TTS] audio.play() 성공 ✓');
+            audio.addEventListener('ended', () => URL.revokeObjectURL(blobUrl), { once: true });
+          }).catch(err => {
+            console.error('[TTS] play() 실패:', err.name, err.message);
+            URL.revokeObjectURL(blobUrl);
+            // AudioContext 폴백
+            try {
+              const ctx = _sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+              if (!_sharedAudioCtx) _sharedAudioCtx = ctx;
+              console.log('[TTS] AudioContext 폴백, state:', ctx.state);
+              ctx.decodeAudioData(arrayBuf.slice(0)).then(decoded => {
+                console.log('[TTS] AudioContext 디코딩 성공, duration:', decoded.duration);
+                const source = ctx.createBufferSource();
+                source.buffer = decoded;
+                source.connect(ctx.destination);
+                source.start(0);
+              }).catch(decErr => {
+                console.error('[TTS] AudioContext 디코딩 실패:', decErr);
+                webSpeechFallback(text);
+              });
+            } catch(ctxErr) {
+              console.error('[TTS] AudioContext 생성 실패:', ctxErr);
+              webSpeechFallback(text);
+            }
+          });
         } else {
-          // Web Speech API fallback
+          // JSON 오류 응답 처리
+          let errData = {};
+          try { errData = await res.json(); } catch(_) {}
+          console.warn('[TTS] 서버 오류 응답:', res.status, JSON.stringify(errData));
           webSpeechFallback(text);
         }
       } catch(e) {
+        console.error('[TTS] fetch 실패:', e);
         webSpeechFallback(text);
       }
     }
@@ -7718,12 +7760,14 @@
       msgBox.appendChild(row);
     }
 
-    // 재생 버튼 클릭 핸들러 — ElevenLabs TTS 우선, fallback은 Web Speech
+    // 재생 버튼 클릭 핸들러 — 제스처 컨텍스트에서 Audio priming 후 TTS
     function _replayVoice(btn) {
       _unlockAudioContext();
+      const primedAudio = new Audio();
+      primedAudio.load();
       const text = btn.dataset.text;
       const personaId = btn.dataset.personaId;
-      playTTS(text, personaId);
+      playTTS(text, personaId, primedAudio);
     }
 
     // ─── 특별 사진 인라인 요청 (10C) ───

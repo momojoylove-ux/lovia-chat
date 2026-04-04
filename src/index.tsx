@@ -2392,6 +2392,10 @@ app.get('/', (c) => {
       letter-spacing: 0.3px;
       line-height: 1.6;
     }
+    .story-action-text {
+      color: rgba(255,255,255,0.55);
+      font-style: italic;
+    }
 
     /* ─────────────────────────────
        msg-col: 버블 + 시간 세로 배치 (음성/사진 버블용)
@@ -6048,6 +6052,8 @@ type Bindings = {
   GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: string
   // AppLovin 리워드 광고 S2S 검증용
   APPLOVIN_S2S_SECRET_KEY: string
+  // TypeCast TTS
+  TYPECAST_API_KEY: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
@@ -7190,45 +7196,51 @@ memoryApp.post('/api/tts', async (c) => {
       await db.prepare('INSERT INTO voice_messages (user_id, persona_id, text, cost) VALUES (?, ?, ?, 5)').bind(userId, personaId, text).run()
     }
 
-    // Google TTS API 호출 (키가 있을 때)
-    const ttsKey = (c.env as any).GOOGLE_TTS_KEY
-    if (ttsKey) {
-      // 페르소나별 보이스 매핑
-      const voiceMap: Record<string, { languageCode: string; name: string; ssmlGender: string }> = {
-        minji:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-A', ssmlGender: 'FEMALE' },
-        jiwoo:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-B', ssmlGender: 'FEMALE' },
-        hayoung: { languageCode: 'ko-KR', name: 'ko-KR-Neural2-C', ssmlGender: 'FEMALE' },
-        eunbi:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-A', ssmlGender: 'FEMALE' },
-        dahee:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-D', ssmlGender: 'FEMALE' },
-        // 신규 여성 캐릭터 10종
-        yujin:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-C', ssmlGender: 'FEMALE' },
-        sea:     { languageCode: 'ko-KR', name: 'ko-KR-Neural2-B', ssmlGender: 'FEMALE' },
-        yuri:    { languageCode: 'ko-KR', name: 'ko-KR-Neural2-A', ssmlGender: 'FEMALE' },
-        seoa:    { languageCode: 'ko-KR', name: 'ko-KR-Neural2-C', ssmlGender: 'FEMALE' },
-        soyoon:  { languageCode: 'ko-KR', name: 'ko-KR-Neural2-B', ssmlGender: 'FEMALE' },
-        naeun:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-D', ssmlGender: 'FEMALE' },
-        jisoo:   { languageCode: 'ko-KR', name: 'ko-KR-Neural2-A', ssmlGender: 'FEMALE' },
-        haneul:  { languageCode: 'ko-KR', name: 'ko-KR-Neural2-B', ssmlGender: 'FEMALE' },
-        dayeon:  { languageCode: 'ko-KR', name: 'ko-KR-Neural2-D', ssmlGender: 'FEMALE' },
-        miso:    { languageCode: 'ko-KR', name: 'ko-KR-Neural2-C', ssmlGender: 'FEMALE' },
+    // TypeCast TTS API 호출 (ssfm-v30 모델 — 한국어 지원)
+    const tcKey = c.env.TYPECAST_API_KEY
+    if (tcKey) {
+      // 캐릭터 성격별 목소리 매핑 (TypeCast voice_id)
+      const voiceMap: Record<string, string> = {
+        minji:   'tc_68f9c6a72f0f04a417bb136f', // Moonjung — 따뜻하고 안심시키는
+        jiwoo:   'tc_68413e12459cfdf27b481183', // Rayeon — 밝고 활기찬
+        hayoung: 'tc_68537c9420b646f2176890ba', // Seojin — 차분하고 프로페셔널
+        eunbi:   'tc_6837dec48fc46637a9272b88', // Soye — 섬세하고 지적인
+        dahee:   'tc_67c90ad544cf859417f2fc3a', // Yejin — 자신감 있고 개성 강한
+        miso:    'tc_6731b307df12333201d12b94', // Seolhwa — 부드럽고 감성적인
+        yujin:   'tc_68785db8ba9cd7503f27d921', // Gowoon — 활발한
+        sea:     'tc_67db72eb93add6902ea41e5c', // Eunsol — 차분한
+        yuri:    'tc_66f4ecb5b1a24ceec9f6ccf0', // Juyoung — 밝은
+        seoa:    'tc_66d00104bda076835c38ba68', // Hyunji — 지적인
+        soyoon:  'tc_66e266f9c568136dce8164e5', // Sumin — 섬세한
+        naeun:   'tc_66b4523f259dc43de649c1d1', // Minchae — 귀여운
+        jisoo:   'tc_66d91cac31a58a718f750a49', // Seohee — 따뜻한
+        haneul:  'tc_6788847e9939d48aeb8642d2', // Haerang — 에너지 넘치는
+        dayeon:  'tc_6763bef751dc3fb17792acaf', // Suyoon — 밝고 전문적인
       }
-      const voice = voiceMap[personaId] || { languageCode: 'ko-KR', name: 'ko-KR-Neural2-A', ssmlGender: 'FEMALE' }
+      const voiceId = voiceMap[personaId] || 'tc_68f9c6a72f0f04a417bb136f'
 
-      const ttsRes = await fetch(
-        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${ttsKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            input: { text },
-            voice,
-            audioConfig: { audioEncoding: 'MP3', speakingRate: 1.0, pitch: 1.5 }
-          })
+      const ttsRes = await fetch('https://api.typecast.ai/v1/text-to-speech', {
+        method: 'POST',
+        headers: {
+          'X-API-KEY': tcKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ model: 'ssfm-v30', text, voice_id: voiceId })
+      })
+      if (!ttsRes.ok) {
+        const errText = await ttsRes.text()
+        return c.json({ error: 'TTS 생성 실패', detail: errText, fallback: true }, 500)
+      }
+      // WAV 바이너리를 그대로 스트리밍 반환 (base64 인코딩 불필요)
+      const audioBuffer = await ttsRes.arrayBuffer()
+      return new Response(audioBuffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'audio/wav',
+          'Content-Length': String(audioBuffer.byteLength),
+          'Cache-Control': 'no-store',
         }
-      )
-      if (!ttsRes.ok) return c.json({ error: 'TTS 생성 실패', fallback: true }, 500)
-      const ttsData = await ttsRes.json() as { audioContent?: string }
-      return c.json({ audioContent: ttsData.audioContent, mimeType: 'audio/mpeg' })
+      })
     }
 
     // TTS 키 없음 → 클라이언트 Web Speech API 사용 안내
@@ -8259,6 +8271,28 @@ prefsApp.post('/api/user/preferences', async (c) => {
     return c.json({ success: true })
   } catch (e: any) {
     return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// TypeCast TTS 진단 엔드포인트 (인증 불필요 — 확인 후 삭제)
+app.get('/api/tts-debug', async (c) => {
+  const tcKey = (c.env as any).TYPECAST_API_KEY
+  if (!tcKey) return c.json({ error: 'TYPECAST_API_KEY 없음' })
+  try {
+    const ttsRes = await fetch('https://api.typecast.ai/v1/text-to-speech', {
+      method: 'POST',
+      headers: { 'X-API-KEY': tcKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'ssfm-v30', text: '안녕', voice_id: 'tc_68f9c6a72f0f04a417bb136f' })
+    })
+    const status = ttsRes.status
+    if (!ttsRes.ok) {
+      const errBody = await ttsRes.text()
+      return c.json({ ok: false, status, error: errBody, keyPrefix: tcKey.substring(0, 8) })
+    }
+    const size = (await ttsRes.arrayBuffer()).byteLength
+    return c.json({ ok: true, status, audioBytes: size, keyPrefix: tcKey.substring(0, 8) })
+  } catch (e: any) {
+    return c.json({ error: e.message })
   }
 })
 
