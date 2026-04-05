@@ -6262,6 +6262,57 @@ app.get('/', (c) => {
 })
 
 // ════════════════════════════════════════════════════════
+// 📋 캐릭터 메타데이터 (content_rating 포함)
+// ════════════════════════════════════════════════════════
+
+type ContentRating = 'general' | 'adult'
+
+const PERSONA_META: Record<string, { name: string; contentRating: ContentRating }> = {
+  minji:   { name: '민지',   contentRating: 'general' },
+  jiwoo:   { name: '지우',   contentRating: 'general' },
+  hayoung: { name: '하영',   contentRating: 'general' },
+  eunbi:   { name: '은비',   contentRating: 'general' },
+  dahee:   { name: '다희',   contentRating: 'adult'   },
+  yujin:   { name: '유진',   contentRating: 'general' },
+  sea:     { name: '세아',   contentRating: 'general' },
+  nari:    { name: '나리',   contentRating: 'general' },
+  rina:    { name: '리나',   contentRating: 'general' },
+  soyul:   { name: '소율',   contentRating: 'general' },
+  hyewon:  { name: '혜원',   contentRating: 'general' },
+  sua:     { name: '수아',   contentRating: 'general' },
+  miso:    { name: '미소',   contentRating: 'general' },
+}
+
+// ── GET /api/characters — 캐릭터 목록 (adult_verified 기반 필터링) ──
+const charactersApp = new Hono<{ Bindings: Bindings }>()
+
+charactersApp.get('/api/characters', async (c) => {
+  try {
+    // 인증된 유저의 adult_verified 상태 조회
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    let adultVerified = false
+    if (userId && c.env.DB) {
+      const user = await c.env.DB.prepare(
+        'SELECT adult_verified FROM users WHERE id = ?'
+      ).bind(userId).first<{ adult_verified: number }>()
+      adultVerified = !!user?.adult_verified
+    }
+
+    const characters = Object.entries(PERSONA_META)
+      .filter(([, meta]) => adultVerified || meta.contentRating !== 'adult')
+      .map(([id, meta]) => ({
+        id,
+        name: meta.name,
+        contentRating: meta.contentRating,
+      }))
+
+    return c.json({ characters, adultVerified })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// ════════════════════════════════════════════════════════
 // 🤖 AI Chat API  — POST /api/chat
 // ════════════════════════════════════════════════════════
 
@@ -6689,6 +6740,9 @@ type Bindings = {
   APPLOVIN_S2S_SECRET_KEY: string
   // TypeCast TTS
   TYPECAST_API_KEY: string
+  // 나이스인증(NICECheck) 성인 본인인증
+  NICE_CLIENT_ID: string
+  NICE_CLIENT_SECRET: string
 }
 
 const chatApp = new Hono<{ Bindings: Bindings }>()
@@ -6718,6 +6772,25 @@ chatApp.post('/api/chat', async (c) => {
     // ── 장기 기억 조회 (로그인 유저만) ──
     let memoryText = ''
     const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+
+    // ── 성인 캐릭터 접근 시 adult_verified 검증 ──
+    const personaMeta = PERSONA_META[personaId]
+    if (personaMeta?.contentRating === 'adult') {
+      if (!userId) {
+        return c.json({ error: '성인 인증이 필요합니다.', requiresAdultVerification: true }, 403)
+      }
+      if (c.env.DB) {
+        const user = await c.env.DB.prepare(
+          'SELECT adult_verified, adult_block FROM users WHERE id = ?'
+        ).bind(userId).first<{ adult_verified: number; adult_block: number }>()
+        if (user?.adult_block) {
+          return c.json({ error: '성인 콘텐츠 이용이 제한된 계정입니다.' }, 403)
+        }
+        if (!user?.adult_verified) {
+          return c.json({ error: '성인 인증이 필요합니다.', requiresAdultVerification: true }, 403)
+        }
+      }
+    }
     if (userId && c.env.DB) {
       const memRow = await c.env.DB.prepare(
         'SELECT memory_text FROM user_memory WHERE user_id = ? AND persona_id = ?'
@@ -7119,6 +7192,219 @@ authApp.get('/api/auth/google/callback', async (c) => {
   } catch (e: any) {
     console.error('[/api/auth/google/callback]', e)
     return c.redirect('/?google_error=server')
+  }
+})
+
+// ════════════════════════════════════════════
+// ADULT VERIFICATION API  (/api/auth/adult/*)
+// 나이스인증(NICECheck) v3 기반 성인 본인인증
+// ════════════════════════════════════════════
+
+// ── NICECheck 헬퍼 ──
+
+/** NICE OAuth 2.0 액세스 토큰 발급 */
+async function getNiceAccessToken(clientId: string, clientSecret: string): Promise<string> {
+  const credentials = btoa(`${clientId}:${clientSecret}`)
+  const res = await fetch('https://svc.niceid.co.kr/digital/niceid/oauth/oauth/token', {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${credentials}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials&scope=default',
+  })
+  if (!res.ok) throw new Error(`NICE 토큰 발급 실패: ${res.status}`)
+  const data = await res.json<{ access_token: string }>()
+  return data.access_token
+}
+
+/** NICE 암호화 토큰 발급 (세션 초기화용) */
+async function getNiceCryptoToken(accessToken: string): Promise<{
+  token_version_id: string
+  token_val: string
+  site_code: string
+}> {
+  const res = await fetch('https://svc.niceid.co.kr/digital/niceid/api/v1.0/common/crypto/token', {
+    method: 'POST',
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ dataHeader: { CNTY_CD: 'ko' }, dataBody: { req_dtim: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14), req_no: crypto.randomUUID().replace(/-/g, '').slice(0, 30), enc_mode: '1' } }),
+  })
+  if (!res.ok) throw new Error(`NICE 암호화 토큰 발급 실패: ${res.status}`)
+  const data = await res.json<{ dataBody: { token_version_id: string; token_val: string; site_code: string } }>()
+  return data.dataBody
+}
+
+/** AES-128-CBC 복호화 (Web Crypto API 사용) */
+async function decryptAes128Cbc(encDataBase64: string, tokenVal: string): Promise<string> {
+  const keyBytes = new TextEncoder().encode(tokenVal.slice(0, 16))
+  const ivBytes  = new TextEncoder().encode(tokenVal.slice(tokenVal.length - 16))
+  const encBytes = Uint8Array.from(atob(encDataBase64), c => c.charCodeAt(0))
+
+  const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-CBC' }, false, ['decrypt'])
+  const decrypted = await crypto.subtle.decrypt({ name: 'AES-CBC', iv: ivBytes }, cryptoKey, encBytes)
+  return new TextDecoder().decode(decrypted)
+}
+
+/** HMAC-SHA256 무결성 검증 */
+async function verifyNiceIntegrity(tokenVal: string, encData: string, integrityValue: string): Promise<boolean> {
+  const keyBytes  = new TextEncoder().encode(tokenVal.slice(0, 32))
+  const msgBytes  = new TextEncoder().encode(encData)
+  const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['verify'])
+  const sigBytes  = Uint8Array.from(atob(integrityValue), c => c.charCodeAt(0))
+  return crypto.subtle.verify('HMAC', cryptoKey, sigBytes, msgBytes)
+}
+
+// ── NICE 세션 임시 저장소 (KV 없이 D1 활용) ──
+// token_version_id → token_val 매핑을 sessions 테이블 대신 메모리에 저장.
+// Cloudflare Workers는 요청 간 메모리 공유가 안 되므로 DB에 저장해야 함.
+// 여기서는 users 테이블이 아닌 별도 nice_sessions 테이블을 사용.
+// (테이블이 없으면 graceful fallback — 마이그레이션 전까지는 토큰 없이 진행 불가)
+
+// POST /api/auth/adult/init  — 나이스인증 세션 초기화
+authApp.post('/api/auth/adult/init', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '로그인이 필요합니다.' }, 401)
+
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음 (로컬 개발 환경)' }, 503)
+
+    // 이미 성인 인증된 유저 체크
+    const user = await db.prepare(
+      'SELECT adult_verified, adult_block FROM users WHERE id = ?'
+    ).bind(userId).first<{ adult_verified: number; adult_block: number }>()
+
+    if (user?.adult_verified) return c.json({ error: '이미 성인 인증이 완료된 계정입니다.' }, 409)
+    if (user?.adult_block)    return c.json({ error: '이 계정은 성인 인증을 이용할 수 없습니다.' }, 403)
+
+    if (!c.env.NICE_CLIENT_ID || !c.env.NICE_CLIENT_SECRET) {
+      return c.json({ error: 'NICE API 키가 설정되지 않았습니다. 관리자에게 문의하세요.' }, 503)
+    }
+
+    const accessToken   = await getNiceAccessToken(c.env.NICE_CLIENT_ID, c.env.NICE_CLIENT_SECRET)
+    const cryptoToken   = await getNiceCryptoToken(accessToken)
+
+    // NICE 세션 저장 (callback 시 token_val 조회용)
+    // nice_sessions 테이블이 없으면 에러 — 마이그레이션 필요
+    await db.prepare(
+      `INSERT OR REPLACE INTO nice_sessions (token_version_id, token_val, user_id, created_at)
+       VALUES (?, ?, ?, datetime('now'))`
+    ).bind(cryptoToken.token_version_id, cryptoToken.token_val, userId).run()
+
+    return c.json({
+      ok: true,
+      tokenVersionId: cryptoToken.token_version_id,
+      siteCode: cryptoToken.site_code,
+    })
+  } catch (e: any) {
+    console.error('[/api/auth/adult/init]', e)
+    return c.json({ error: '성인인증 초기화 실패', detail: e.message }, 500)
+  }
+})
+
+// POST /api/auth/adult/callback  — 나이스 서버 콜백 (NICE → Lovia 서버)
+authApp.post('/api/auth/adult/callback', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 503)
+
+    const body = await c.req.json<{
+      token_version_id: string
+      enc_data: string
+      integrity_value: string
+    }>()
+
+    const { token_version_id, enc_data, integrity_value } = body
+    if (!token_version_id || !enc_data || !integrity_value) {
+      return c.json({ error: '필수 파라미터 누락' }, 400)
+    }
+
+    // 세션에서 token_val 조회
+    const session = await db.prepare(
+      'SELECT token_val, user_id FROM nice_sessions WHERE token_version_id = ?'
+    ).bind(token_version_id).first<{ token_val: string; user_id: number }>()
+
+    if (!session) return c.json({ error: '유효하지 않은 인증 세션입니다.' }, 400)
+
+    // 무결성 검증
+    const isValid = await verifyNiceIntegrity(session.token_val, enc_data, integrity_value)
+    if (!isValid) return c.json({ error: '무결성 검증 실패' }, 400)
+
+    // 복호화
+    const decrypted = await decryptAes128Cbc(enc_data, session.token_val)
+    const params    = new URLSearchParams(decrypted)
+
+    const birthdate    = params.get('birthdate') // YYYYMMDD
+    const resultCode   = params.get('resultcode') // 0000 = 성공
+
+    if (resultCode !== '0000') {
+      // 세션 삭제
+      await db.prepare('DELETE FROM nice_sessions WHERE token_version_id = ?').bind(token_version_id).run()
+      return c.json({ ok: false, error: '본인인증 실패', resultCode }, 400)
+    }
+
+    // 만 19세 이상 여부 확인
+    const now   = new Date()
+    const birth = birthdate ? new Date(`${birthdate.slice(0, 4)}-${birthdate.slice(4, 6)}-${birthdate.slice(6, 8)}`) : null
+    let isAdult = false
+
+    if (birth && !isNaN(birth.getTime())) {
+      const age = now.getFullYear() - birth.getFullYear()
+        - (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate()) ? 1 : 0)
+      isAdult = age >= 19
+    }
+
+    if (isAdult) {
+      await db.prepare(
+        `UPDATE users
+         SET adult_verified = 1,
+             adult_verified_at = datetime('now'),
+             adult_verified_method = 'nice_pass'
+         WHERE id = ?`
+      ).bind(session.user_id).run()
+    } else {
+      // 미성년자 — 영구 차단
+      await db.prepare(
+        'UPDATE users SET adult_block = 1 WHERE id = ?'
+      ).bind(session.user_id).run()
+    }
+
+    // 사용 완료된 세션 삭제
+    await db.prepare('DELETE FROM nice_sessions WHERE token_version_id = ?').bind(token_version_id).run()
+
+    return c.json({ ok: true, isAdult })
+  } catch (e: any) {
+    console.error('[/api/auth/adult/callback]', e)
+    return c.json({ error: '콜백 처리 실패', detail: e.message }, 500)
+  }
+})
+
+// GET /api/auth/adult/status  — 현재 유저 성인 인증 상태 조회
+authApp.get('/api/auth/adult/status', async (c) => {
+  try {
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '로그인이 필요합니다.' }, 401)
+
+    const db = c.env.DB
+    if (!db) return c.json({ verified: false, verifiedAt: null, blocked: false })
+
+    const user = await db.prepare(
+      'SELECT adult_verified, adult_verified_at, adult_block FROM users WHERE id = ?'
+    ).bind(userId).first<{ adult_verified: number; adult_verified_at: string | null; adult_block: number }>()
+
+    if (!user) return c.json({ error: '유저를 찾을 수 없습니다.' }, 404)
+
+    return c.json({
+      verified:   !!user.adult_verified,
+      verifiedAt: user.adult_verified_at ?? null,
+      blocked:    !!user.adult_block,
+    })
+  } catch (e: any) {
+    console.error('[/api/auth/adult/status]', e)
+    return c.json({ error: '상태 조회 실패', detail: e.message }, 500)
   }
 })
 
@@ -8989,6 +9275,16 @@ function formatFeedPost(row: any) {
   }
 }
 
+// ── 피드 요청자의 adult_verified 상태 조회 헬퍼 ──
+async function getFeedAdultVerified(authHeader: string | undefined, secret: string, db: any): Promise<boolean> {
+  const userId = await getUserIdFromToken(authHeader, secret)
+  if (!userId || !db) return false
+  const user = await db.prepare(
+    'SELECT adult_verified FROM users WHERE id = ?'
+  ).bind(userId).first<{ adult_verified: number }>()
+  return !!user?.adult_verified
+}
+
 // GET /api/feed — 커서 기반 페이지네이션 피드 목록
 feedApp.get('/api/feed', async (c) => {
   try {
@@ -8998,10 +9294,16 @@ feedApp.get('/api/feed', async (c) => {
     const cursor = c.req.query('cursor')   // 이전 마지막 published_at 값
     const limit  = Math.min(parseInt(c.req.query('limit') || '20', 10), 50)
 
+    // 성인 인증 여부 확인 (미인증 시 adult 콘텐츠 제외)
+    const adultVerified = await getFeedAdultVerified(
+      c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret', db
+    )
+
     let query: string
     let params: any[]
 
-    const baseWhere = `WHERE (expires_at IS NULL OR expires_at > datetime('now'))`
+    const ratingFilter = adultVerified ? `` : ` AND content_rating != 'adult'`
+    const baseWhere = `WHERE (expires_at IS NULL OR expires_at > datetime('now'))${ratingFilter}`
 
     if (cursor) {
       query = `SELECT * FROM feed_posts ${baseWhere} AND published_at < ? ORDER BY published_at DESC LIMIT ?`
@@ -9039,10 +9341,22 @@ feedApp.get('/api/feed/characters/:characterId', async (c) => {
     const cursor = c.req.query('cursor')
     const limit  = Math.min(parseInt(c.req.query('limit') || '20', 10), 50)
 
+    // 성인 인증 여부 확인
+    const adultVerified = await getFeedAdultVerified(
+      c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret', db
+    )
+
+    // 성인 캐릭터 피드 접근 시 adult_verified 검증
+    const characterMeta = PERSONA_META[characterId]
+    if (characterMeta?.contentRating === 'adult' && !adultVerified) {
+      return c.json({ error: '성인 인증이 필요합니다.', requiresAdultVerification: true }, 403)
+    }
+
     let query: string
     let params: any[]
 
-    const baseWhere = `WHERE character_id = ? AND (expires_at IS NULL OR expires_at > datetime('now'))`
+    const ratingFilter = adultVerified ? `` : ` AND content_rating != 'adult'`
+    const baseWhere = `WHERE character_id = ? AND (expires_at IS NULL OR expires_at > datetime('now'))${ratingFilter}`
 
     if (cursor) {
       query = `SELECT * FROM feed_posts ${baseWhere} AND published_at < ? ORDER BY published_at DESC LIMIT ?`
@@ -9318,6 +9632,7 @@ feedApp.post('/api/admin/feed/generate', async (c) => {
 })
 
 // chatApp 라우트를 메인 app에 마운트
+app.route('/', charactersApp)
 app.route('/', chatApp)
 app.route('/', authApp)
 app.route('/', memoryApp)
