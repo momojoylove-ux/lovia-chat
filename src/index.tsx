@@ -3746,6 +3746,96 @@ app.get('/', (c) => {
     .cps-cta-btn:active { opacity: 0.85; }
 
     /* ══════════════════════════════════════════
+       ⑭ AdultVerificationGateSheet (LOV-59)
+    ══════════════════════════════════════════ */
+    #avgs-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 210;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #avgs-backdrop.visible { display: block; opacity: 1; }
+
+    #avgs-sheet {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 211;
+      background: #1a1a1a;
+      border-radius: 24px 24px 0 0;
+      padding: 0 20px max(28px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+    }
+    #avgs-sheet.visible { display: block; transform: translateY(0); }
+
+    .avgs-handle {
+      width: 40px; height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      margin: 12px auto 20px;
+    }
+    .avgs-icon {
+      font-size: 44px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .avgs-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+    .avgs-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .avgs-btn-pass {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 20px rgba(255,77,109,0.35);
+      transition: opacity 0.2s;
+    }
+    .avgs-btn-pass:active { opacity: 0.85; }
+    .avgs-btn-pass:disabled { opacity: 0.5; cursor: default; }
+    .avgs-btn-cancel {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      color: rgba(255,255,255,0.5);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: opacity 0.2s;
+    }
+    .avgs-btn-cancel:active { opacity: 0.7; }
+    .avgs-notice {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════
        ⑬ WelcomeToFeedScreen (온보딩 완료 후 1회)
     ══════════════════════════════════════════ */
     #welcome-feed-overlay {
@@ -6221,6 +6311,18 @@ app.get('/', (c) => {
         💌 대화 시작하기
       </button>
     </div>
+  </div>
+
+  <!-- ⑭ AdultVerificationGateSheet (LOV-59) -->
+  <div id="avgs-backdrop" onclick="avgsClose()"></div>
+  <div id="avgs-sheet">
+    <div class="avgs-handle"></div>
+    <div class="avgs-icon">🔞</div>
+    <div class="avgs-title">성인 인증이 필요해요</div>
+    <div class="avgs-desc">만 19세 이상만 이용할 수 있는 콘텐츠입니다.<br>PASS 앱으로 본인인증을 진행해주세요.</div>
+    <button class="avgs-btn-pass" id="avgs-btn-pass" onclick="avgsStartVerification()">PASS로 인증하기</button>
+    <button class="avgs-btn-cancel" onclick="avgsClose()">취소</button>
+    <div class="avgs-notice">인증 정보는 나이 확인 목적으로만 사용되며, 안전하게 보호됩니다.</div>
   </div>
 
   <!-- ⑬ WelcomeToFeedScreen -->

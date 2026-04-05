@@ -8321,9 +8321,11 @@
     function startChat(personaId) {
       const persona = PERSONAS.find(p => p.id === personaId);
       if (!persona) return;
-      sessionStorage.setItem('selectedPersona', JSON.stringify(persona));
-      // 프로필 상세 화면으로 이동 (카드 → 상세 → 채팅)
-      openProfileDetail(personaId);
+      avgsGate(personaId, () => {
+        sessionStorage.setItem('selectedPersona', JSON.stringify(persona));
+        // 프로필 상세 화면으로 이동 (카드 → 상세 → 채팅)
+        openProfileDetail(personaId);
+      });
     }
 
     // ═══════════════════════════════════════
@@ -10478,6 +10480,173 @@
         _origOpenProfileDetail(personaId);
       }
     }
+
+    // ═══════════════════════════════════════════════════════
+    // ⑭ AdultVerificationGateSheet (LOV-59)
+    // ═══════════════════════════════════════════════════════
+
+    // 성인 전용 캐릭터 ID 목록 (서버 PERSONA_META와 동기화)
+    const ADULT_PERSONA_IDS = new Set(['dahee']);
+
+    // 세션 캐시: 인증 상태 (null=미조회, true/false)
+    let _adultVerifiedCache = null;
+
+    // 성인 캐릭터 접근 시 인증 게이트 확인 후 콜백 실행
+    async function avgsGate(personaId, callback) {
+      if (!ADULT_PERSONA_IDS.has(personaId)) { callback(); return; }
+      if (!isLoggedIn()) { showSignupPopup('adult_gate'); return; }
+
+      // 캐시된 결과 활용
+      if (_adultVerifiedCache === true) { callback(); return; }
+
+      try {
+        const res = await fetch('/api/auth/adult/status', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` },
+        });
+        const data = await res.json();
+        if (data.blocked) {
+          alert('만 19세 미만은 이용할 수 없는 서비스입니다.');
+          return;
+        }
+        if (data.verified) {
+          _adultVerifiedCache = true;
+          callback();
+          return;
+        }
+      } catch(e) { /* 네트워크 오류 → 게이트 표시 */ }
+
+      // 미인증 → 게이트 바텀시트 열기
+      avgsOpen(callback);
+    }
+
+    // 인증 완료 후 재시도할 콜백 저장
+    let _avgsCallback = null;
+    // NICE 팝업 polling 타이머
+    let _avgsPollTimer = null;
+
+    // 바텀시트 열기 (콜백: 인증 성공 후 재시도할 함수)
+    function avgsOpen(callback) {
+      _avgsCallback = callback || null;
+      const backdrop = document.getElementById('avgs-backdrop');
+      const sheet    = document.getElementById('avgs-sheet');
+      if (backdrop) backdrop.classList.add('visible');
+      if (sheet) {
+        sheet.style.display = 'block';
+        requestAnimationFrame(() => sheet.classList.add('visible'));
+      }
+    }
+
+    // 바텀시트 닫기
+    function avgsClose() {
+      const backdrop = document.getElementById('avgs-backdrop');
+      const sheet    = document.getElementById('avgs-sheet');
+      if (backdrop) backdrop.classList.remove('visible');
+      if (sheet)    sheet.classList.remove('visible');
+      setTimeout(() => { if (sheet) sheet.style.display = 'none'; }, 350);
+      _avgsCallback = null;
+      if (_avgsPollTimer) { clearInterval(_avgsPollTimer); _avgsPollTimer = null; }
+      // 버튼 원상복구
+      const btn = document.getElementById('avgs-btn-pass');
+      if (btn) { btn.disabled = false; btn.textContent = 'PASS로 인증하기'; }
+    }
+
+    // NICE PASS 인증 시작
+    async function avgsStartVerification() {
+      const btn = document.getElementById('avgs-btn-pass');
+      if (btn) { btn.disabled = true; btn.textContent = '인증 준비 중...'; }
+
+      try {
+        const token = getAuthToken();
+        const res = await fetch('/api/auth/adult/init', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          if (res.status === 409) {
+            // 이미 인증된 경우
+            avgsClose();
+            avgsShowToast('이미 성인 인증이 완료된 계정입니다.');
+            if (_avgsCallback) { const cb = _avgsCallback; _avgsCallback = null; cb(); }
+            return;
+          }
+          avgsShowToast(data.error || '인증 초기화에 실패했습니다. 다시 시도해주세요.');
+          if (btn) { btn.disabled = false; btn.textContent = 'PASS로 인증하기'; }
+          return;
+        }
+
+        // NICE PASS 팝업 열기
+        const popupUrl = `https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb?m=service&token_version_id=${encodeURIComponent(data.tokenVersionId)}&enc_data=&integrity_value=`;
+        const popup = window.open(popupUrl, 'nice_pass_popup', 'width=500,height=700,scrollbars=yes');
+
+        if (btn) { btn.textContent = '인증 진행 중...'; }
+
+        // 팝업 완료 후 상태 polling (최대 5분)
+        let attempts = 0;
+        const MAX_ATTEMPTS = 60; // 5초 × 60 = 5분
+        _avgsPollTimer = setInterval(async () => {
+          attempts++;
+          // 팝업이 닫혔거나 최대 시도 횟수 초과
+          const popupClosed = !popup || popup.closed;
+          if (popupClosed || attempts >= MAX_ATTEMPTS) {
+            clearInterval(_avgsPollTimer);
+            _avgsPollTimer = null;
+
+            // 최종 인증 상태 확인
+            try {
+              const statusRes = await fetch('/api/auth/adult/status', {
+                headers: { 'Authorization': `Bearer ${getAuthToken()}` },
+              });
+              const statusData = await statusRes.json();
+
+              if (statusData.blocked) {
+                avgsClose();
+                alert('만 19세 미만은 이용할 수 없는 서비스입니다.');
+              } else if (statusData.verified) {
+                _adultVerifiedCache = true;
+                avgsClose();
+                avgsShowToast('성인 인증이 완료되었습니다. 성인 콘텐츠를 이용할 수 있어요.');
+                if (_avgsCallback) { const cb = _avgsCallback; _avgsCallback = null; cb(); }
+              } else if (popupClosed && attempts < MAX_ATTEMPTS) {
+                // 팝업 닫혔지만 미인증 → 취소로 간주
+                if (btn) { btn.disabled = false; btn.textContent = 'PASS로 인증하기'; }
+              } else {
+                // 시간 초과
+                avgsShowToast('인증에 실패했습니다. 다시 시도해주세요.');
+                if (btn) { btn.disabled = false; btn.textContent = 'PASS로 인증하기'; }
+              }
+            } catch(e) {
+              avgsShowToast('인증에 실패했습니다. 다시 시도해주세요.');
+              if (btn) { btn.disabled = false; btn.textContent = 'PASS로 인증하기'; }
+            }
+          }
+        }, 5000);
+
+      } catch(e) {
+        avgsShowToast('인증에 실패했습니다. 다시 시도해주세요.');
+        if (btn) { btn.disabled = false; btn.textContent = 'PASS로 인증하기'; }
+      }
+    }
+
+    // 간단한 토스트 표시 (credit-toast 재활용)
+    function avgsShowToast(msg) {
+      const t = document.getElementById('credit-toast');
+      if (!t) return;
+      const prev = t.textContent;
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => {
+        t.classList.remove('show');
+        t.textContent = prev;
+      }, 3000);
+    }
+
+    // 전역 노출
+    window.avgsOpen  = avgsOpen;
+    window.avgsClose = avgsClose;
+    window.avgsGate  = avgsGate;
+    window.avgsStartVerification = avgsStartVerification;
 
     // ═══════════════════════════════════════════════════════
     // ⑬ WelcomeToFeedScreen (LOV-55)
