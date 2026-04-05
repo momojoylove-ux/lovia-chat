@@ -6919,13 +6919,13 @@
           chatScreen.style.display = 'none';
           chatScreen.style.opacity = '';
           chatScreen.style.transition = '';
-          hideBottomNav();
           const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
           initSwipeScreen(userName);
           window._swipeInitialized = true;
           // LOV-55: 온보딩 최초 완료 시 WelcomeToFeedScreen 표시
+          // BUG-5: hideBottomNav() 제거 — 웰컴 오버레이가 닫힐 때 showBottomNav() 보장
           if (showWelcomeFeedIfNeeded()) {
-            // 웰컴 화면이 표시됨 — closeWelcomeFeedAndGo()에서 피드 진입
+            // 웰컴 화면이 표시됨 — closeWelcomeFeedAndGo()에서 피드 진입 및 탭바 복원
           } else {
             showBottomNav();
             setActiveBottomTab('feed');
@@ -6938,7 +6938,7 @@
         initSwipeScreen(userName);
         window._swipeInitialized = true;
         if (showWelcomeFeedIfNeeded()) {
-          // 웰컴 화면 표시됨
+          // 웰컴 화면 표시됨 — closeWelcomeFeedAndGo()에서 탭바 복원
         } else {
           showBottomNav();
           setActiveBottomTab('feed');
@@ -8942,7 +8942,7 @@
               <div class="mypage-adult-done-badge">인증 완료</div>
             </div>`;
           // 캐시 갱신
-          _adultVerifiedCache = true;
+          _setAdultVerifiedCache();
         } else if (data.blocked) {
           inner.innerHTML = `
             <div class="mypage-adult-row">
@@ -10548,6 +10548,9 @@
     function switchBottomTab(tab) {
       if (tab === currentBottomTab && tab !== 'me') return;
 
+      // BUG-2: 탭 전환 시 탭바 항상 표시 보장 ('me' 탭 오버레이 제외)
+      if (tab !== 'me') showBottomNav();
+
       setActiveBottomTab(tab);
 
       const MAIN_SCREENS = ['main-feed-screen', 'swipe-screen', 'hub-screen'];
@@ -10608,7 +10611,7 @@
     }
 
     function hideAllOverlayScreens() {
-      ['chat-screen', 'profile-detail-screen', 'gram-screen', 'pick-screen'].forEach(id => {
+      ['chat-screen', 'profile-detail-screen', 'gram-screen', 'pick-screen', 'char-profile-screen'].forEach(id => {
         const el = document.getElementById(id);
         if (el) { el.style.opacity = '0'; el.style.display = 'none'; }
       });
@@ -10751,11 +10754,238 @@
     // ⑭ AdultVerificationGateSheet (LOV-59)
     // ═══════════════════════════════════════════════════════
 
+    // ═══════════════════════════════════════════════════════
+    // CharacterProfileScreen (LOV-79)
+    // ═══════════════════════════════════════════════════════
+
+    let _cpscCurrentCharId   = null;
+    let _cpscIsFollowing     = false;
+    let _cpscNextCursor      = null;
+    let _cpscLoadingPosts    = false;
+    let _cpscHasMore         = true;
+    let _cpscPrevScreen      = null; // 돌아갈 화면 ID
+    let _cpscIntersectionObs = null;
+
+    function formatStatNum(n) {
+      if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + '만';
+      if (n >= 1000)  return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+      return String(n);
+    }
+
+    async function openCharProfileScreen(characterId) {
+      if (!characterId) return;
+
+      // 성인 캐릭터 게이트 확인
+      await avgsGate(characterId, async () => {
+        _cpscCurrentCharId = characterId;
+
+        // 현재 활성 화면 기억
+        const screens = ['main-feed-screen', 'swipe-screen', 'hub-screen', 'chat-screen', 'gram-screen'];
+        _cpscPrevScreen = null;
+        for (const id of screens) {
+          const el = document.getElementById(id);
+          if (el && el.style.display !== 'none' && el.style.opacity !== '0') {
+            _cpscPrevScreen = id;
+            break;
+          }
+        }
+
+        // 화면 초기화
+        const grid = document.getElementById('cpsc-post-grid');
+        if (grid) grid.innerHTML = '<div class="cpsc-grid-loading">불러오는 중...</div>';
+        document.getElementById('cpsc-username').textContent = '@...';
+        document.getElementById('cpsc-bio-name').textContent = '...';
+        document.getElementById('cpsc-bio-desc').textContent = '';
+        document.getElementById('cpsc-stat-posts').textContent = '0';
+        document.getElementById('cpsc-stat-followers').textContent = '0';
+        document.getElementById('cpsc-stat-following').textContent = '0';
+        document.getElementById('cpsc-avatar').src = '';
+
+        _cpscNextCursor  = null;
+        _cpscLoadingPosts = false;
+        _cpscHasMore     = true;
+        _cpscIsFollowing  = false;
+
+        // 화면 전환
+        hideBottomNav();
+        showScreenFade('char-profile-screen');
+
+        // 프로필 API 호출
+        try {
+          const token = getAuthToken();
+          const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+          const res = await fetch(`/api/characters/${characterId}/profile`, { headers });
+          if (res.ok) {
+            const data = await res.json();
+            document.getElementById('cpsc-username').textContent = '@' + (data.username || characterId);
+            document.getElementById('cpsc-bio-name').textContent = data.name || characterId;
+            document.getElementById('cpsc-bio-desc').textContent = data.description || '';
+            document.getElementById('cpsc-stat-posts').textContent = formatStatNum(data.stats?.postCount ?? 0);
+            document.getElementById('cpsc-stat-followers').textContent = formatStatNum(data.stats?.followerCount ?? 0);
+            document.getElementById('cpsc-stat-following').textContent = formatStatNum(data.stats?.followingCount ?? 0);
+
+            // 아바타
+            const avatarEl = document.getElementById('cpsc-avatar');
+            const persona = PERSONAS.find(p => p.id === characterId);
+            const avatarSrc = persona ? getPersonaImg(persona) : null;
+            if (avatarSrc) avatarEl.src = avatarSrc;
+
+            // 팔로우 버튼 상태
+            _cpscIsFollowing = data.isFollowedByMe || false;
+            cpscUpdateFollowBtn();
+          }
+        } catch(e) {}
+
+        // 첫 게시물 로드
+        await cpscLoadMorePosts();
+
+        // 무한 스크롤 옵저버
+        if (_cpscIntersectionObs) _cpscIntersectionObs.disconnect();
+        const sentinel = document.getElementById('cpsc-grid-sentinel');
+        if (sentinel) {
+          _cpscIntersectionObs = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && _cpscHasMore && !_cpscLoadingPosts) {
+              cpscLoadMorePosts();
+            }
+          }, { threshold: 0.1 });
+          _cpscIntersectionObs.observe(sentinel);
+        }
+      });
+    }
+
+    function closeCharProfileScreen() {
+      if (_cpscIntersectionObs) {
+        _cpscIntersectionObs.disconnect();
+        _cpscIntersectionObs = null;
+      }
+      const screen = document.getElementById('char-profile-screen');
+      if (screen) { screen.style.opacity = '0'; screen.style.display = 'none'; }
+      showBottomNav();
+      if (_cpscPrevScreen) {
+        showScreenFade(_cpscPrevScreen);
+      } else {
+        setActiveBottomTab('feed');
+        showScreenFade('main-feed-screen');
+      }
+      _cpscCurrentCharId = null;
+    }
+
+    async function cpscLoadMorePosts() {
+      if (_cpscLoadingPosts || !_cpscHasMore || !_cpscCurrentCharId) return;
+      _cpscLoadingPosts = true;
+
+      try {
+        const token = getAuthToken();
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const url = _cpscNextCursor
+          ? `/api/characters/${_cpscCurrentCharId}/posts?cursor=${encodeURIComponent(_cpscNextCursor)}&limit=18`
+          : `/api/characters/${_cpscCurrentCharId}/posts?limit=18`;
+        const res = await fetch(url, { headers });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const grid = document.getElementById('cpsc-post-grid');
+        if (!grid) return;
+
+        // 첫 로드 시 로딩 메시지 제거
+        const loadingEl = grid.querySelector('.cpsc-grid-loading');
+        if (loadingEl) loadingEl.remove();
+
+        const items = data.items || [];
+        if (items.length === 0 && !_cpscNextCursor) {
+          grid.innerHTML = `<div class="cpsc-grid-empty">게시물이 아직 없어요 💕</div>`;
+          _cpscHasMore = false;
+          return;
+        }
+
+        items.forEach(item => {
+          const cell = document.createElement('div');
+          cell.className = 'cpsc-grid-cell';
+          if (item.type === 'image' && item.thumbnailUrl) {
+            cell.innerHTML = `<img src="${escapeHtml(item.thumbnailUrl)}" alt="" loading="lazy" onerror="this.parentElement.style.background='#2a2a2a'" />`;
+          } else {
+            const preview = item.textPreview || '';
+            cell.innerHTML = `<div class="cpsc-grid-cell-text">${escapeHtml(preview)}</div>`;
+          }
+          grid.appendChild(cell);
+        });
+
+        _cpscNextCursor = data.nextCursor || null;
+        _cpscHasMore = data.hasMore || false;
+      } catch(e) {
+      } finally {
+        _cpscLoadingPosts = false;
+      }
+    }
+
+    function cpscUpdateFollowBtn() {
+      const btn = document.getElementById('cpsc-btn-follow');
+      if (!btn) return;
+      if (_cpscIsFollowing) {
+        btn.textContent = '팔로잉';
+        btn.classList.add('following');
+      } else {
+        btn.textContent = '팔로우';
+        btn.classList.remove('following');
+      }
+    }
+
+    async function cpscToggleFollow() {
+      if (!isLoggedIn()) { showSignupPopup('follow_char'); return; }
+      if (!_cpscCurrentCharId) return;
+
+      const btn = document.getElementById('cpsc-btn-follow');
+      if (btn) btn.disabled = true;
+
+      try {
+        const token = getAuthToken();
+        const method = _cpscIsFollowing ? 'DELETE' : 'POST';
+        const res = await fetch(`/api/characters/${_cpscCurrentCharId}/follow`, {
+          method,
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          _cpscIsFollowing = !_cpscIsFollowing;
+          cpscUpdateFollowBtn();
+          // 팔로워 수 업데이트
+          const followerEl = document.getElementById('cpsc-stat-followers');
+          if (followerEl && data.followerCount != null) {
+            followerEl.textContent = formatStatNum(data.followerCount);
+          }
+        }
+      } catch(e) {
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function cpscStartDM() {
+      if (!isLoggedIn()) { showSignupPopup('cps_dm'); return; }
+      if (!_cpscCurrentCharId) return;
+      closeCharProfileScreen();
+      startChat(_cpscCurrentCharId);
+    }
+
+    window.openCharProfileScreen = openCharProfileScreen;
+    window.closeCharProfileScreen = closeCharProfileScreen;
+    window.cpscToggleFollow = cpscToggleFollow;
+    window.cpscStartDM = cpscStartDM;
+
+    // 피드에서 캐릭터 아바타/이름 클릭 → 프로필 화면으로 (바텀시트 대신)
+    // openCpsSheet를 openCharProfileScreen으로 오버라이드
+    window._origOpenCpsSheet = window.openCpsSheet;
+    window.openCpsSheet = function(personaId, sourcePostId) {
+      openCharProfileScreen(personaId);
+    };
+
     // 성인 전용 캐릭터 ID 목록 (서버 PERSONA_META와 동기화)
     const ADULT_PERSONA_IDS = new Set(['dahee']);
 
-    // 세션 캐시: 인증 상태 (null=미조회, true/false)
-    let _adultVerifiedCache = null;
+    // BUG-8: 세션 캐시 — sessionStorage로 이전하여 페이지 새로고침 후에도 재인증 불필요
+    const _AVGS_CACHE_KEY = 'lovia_adult_verified';
+    function _getAdultVerifiedCache() { return sessionStorage.getItem(_AVGS_CACHE_KEY) === '1'; }
+    function _setAdultVerifiedCache() { sessionStorage.setItem(_AVGS_CACHE_KEY, '1'); }
 
     // 성인 캐릭터 접근 시 인증 게이트 확인 후 콜백 실행
     async function avgsGate(personaId, callback) {
@@ -10763,7 +10993,7 @@
       if (!isLoggedIn()) { showSignupPopup('adult_gate'); return; }
 
       // 캐시된 결과 활용
-      if (_adultVerifiedCache === true) { callback(); return; }
+      if (_getAdultVerifiedCache()) { callback(); return; }
 
       try {
         const res = await fetch('/api/auth/adult/status', {
@@ -10775,7 +11005,7 @@
           return;
         }
         if (data.verified) {
-          _adultVerifiedCache = true;
+          _setAdultVerifiedCache();
           callback();
           return;
         }
@@ -10870,7 +11100,7 @@
                 avgsClose();
                 alert('만 19세 미만은 이용할 수 없는 서비스입니다.');
               } else if (statusData.verified) {
-                _adultVerifiedCache = true;
+                _setAdultVerifiedCache();
                 avgsClose();
                 avgsShowToast('성인 인증이 완료되었습니다. 성인 콘텐츠를 이용할 수 있어요.');
                 if (_avgsCallback) { const cb = _avgsCallback; _avgsCallback = null; cb(); }

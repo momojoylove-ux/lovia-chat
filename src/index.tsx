@@ -3758,6 +3758,197 @@ app.get('/', (c) => {
     .bt-badge.show { display: flex; }
 
     /* ══════════════════════════════════════════
+       CharacterProfileScreen (LOV-79)
+    ══════════════════════════════════════════ */
+    #char-profile-screen {
+      z-index: 120;
+      background: #0d0d0d;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* 헤더 */
+    .cpsc-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: max(52px, calc(env(safe-area-inset-top, 0px) + 16px)) 16px 12px;
+      background: linear-gradient(to bottom, rgba(13,13,13,1) 70%, transparent);
+      z-index: 10;
+    }
+    .cpsc-back-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cpsc-username {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+    .cpsc-header-right {
+      width: 36px;
+    }
+
+    /* 스크롤 영역 */
+    .cpsc-scroll {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      scrollbar-width: none;
+      padding-top: max(96px, calc(env(safe-area-inset-top, 0px) + 60px));
+      padding-bottom: 90px;
+    }
+    .cpsc-scroll::-webkit-scrollbar { display: none; }
+
+    /* 프로필 정보 영역 */
+    .cpsc-info {
+      padding: 0 16px 16px;
+    }
+    .cpsc-info-top {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+    .cpsc-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,107,138,0.5);
+      flex-shrink: 0;
+      background: #2a2a2a;
+    }
+    .cpsc-stats {
+      display: flex;
+      flex: 1;
+      justify-content: space-around;
+    }
+    .cpsc-stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .cpsc-stat-num {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .cpsc-stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+    }
+    .cpsc-bio-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .cpsc-bio-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .cpsc-action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .cpsc-btn-dm {
+      flex: 1;
+      padding: 11px 0;
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .cpsc-btn-follow {
+      flex: 1;
+      padding: 11px 0;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .cpsc-btn-follow.following {
+      background: rgba(255,107,138,0.12);
+      border-color: rgba(255,107,138,0.4);
+      color: #FF6B8A;
+    }
+    .cpsc-btn-follow:active, .cpsc-btn-dm:active { opacity: 0.8; }
+
+    /* 게시물 그리드 구분선 */
+    .cpsc-grid-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin: 4px 0 2px;
+    }
+
+    /* 3열 그리드 */
+    .cpsc-post-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .cpsc-grid-cell {
+      aspect-ratio: 1;
+      background: #1e1e1e;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    .cpsc-grid-cell img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .cpsc-grid-cell-text {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.4;
+      text-align: center;
+      word-break: break-all;
+    }
+    .cpsc-grid-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255,255,255,0.3);
+      font-size: 14px;
+    }
+    .cpsc-grid-loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.3);
+      font-size: 13px;
+    }
+
+    /* ══════════════════════════════════════════
        ⑫ CharacterProfileBottomSheet
     ══════════════════════════════════════════ */
     #char-profile-sheet-backdrop {
@@ -6535,6 +6726,51 @@ app.get('/', (c) => {
     box-shadow:0 4px 20px rgba(255,107,138,0.5);
     white-space:nowrap;
   "></div>
+
+  <!-- CharacterProfileScreen (LOV-79) -->
+  <div id="char-profile-screen" class="screen" style="display:none; opacity:0;">
+    <!-- 헤더 -->
+    <div class="cpsc-header">
+      <button class="cpsc-back-btn" onclick="closeCharProfileScreen()">‹</button>
+      <div class="cpsc-username" id="cpsc-username">@—</div>
+      <div class="cpsc-header-right"></div>
+    </div>
+    <!-- 스크롤 영역 -->
+    <div class="cpsc-scroll" id="cpsc-scroll">
+      <!-- 프로필 정보 -->
+      <div class="cpsc-info">
+        <div class="cpsc-info-top">
+          <img class="cpsc-avatar" id="cpsc-avatar" src="" alt="" />
+          <div class="cpsc-stats">
+            <div class="cpsc-stat-item">
+              <div class="cpsc-stat-num" id="cpsc-stat-posts">0</div>
+              <div class="cpsc-stat-label">게시물</div>
+            </div>
+            <div class="cpsc-stat-item">
+              <div class="cpsc-stat-num" id="cpsc-stat-followers">0</div>
+              <div class="cpsc-stat-label">팔로워</div>
+            </div>
+            <div class="cpsc-stat-item">
+              <div class="cpsc-stat-num" id="cpsc-stat-following">0</div>
+              <div class="cpsc-stat-label">팔로잉</div>
+            </div>
+          </div>
+        </div>
+        <div class="cpsc-bio-name" id="cpsc-bio-name">—</div>
+        <div class="cpsc-bio-desc" id="cpsc-bio-desc"></div>
+        <div class="cpsc-action-row">
+          <button class="cpsc-btn-dm" id="cpsc-btn-dm" onclick="cpscStartDM()">💌 대화하기</button>
+          <button class="cpsc-btn-follow" id="cpsc-btn-follow" onclick="cpscToggleFollow()">팔로우</button>
+        </div>
+      </div>
+      <div class="cpsc-grid-divider"></div>
+      <!-- 게시물 그리드 -->
+      <div class="cpsc-post-grid" id="cpsc-post-grid">
+        <!-- JS로 생성 -->
+      </div>
+      <div id="cpsc-grid-sentinel" style="height:1px;"></div>
+    </div>
+  </div>
 
   <!-- ⑫ CharacterProfileBottomSheet -->
   <div id="char-profile-sheet-backdrop" onclick="closeCpsSheet()"></div>
