@@ -3593,6 +3593,220 @@ app.get('/', (c) => {
     }
     .bt-badge.show { display: flex; }
 
+    /* ══════════════════════════════════════════
+       ⑫ CharacterProfileBottomSheet
+    ══════════════════════════════════════════ */
+    #char-profile-sheet-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #char-profile-sheet-backdrop.visible { display: block; opacity: 1; }
+
+    #char-profile-sheet {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 201;
+      background: #1a1a1a;
+      border-radius: 24px 24px 0 0;
+      padding: 0 0 max(24px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+      max-height: 88vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    #char-profile-sheet::-webkit-scrollbar { display: none; }
+    #char-profile-sheet.visible { display: block; transform: translateY(0); }
+
+    .cps-handle {
+      width: 40px; height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      margin: 12px auto 16px;
+    }
+    .cps-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 20px 20px;
+      gap: 10px;
+    }
+    .cps-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,107,138,0.6);
+    }
+    .cps-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+    .cps-job {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+    .cps-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .cps-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(255,107,138,0.1);
+      border: 1px solid rgba(255,107,138,0.2);
+      color: rgba(255,107,138,0.8);
+    }
+    .cps-intro {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    /* 최근 피드 미리보기 */
+    .cps-feed-section {
+      padding: 0 16px 16px;
+    }
+    .cps-feed-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+    .cps-feed-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cps-feed-row::-webkit-scrollbar { display: none; }
+    .cps-feed-thumb {
+      flex-shrink: 0;
+      width: 90px; height: 90px;
+      border-radius: 10px;
+      background: #2a2a2a;
+      overflow: hidden;
+      position: relative;
+    }
+    .cps-feed-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .cps-feed-thumb-text {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      padding: 8px;
+      text-align: center;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .cps-feed-thumb-emotion {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+    }
+
+    /* DM CTA 버튼 */
+    .cps-cta-wrap {
+      padding: 8px 16px 0;
+    }
+    .cps-cta-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(255,77,109,0.4);
+      transition: opacity 0.2s;
+    }
+    .cps-cta-btn:active { opacity: 0.85; }
+
+    /* ══════════════════════════════════════════
+       ⑬ WelcomeToFeedScreen (온보딩 완료 후 1회)
+    ══════════════════════════════════════════ */
+    #welcome-feed-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a0a0a 100%);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    #welcome-feed-overlay.visible { display: flex; }
+    .wf-emoji { font-size: 64px; animation: wfPulse 1.5s ease-in-out infinite alternate; }
+    @keyframes wfPulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+    .wf-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.35;
+      letter-spacing: -0.5px;
+    }
+    .wf-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+    .wf-chars {
+      display: flex;
+      gap: -8px;
+      justify-content: center;
+      margin: 4px 0;
+    }
+    .wf-char-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid #0d0d0d;
+      margin-left: -8px;
+    }
+    .wf-char-avatar:first-child { margin-left: 0; }
+    .wf-cta {
+      width: 100%;
+      max-width: 320px;
+      padding: 16px;
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(255,77,109,0.45);
+      transition: transform 0.2s;
+      margin-top: 8px;
+    }
+    .wf-cta:active { transform: scale(0.97); }
+
     /* 회원가입 팝업 애니메이션 */
     @keyframes modalSlideUp {
       from { opacity: 0; transform: translateY(40px) scale(0.94); }
@@ -5984,6 +6198,41 @@ app.get('/', (c) => {
     box-shadow:0 4px 20px rgba(255,107,138,0.5);
     white-space:nowrap;
   "></div>
+
+  <!-- ⑫ CharacterProfileBottomSheet -->
+  <div id="char-profile-sheet-backdrop" onclick="closeCpsSheet()"></div>
+  <div id="char-profile-sheet">
+    <div class="cps-handle"></div>
+    <div class="cps-hero">
+      <img class="cps-avatar" id="cps-avatar" src="" alt="" />
+      <div class="cps-name" id="cps-name">—</div>
+      <div class="cps-job" id="cps-job"></div>
+      <div class="cps-tags" id="cps-tags"></div>
+      <div class="cps-intro" id="cps-intro"></div>
+    </div>
+    <div class="cps-feed-section">
+      <div class="cps-feed-title">최근 피드</div>
+      <div class="cps-feed-row" id="cps-feed-row">
+        <!-- JS로 생성 -->
+      </div>
+    </div>
+    <div class="cps-cta-wrap">
+      <button class="cps-cta-btn" id="cps-dm-btn" onclick="cpsStartDM()">
+        💌 대화 시작하기
+      </button>
+    </div>
+  </div>
+
+  <!-- ⑬ WelcomeToFeedScreen -->
+  <div id="welcome-feed-overlay">
+    <div class="wf-emoji">🎉</div>
+    <div class="wf-title">당신의 이야기를<br>기다리는 친구들</div>
+    <div class="wf-chars" id="wf-chars">
+      <!-- JS로 생성 -->
+    </div>
+    <div class="wf-desc">지금 바로 대화를 시작해보세요<br>취향 맞는 파트너가 기다리고 있어요 💕</div>
+    <button class="wf-cta" onclick="closeWelcomeFeedAndGo()">시작하기 🚀</button>
+  </div>
 
   <!-- ⑪ 하단 탭 내비게이터 -->
   <nav id="bottom-tab-nav">

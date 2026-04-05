@@ -6877,19 +6877,28 @@
           const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
           initSwipeScreen(userName);
           window._swipeInitialized = true;
-          showBottomNav();
-          setActiveBottomTab('feed');
-          showScreen('main-feed-screen');
-          initMainFeedScreen();
+          // LOV-55: 온보딩 최초 완료 시 WelcomeToFeedScreen 표시
+          if (showWelcomeFeedIfNeeded()) {
+            // 웰컴 화면이 표시됨 — closeWelcomeFeedAndGo()에서 피드 진입
+          } else {
+            showBottomNav();
+            setActiveBottomTab('feed');
+            showScreen('main-feed-screen');
+            initMainFeedScreen();
+          }
         }, 350);
       } else {
         const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
         initSwipeScreen(userName);
         window._swipeInitialized = true;
-        showBottomNav();
-        setActiveBottomTab('feed');
-        showScreen('main-feed-screen');
-        initMainFeedScreen();
+        if (showWelcomeFeedIfNeeded()) {
+          // 웰컴 화면 표시됨
+        } else {
+          showBottomNav();
+          setActiveBottomTab('feed');
+          showScreen('main-feed-screen');
+          initMainFeedScreen();
+        }
       }
     }
 
@@ -6912,19 +6921,27 @@
           const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
           initSwipeScreen(userName);
           window._swipeInitialized = true;
-          showBottomNav();
-          setActiveBottomTab('feed');
-          showScreen('main-feed-screen');
-          initMainFeedScreen();
+          if (showWelcomeFeedIfNeeded()) {
+            // 웰컴 화면 표시됨
+          } else {
+            showBottomNav();
+            setActiveBottomTab('feed');
+            showScreen('main-feed-screen');
+            initMainFeedScreen();
+          }
         }, 350);
       } else {
         const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
         initSwipeScreen(userName);
         window._swipeInitialized = true;
-        showBottomNav();
-        setActiveBottomTab('feed');
-        showScreen('main-feed-screen');
-        initMainFeedScreen();
+        if (showWelcomeFeedIfNeeded()) {
+          // 웰컴 화면 표시됨
+        } else {
+          showBottomNav();
+          setActiveBottomTab('feed');
+          showScreen('main-feed-screen');
+          initMainFeedScreen();
+        }
       }
     }
 
@@ -9898,6 +9915,12 @@
     window.handleMfLike         = handleMfLike;
     window.handleMfDM           = handleMfDM;
     window.openRecommendChat    = openRecommendChat;
+    // CharacterProfileBottomSheet
+    window.openCpsSheet         = openCpsSheet;
+    window.closeCpsSheet        = closeCpsSheet;
+    window.cpsStartDM           = cpsStartDM;
+    // WelcomeToFeedScreen
+    window.closeWelcomeFeedAndGo = closeWelcomeFeedAndGo;
 
     // ═══════════════════════════════════════════════════════
     // ⑩ 메인 피드 화면 (MainFeedScreen)
@@ -10085,9 +10108,9 @@
           <div class="mf-post-header">
             <img class="mf-post-avatar" src="${avatarSrc}" alt="${escapeHtml(persona.name)}"
                  onerror="this.src='/images/placeholder.png'"
-                 onclick="openProfileDetail('${post.characterId}')" />
+                 onclick="openCpsSheet('${post.characterId}', '${post.id}')" />
             <div class="mf-post-meta">
-              <div class="mf-post-name" onclick="openProfileDetail('${post.characterId}')">${escapeHtml(persona.name)}</div>
+              <div class="mf-post-name" onclick="openCpsSheet('${post.characterId}', '${post.id}')">${escapeHtml(persona.name)}</div>
               <div class="mf-post-time">${timeStr}</div>
             </div>
             <div class="mf-post-tag">${getMfPostTypeLabel(post.type)}</div>
@@ -10334,3 +10357,167 @@
       }
     };
   
+    // ═══════════════════════════════════════════════════════
+    // ⑫ CharacterProfileBottomSheet (LOV-53 + LOV-54)
+    // ═══════════════════════════════════════════════════════
+
+    let _cpsCurrentPersonaId  = null;
+    let _cpsCurrentPostId     = null;  // DM 시작 시 컨텍스트 postId
+
+    // 바텀 시트 열기
+    async function openCpsSheet(personaId, sourcePostId) {
+      _cpsCurrentPersonaId = personaId;
+      _cpsCurrentPostId    = sourcePostId || null;
+
+      const persona = PERSONAS.find(p => p.id === personaId);
+      if (!persona) return;
+
+      // 기본 정보 채우기
+      const avatarEl = document.getElementById('cps-avatar');
+      const nameEl   = document.getElementById('cps-name');
+      const jobEl    = document.getElementById('cps-job');
+      const tagsEl   = document.getElementById('cps-tags');
+      const introEl  = document.getElementById('cps-intro');
+
+      if (avatarEl) { avatarEl.src = getPersonaImg(persona); avatarEl.alt = persona.name; }
+      if (nameEl)   nameEl.textContent = persona.name;
+      if (jobEl)    jobEl.textContent  = persona.job || '';
+      if (tagsEl)   tagsEl.innerHTML  = (persona.tags || []).map(t => `<span class="cps-tag">${t}</span>`).join('');
+      if (introEl)  introEl.textContent = persona.intro || persona.catchphrase || '';
+
+      // 최근 피드 비동기 로드
+      const feedRow = document.getElementById('cps-feed-row');
+      if (feedRow) {
+        feedRow.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:8px 0;">불러오는 중...</div>';
+        try {
+          const token = getAuthToken();
+          const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+          const res = await fetch(`/api/feed/characters/${personaId}?limit=3`, { headers });
+          if (res.ok) {
+            const data = await res.json();
+            const posts = data.posts || [];
+            if (posts.length === 0) {
+              feedRow.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:12px;padding:8px 0;">아직 피드가 없어요 💕</div>';
+            } else {
+              feedRow.innerHTML = posts.map(post => {
+                if (post.type === 'photo' && post.content?.imageUrl) {
+                  return `<div class="cps-feed-thumb"><img src="${escapeHtml(post.content.imageUrl)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></div>`;
+                } else if (post.type === 'emotion' && post.content?.emotion) {
+                  return `<div class="cps-feed-thumb"><div class="cps-feed-thumb-emotion">${escapeHtml(post.content.emotion)}</div></div>`;
+                } else {
+                  const txt = (post.content?.text || '').slice(0, 40);
+                  return `<div class="cps-feed-thumb"><div class="cps-feed-thumb-text">${escapeHtml(txt)}</div></div>`;
+                }
+              }).join('');
+            }
+          }
+        } catch(e) {
+          feedRow.innerHTML = '';
+        }
+      }
+
+      // 시트 표시
+      const backdrop = document.getElementById('char-profile-sheet-backdrop');
+      const sheet    = document.getElementById('char-profile-sheet');
+      if (backdrop) backdrop.classList.add('visible');
+      if (sheet) {
+        sheet.style.display = 'block';
+        requestAnimationFrame(() => sheet.classList.add('visible'));
+      }
+    }
+
+    // 바텀 시트 닫기
+    function closeCpsSheet() {
+      const backdrop = document.getElementById('char-profile-sheet-backdrop');
+      const sheet    = document.getElementById('char-profile-sheet');
+      if (backdrop) backdrop.classList.remove('visible');
+      if (sheet)    sheet.classList.remove('visible');
+      setTimeout(() => {
+        if (sheet) sheet.style.display = 'none';
+      }, 350);
+      _cpsCurrentPersonaId = null;
+      _cpsCurrentPostId    = null;
+    }
+
+    // 바텀 시트 → DM 시작 (LOV-54)
+    async function cpsStartDM() {
+      if (!isLoggedIn()) { showSignupPopup('cps_dm'); return; }
+
+      const personaId = _cpsCurrentPersonaId;
+      const postId    = _cpsCurrentPostId;
+      if (!personaId) return;
+
+      const btn = document.getElementById('cps-dm-btn');
+      if (btn) { btn.disabled = true; btn.textContent = '연결 중...'; }
+
+      closeCpsSheet();
+
+      try {
+        if (postId) {
+          // 피드 컨텍스트 DM
+          await handleMfDM(postId, personaId);
+        } else {
+          startChat(personaId);
+        }
+      } catch(e) {
+        startChat(personaId);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '💌 대화 시작하기'; }
+      }
+    }
+
+    // 피드 카드 프로필 탭 → 바텀 시트 열기로 openProfileDetail override
+    // (기존 프로필 상세 화면 대신 바텀 시트 우선 표시)
+    const _origOpenProfileDetail = window.openProfileDetail;
+    function openProfileDetailOrSheet(personaId, sourcePostId) {
+      // 메인 피드 화면에서 진입한 경우 바텀 시트
+      const feedScreen = document.getElementById('main-feed-screen');
+      if (feedScreen && feedScreen.style.display !== 'none' && feedScreen.style.opacity !== '0') {
+        openCpsSheet(personaId, sourcePostId || null);
+      } else if (_origOpenProfileDetail) {
+        _origOpenProfileDetail(personaId);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ⑬ WelcomeToFeedScreen (LOV-55)
+    // ═══════════════════════════════════════════════════════
+
+    const WELCOME_FEED_KEY = 'lovia_welcome_feed_shown';
+
+    // 온보딩 완료 후 웰컴 화면 표시 (최초 1회)
+    function showWelcomeFeedIfNeeded() {
+      if (localStorage.getItem(WELCOME_FEED_KEY)) return false;
+      localStorage.setItem(WELCOME_FEED_KEY, '1');
+
+      // 캐릭터 아바타 채우기
+      const charsEl = document.getElementById('wf-chars');
+      if (charsEl) {
+        const picks = PERSONAS.slice(0, 5);
+        charsEl.innerHTML = picks.map(p =>
+          `<img class="wf-char-avatar" src="${getPersonaImg(p)}" alt="${p.name}" onerror="this.src='/images/placeholder.png'" />`
+        ).join('');
+      }
+
+      const overlay = document.getElementById('welcome-feed-overlay');
+      if (overlay) overlay.classList.add('visible');
+      return true;
+    }
+
+    // 웰컴 화면 닫고 메인 피드 진입
+    function closeWelcomeFeedAndGo() {
+      const overlay = document.getElementById('welcome-feed-overlay');
+      if (overlay) {
+        overlay.style.transition = 'opacity 0.4s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.classList.remove('visible');
+          overlay.style.opacity = '';
+          overlay.style.transition = '';
+        }, 400);
+      }
+      showBottomNav();
+      setActiveBottomTab('feed');
+      showScreen('main-feed-screen');
+      initMainFeedScreen();
+    }
