@@ -8568,6 +8568,120 @@ feedApp.post('/api/admin/feed/upload', async (c) => {
   }
 })
 
+// POST /api/admin/feed/generate — 어드민: AI 피드 수동 생성 트리거
+feedApp.post('/api/admin/feed/generate', async (c) => {
+  try {
+    const db = c.env.DB
+    const apiKey = c.env.GEMINI_API_KEY
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+    if (!apiKey) return c.json({ error: 'GEMINI_API_KEY 없음' }, 500)
+
+    const body = await c.req.json<{
+      characterId?: string
+      timeSlot?: 'morning' | 'lunch' | 'evening'
+      count?: number
+    }>().catch(() => ({}))
+
+    const timeSlot = body.timeSlot ?? 'morning'
+    const validSlots = ['morning', 'lunch', 'evening']
+    if (!validSlots.includes(timeSlot)) {
+      return c.json({ error: 'timeSlot은 morning|lunch|evening 중 하나여야 합니다' }, 400)
+    }
+
+    // 캐릭터 목록
+    const ALL_CHARACTERS = ['minji', 'jiwoo', 'hayoung', 'eunbi', 'dahee']
+    const targetChars = body.characterId ? [body.characterId] : ALL_CHARACTERS
+
+    // 유효성 검사
+    for (const cid of targetChars) {
+      if (!ALL_CHARACTERS.includes(cid)) {
+        return c.json({ error: `알 수 없는 캐릭터: ${cid}` }, 400)
+      }
+    }
+
+    // 캐릭터별 피드 생성 (Gemini API)
+    const FEED_PERSONAS: Record<string, string> = {
+      minji: '당신은 민지(27세, 종합병원 응급실 간호사)입니다. 병원 일상, 야간 근무, 소소한 감성을 소재로 짧은 인스타그램 캡션 1~3문장을 작성하세요. 이모지 1~2개 포함(🏥💊🌙😳). 해시태그 없음.',
+      jiwoo: '당신은 지우(20세, 경영학과 신입생 과대표)입니다. 대학 생활, 설레는 일상을 소재로 밝고 발랄한 한국어 캡션 1~3문장. 이모지 2~3개(🌸😆💪🧋). 해시태그 없음.',
+      hayoung: '당신은 하영(28세, 대기업 임원 수행 비서)입니다. 업무, 출장, 세련된 일상을 소재로 격식 있고 지적인 캡션 1~2문장. 이모지 1개(🌹🍷📋). 해시태그 없음.',
+      eunbi: '당신은 은비(24세, 프리랜서 UI/UX 디자이너)입니다. 디자인 작업, 감성적인 야행성 일상을 소재로 시적인 캡션 1~3문장. 이모지 1~2개(🎨🌙🖼️). 해시태그 없음.',
+      dahee: '당신은 다희(23세, 프리랜서 피팅/비키니 모델)입니다. 촬영, 피트니스, 솔직한 일상을 소재로 쿨하고 직설적인 캡션 1~2문장. 이모지 1~2개(😏☀️🌊). 해시태그 없음.',
+    }
+
+    const timeContext: Record<string, string> = {
+      morning: '오전 9시 무렵',
+      lunch: '점심 시간',
+      evening: '저녁 7시 무렵',
+    }
+
+    const results: Array<{ characterId: string; postId?: string; error?: string }> = []
+
+    for (const characterId of targetChars) {
+      try {
+        // 오늘 이미 3개 이상이면 스킵
+        const countRow = await db.prepare(
+          `SELECT COUNT(*) as cnt FROM feed_posts
+           WHERE character_id = ? AND generation_method = 'ai_auto' AND date(published_at) = date('now')`
+        ).bind(characterId).first<{ cnt: number }>()
+        if ((countRow?.cnt ?? 0) >= 3) {
+          results.push({ characterId, error: '오늘 최대 생성 수(3) 도달' })
+          continue
+        }
+
+        const persona = FEED_PERSONAS[characterId]
+        const prompt = `${persona}\n\n지금은 ${timeContext[timeSlot]}입니다. 이 시간대에 어울리는 인스타그램 게시물을 작성해주세요.\n\n반드시 아래 JSON 형식으로만 답하세요:\n{"text":"캡션 내용","emotion":"happy|cozy|tired|excited|melancholy|confident|lonely|grateful 중 하나"}`
+
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.9, maxOutputTokens: 200, responseMimeType: 'application/json' },
+            }),
+          }
+        )
+
+        if (!geminiRes.ok) {
+          results.push({ characterId, error: `Gemini 오류: ${geminiRes.status}` })
+          continue
+        }
+
+        const geminiData: any = await geminiRes.json()
+        const raw = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text
+        if (!raw) {
+          results.push({ characterId, error: 'Gemini 응답 없음' })
+          continue
+        }
+
+        const parsed = JSON.parse(raw)
+        if (!parsed.text) {
+          results.push({ characterId, error: '응답 파싱 실패' })
+          continue
+        }
+
+        const postId = crypto.randomUUID()
+        const now = new Date().toISOString().replace('T', ' ').slice(0, 19)
+        await db.prepare(
+          `INSERT INTO feed_posts
+             (id, character_id, type, text_content, emotion,
+              published_at, generation_method, generation_prompt)
+           VALUES (?, ?, 'emotion', ?, ?, ?, 'ai_auto', ?)`
+        ).bind(postId, characterId, parsed.text, parsed.emotion ?? null, now, prompt).run()
+
+        results.push({ characterId, postId })
+      } catch (e: any) {
+        results.push({ characterId, error: e.message })
+      }
+    }
+
+    return c.json({ ok: true, timeSlot, results })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
 // chatApp 라우트를 메인 app에 마운트
 app.route('/', chatApp)
 app.route('/', authApp)

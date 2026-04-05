@@ -7718,6 +7718,18 @@
           let errData = {};
           try { errData = await res.json(); } catch(_) {}
           console.warn('[TTS] 서버 오류 응답:', res.status, JSON.stringify(errData));
+          if (res.status === 401) {
+            // 로그인 토큰 만료 → 재로그인 유도
+            const msgBox = document.getElementById('chat-messages');
+            if (msgBox) {
+              const dbg = document.createElement('div');
+              dbg.style.cssText = 'text-align:center;font-size:12px;color:#ff6b6b;margin:8px 16px;opacity:0.9;';
+              dbg.innerHTML = '음성 기능을 사용하려면 <a href="#" onclick="loginWithGoogle();return false;" style="color:#ff9f9f;text-decoration:underline;">다시 로그인</a>이 필요합니다.';
+              msgBox.appendChild(dbg);
+            }
+          } else {
+            console.warn('[TTS] 서버 오류:', res.status, JSON.stringify(errData));
+          }
           webSpeechFallback(text);
         }
       } catch(e) {
@@ -9523,11 +9535,30 @@
     (function initAuth() {
       const token = getAuthToken();
       if (token) {
+        // JWT exp 클라이언트 사이드 체크 (서명 검증 없이 만료 여부만 확인)
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const nowSec = Math.floor(Date.now() / 1000);
+          if (payload.exp && payload.exp < nowSec) {
+            // 이미 만료됨 → 즉시 정리
+            localStorage.removeItem('lovia_auth_token');
+            console.warn('[Auth] JWT 만료됨, 토큰 삭제');
+          }
+        } catch(_) {}
+
         // 토큰이 있으면 서버에서 유저 정보 갱신 (비동기, 조용히)
         fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
-          .then(r => r.json())
+          .then(r => {
+            if (r.status === 401) {
+              // 서버에서 401 → 토큰 무효, 삭제
+              localStorage.removeItem('lovia_auth_token');
+              console.warn('[Auth] 서버 401, 토큰 삭제');
+              return null;
+            }
+            return r.json();
+          })
           .then(data => {
-            if (data.user) {
+            if (data && data.user) {
               sessionStorage.setItem('lovia_username', data.user.nickname);
               sessionStorage.setItem('userName', data.user.nickname);
               // 서버 크레딧을 항상 우선 적용 (세션 초기화 후에도 정확한 크레딧 유지)

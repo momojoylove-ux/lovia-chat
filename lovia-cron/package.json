@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev":    "wrangler dev src/index.ts",
-    "build":  "tsc --noEmit",
+    "dev": "wrangler dev src/index.ts",
+    "build": "tsc --noEmit",
     "deploy": "wrangler deploy",
     "test:cron": "wrangler dev src/index.ts --test-scheduled"
   },
@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250705.0",
-    "typescript": "^5.0.0",
+    "typescript": "^5.9.3",
     "wrangler": "^3.78.0"
   }
 }

@@ -5,12 +5,17 @@ account_id         = "13b75b0be9fbc863d2011b3b99e8019b"
 workers_dev        = false          # workers.dev 도메인 비활성 — Cron만 사용
 
 # ── 크론 스케줄 (UTC 기준, KST = UTC+9) ──────────────────────
-# KST 09:00 → UTC 00:00
-# KST 12:00 → UTC 03:00
-# KST 22:00 → UTC 13:00
-# KST 06:00 → UTC 21:00 (missing 체크)
+# KST 09:00 → UTC 00:00  (아침 피드 생성 + 아침 푸시)
+# KST 12:00 → UTC 03:00  (점심 피드 생성 + 점심 푸시)
+# KST 19:00 → UTC 10:00  (저녁 피드 생성)
+# KST 22:00 → UTC 13:00  (야간 푸시)
+# KST 06:00 → UTC 21:00  (missing 체크)
 [triggers]
-crons = ["0 0 * * *", "0 3 * * *", "0 13 * * *", "0 21 * * *"]
+crons = ["0 0 * * *", "0 3 * * *", "0 10 * * *", "0 13 * * *", "0 21 * * *"]
+
+# ── 환경 변수 (Secrets) ───────────────────────────────────────
+# wrangler secret put GEMINI_API_KEY  ← 배포 전 설정 필요
+# wrangler secret put LOVIA_ADMIN_SECRET  ← 어드민 API 인증용
 
 # ── D1 바인딩 ─────────────────────────────────────────────────
 [[d1_databases]]
