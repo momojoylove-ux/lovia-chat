@@ -10211,6 +10211,12 @@
       // 시간 포맷
       const timeStr = formatMfTime(post.publishedAt);
 
+      // emotion 태그 → 이모지 변환
+      const EMOTION_EMOJI = {
+        happy: '😊', cozy: '🌙', tired: '😴', excited: '🎉',
+        melancholy: '💭', confident: '😏', lonely: '🥺', grateful: '🙏'
+      };
+
       // 타입별 콘텐츠
       let bodyHTML = '';
       if (post.type === 'photo' && post.content?.imageUrl) {
@@ -10223,10 +10229,12 @@
         if (post.content?.text) {
           bodyHTML += `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
         }
-      } else if (post.type === 'emotion' && post.content?.emotion) {
-        bodyHTML = `<div class="mf-post-emotion">${escapeHtml(post.content.emotion)}</div>`;
+      } else if (post.type === 'emotion') {
+        const emojiStr = EMOTION_EMOJI[post.content?.emotion] || '💭';
         if (post.content?.text) {
-          bodyHTML += `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
+          bodyHTML = `<div class="mf-post-text"><span class="mf-emotion-badge">${emojiStr}</span>${escapeHtml(post.content.text)}</div>`;
+        } else {
+          bodyHTML = `<div class="mf-post-emotion">${emojiStr}</div>`;
         }
       } else if (post.content?.text) {
         bodyHTML = `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;

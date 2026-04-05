@@ -3462,6 +3462,11 @@ app.get('/', (c) => {
       text-align: center;
       line-height: 1;
     }
+    .mf-emotion-badge {
+      font-size: 18px;
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
 
     /* 액션 바 */
     .mf-post-actions {
