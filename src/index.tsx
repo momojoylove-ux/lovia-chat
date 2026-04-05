@@ -3274,6 +3274,7 @@ app.get('/', (c) => {
       z-index: 70;
       background: #0d0d0d;
       flex-direction: column;
+      align-items: stretch;
       overflow: hidden;
       transition: opacity 0.3s ease;
     }
@@ -3319,9 +3320,11 @@ app.get('/', (c) => {
     /* 피드 스크롤 컨테이너 */
     .mf-scroll {
       flex: 1;
+      width: 100%;
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       scrollbar-width: none;
       padding-top: max(96px, calc(env(safe-area-inset-top, 0px) + 60px));
       padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 68px);
@@ -3344,6 +3347,7 @@ app.get('/', (c) => {
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
       padding-bottom: 4px;
     }
     .mf-recommend-row::-webkit-scrollbar { display: none; }
@@ -3464,6 +3468,8 @@ app.get('/', (c) => {
       color: rgba(255,255,255,0.88);
       line-height: 1.6;
       white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
     .mf-post-emotion {
       padding: 20px 16px;
