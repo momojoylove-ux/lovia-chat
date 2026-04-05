@@ -6327,7 +6327,7 @@ authApp.post('/api/auth/register', async (c) => {
     }
 
     // JWT 발급 (7일)
-    const exp   = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+    const exp   = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30
     const token = await signJWT(
       { userId, email: cleanEmail, nickname: finalNickname, exp },
       c.env.JWT_SECRET
@@ -6474,7 +6474,7 @@ authApp.get('/api/auth/google/callback', async (c) => {
       ).bind(userId).run()
     }
 
-    const exp   = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+    const exp   = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30
     const token = await signJWT(
       { userId, email: cleanEmail, nickname: finalNickname, exp },
       c.env.JWT_SECRET
@@ -8289,10 +8289,282 @@ app.get('/api/tts-debug', async (c) => {
       const errBody = await ttsRes.text()
       return c.json({ ok: false, status, error: errBody, keyPrefix: tcKey.substring(0, 8) })
     }
-    const size = (await ttsRes.arrayBuffer()).byteLength
-    return c.json({ ok: true, status, audioBytes: size, keyPrefix: tcKey.substring(0, 8) })
+    const buf = await ttsRes.arrayBuffer()
+    const hdr = new Uint8Array(buf.slice(0, 44))
+    // WAV 헤더 파싱: https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+    const audioFormat = hdr[20] | (hdr[21] << 8)   // 1=PCM, 3=IEEE float
+    const channels    = hdr[22] | (hdr[23] << 8)
+    const sampleRate  = hdr[24] | (hdr[25] << 8) | (hdr[26] << 16) | (hdr[27] << 24)
+    const bitsPerSample = hdr[34] | (hdr[35] << 8)
+    return c.json({
+      ok: true, status, audioBytes: buf.byteLength, keyPrefix: tcKey.substring(0, 8),
+      wavFormat: { audioFormat, channels, sampleRate, bitsPerSample,
+                   formatName: audioFormat === 1 ? 'PCM' : audioFormat === 3 ? 'IEEE_FLOAT' : `unknown(${audioFormat})` }
+    })
   } catch (e: any) {
     return c.json({ error: e.message })
+  }
+})
+
+// WAV 오디오를 직접 스트리밍하는 테스트 엔드포인트 (브라우저에서 직접 재생 확인용)
+app.get('/api/tts-play', async (c) => {
+  const tcKey = (c.env as any).TYPECAST_API_KEY
+  if (!tcKey) return c.json({ error: 'TYPECAST_API_KEY 없음' })
+  try {
+    const ttsRes = await fetch('https://api.typecast.ai/v1/text-to-speech', {
+      method: 'POST',
+      headers: { 'X-API-KEY': tcKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'ssfm-v30', text: '안녕하세요, 저는 민지예요. 목소리가 잘 들리나요?', voice_id: 'tc_68f9c6a72f0f04a417bb136f' })
+    })
+    if (!ttsRes.ok) return c.json({ error: await ttsRes.text() })
+    const buf = await ttsRes.arrayBuffer()
+    return new Response(buf, { headers: { 'Content-Type': 'audio/wav', 'Content-Disposition': 'inline' } })
+  } catch (e: any) {
+    return c.json({ error: e.message })
+  }
+})
+
+// ════════════════════════════════════════════
+// FEED API  (/api/feed/*)
+// ════════════════════════════════════════════
+
+const feedApp = new Hono<{ Bindings: Bindings }>()
+
+// ── FeedPost 조회 헬퍼 ──
+function formatFeedPost(row: any) {
+  return {
+    id: row.id,
+    characterId: row.character_id,
+    type: row.type,
+    content: {
+      text: row.text_content ?? undefined,
+      imageUrl: row.image_url ?? undefined,
+      emotion: row.emotion ?? undefined,
+      storyRef: row.story_ref ?? undefined,
+    },
+    publishedAt: row.published_at,
+    expiresAt: row.expires_at ?? null,
+    reactions: {
+      heartCount: row.heart_count,
+      dmStartCount: row.dm_start_count,
+    },
+    generationMeta: {
+      method: row.generation_method,
+    },
+  }
+}
+
+// GET /api/feed — 커서 기반 페이지네이션 피드 목록
+feedApp.get('/api/feed', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ posts: [], nextCursor: null })
+
+    const cursor = c.req.query('cursor')   // 이전 마지막 published_at 값
+    const limit  = Math.min(parseInt(c.req.query('limit') || '20', 10), 50)
+
+    let query: string
+    let params: any[]
+
+    const baseWhere = `WHERE (expires_at IS NULL OR expires_at > datetime('now'))`
+
+    if (cursor) {
+      query = `SELECT * FROM feed_posts ${baseWhere} AND published_at < ? ORDER BY published_at DESC LIMIT ?`
+      params = [cursor, limit + 1]
+    } else {
+      query = `SELECT * FROM feed_posts ${baseWhere} ORDER BY published_at DESC LIMIT ?`
+      params = [limit + 1]
+    }
+
+    const rows = await db.prepare(query).bind(...params).all()
+    const items = rows.results ?? []
+
+    let nextCursor: string | null = null
+    if (items.length > limit) {
+      items.pop()
+      nextCursor = (items[items.length - 1] as any).published_at
+    }
+
+    return c.json({
+      posts: items.map(formatFeedPost),
+      nextCursor,
+    })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// GET /api/feed/characters/:characterId — 특정 캐릭터 피드 목록
+feedApp.get('/api/feed/characters/:characterId', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ posts: [], nextCursor: null })
+
+    const { characterId } = c.req.param()
+    const cursor = c.req.query('cursor')
+    const limit  = Math.min(parseInt(c.req.query('limit') || '20', 10), 50)
+
+    let query: string
+    let params: any[]
+
+    const baseWhere = `WHERE character_id = ? AND (expires_at IS NULL OR expires_at > datetime('now'))`
+
+    if (cursor) {
+      query = `SELECT * FROM feed_posts ${baseWhere} AND published_at < ? ORDER BY published_at DESC LIMIT ?`
+      params = [characterId, cursor, limit + 1]
+    } else {
+      query = `SELECT * FROM feed_posts ${baseWhere} ORDER BY published_at DESC LIMIT ?`
+      params = [characterId, limit + 1]
+    }
+
+    const rows = await db.prepare(query).bind(...params).all()
+    const items = rows.results ?? []
+
+    let nextCursor: string | null = null
+    if (items.length > limit) {
+      items.pop()
+      nextCursor = (items[items.length - 1] as any).published_at
+    }
+
+    return c.json({
+      posts: items.map(formatFeedPost),
+      nextCursor,
+    })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// POST /api/feed/:postId/react — 좋아요 반응 (heart)
+feedApp.post('/api/feed/:postId/react', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '인증 필요' }, 401)
+
+    const { postId } = c.req.param()
+    const { type = 'heart' } = await c.req.json<{ type?: string }>().catch(() => ({ type: 'heart' }))
+
+    if (type !== 'heart') return c.json({ error: '지원하지 않는 반응 타입' }, 400)
+
+    // 게시물 존재 확인
+    const post = await db.prepare('SELECT id FROM feed_posts WHERE id = ?').bind(postId).first()
+    if (!post) return c.json({ error: '게시물을 찾을 수 없습니다' }, 404)
+
+    // 중복 반응 처리: INSERT OR IGNORE
+    const inserted = await db.prepare(
+      'INSERT OR IGNORE INTO feed_reactions (post_id, user_id, type) VALUES (?, ?, ?)'
+    ).bind(postId, userId, type).run()
+
+    if (inserted.meta?.changes && inserted.meta.changes > 0) {
+      // 새로 추가된 경우 카운터 증가
+      await db.prepare(
+        'UPDATE feed_posts SET heart_count = heart_count + 1 WHERE id = ?'
+      ).bind(postId).run()
+    }
+
+    const updated = await db.prepare('SELECT heart_count FROM feed_posts WHERE id = ?').bind(postId).first<{ heart_count: number }>()
+    return c.json({ ok: true, heartCount: updated?.heart_count ?? 0 })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// POST /api/feed/:postId/start-dm — 피드에서 DM 시작
+feedApp.post('/api/feed/:postId/start-dm', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '인증 필요' }, 401)
+
+    const { postId } = c.req.param()
+
+    // 게시물 조회
+    const post = await db.prepare(
+      'SELECT id, character_id, text_content, type FROM feed_posts WHERE id = ?'
+    ).bind(postId).first<{ id: string; character_id: string; text_content: string | null; type: string }>()
+    if (!post) return c.json({ error: '게시물을 찾을 수 없습니다' }, 404)
+
+    // 채팅 세션 생성
+    const sessionId = crypto.randomUUID()
+    await db.prepare(
+      `INSERT INTO chat_sessions (id, user_id, character_id, source_context, feed_post_id)
+       VALUES (?, ?, ?, 'feed', ?)`
+    ).bind(sessionId, userId, post.character_id, postId).run()
+
+    // DM 시작 카운터 증가
+    await db.prepare(
+      'UPDATE feed_posts SET dm_start_count = dm_start_count + 1 WHERE id = ?'
+    ).bind(postId).run()
+
+    // 피드 컨텍스트 주입 메시지 생성
+    const contextInjected = !!post.text_content
+    const contextMessage = post.text_content
+      ? `[피드 컨텍스트] 방금 "${post.text_content}" 라는 포스트를 봤어.`
+      : null
+
+    return c.json({
+      chatSessionId: sessionId,
+      characterId: post.character_id,
+      sourceContext: 'feed',
+      contextInjected,
+      contextMessage,
+    })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// POST /api/admin/feed/upload — 어드민: 피드 수동 업로드
+feedApp.post('/api/admin/feed/upload', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+
+    const body = await c.req.json<{
+      characterId: string
+      type: 'photo' | 'text' | 'emotion' | 'story_tease'
+      content: {
+        text?: string
+        imageUrl?: string
+        emotion?: string
+        storyRef?: string
+      }
+      scheduledAt?: string
+      expiresAt?: string
+    }>()
+
+    if (!body.characterId || !body.type) {
+      return c.json({ error: 'characterId와 type은 필수입니다' }, 400)
+    }
+
+    const id = crypto.randomUUID()
+    const publishedAt = body.scheduledAt || new Date().toISOString().replace('T', ' ').slice(0, 19)
+
+    await db.prepare(
+      `INSERT INTO feed_posts
+         (id, character_id, type, text_content, image_url, emotion, story_ref,
+          published_at, expires_at, generation_method)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'manual')`
+    ).bind(
+      id,
+      body.characterId,
+      body.type,
+      body.content?.text ?? null,
+      body.content?.imageUrl ?? null,
+      body.content?.emotion ?? null,
+      body.content?.storyRef ?? null,
+      publishedAt,
+      body.expiresAt ?? null,
+    ).run()
+
+    return c.json({ ok: true, postId: id })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
   }
 })
 
@@ -8304,5 +8576,6 @@ app.route('/', pushApp)
 app.route('/', storyApp)
 app.route('/', onboardingApp)
 app.route('/', prefsApp)
+app.route('/', feedApp)
 
 export default app
