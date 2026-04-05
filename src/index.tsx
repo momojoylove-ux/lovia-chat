@@ -3539,6 +3539,150 @@ app.get('/', (c) => {
     .mf-empty-text { font-size: 15px; color: rgba(255,255,255,0.4); line-height: 1.6; }
     .mf-load-more-sentinel { height: 40px; }
 
+    /* 피드 포스트 이미지 클릭 커서 */
+    .mf-post-img-wrap { cursor: pointer; }
+    .mf-post-img-wrap:active { opacity: 0.9; }
+
+    /* 성인 배지 */
+    .mf-adult-badge {
+      position: absolute;
+      top: 4px; right: 4px;
+      font-size: 11px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+
+    /* ── 피드 포스트 상세 뷰 모달 ── */
+    #mf-post-detail-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 300;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #mf-post-detail-backdrop.visible { display: block; opacity: 1; }
+
+    #mf-post-detail {
+      position: fixed;
+      inset: 0;
+      z-index: 301;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    #mf-post-detail.visible { display: flex; }
+
+    .mf-detail-close {
+      position: fixed;
+      top: max(48px, calc(env(safe-area-inset-top, 0px) + 12px));
+      right: 16px;
+      z-index: 302;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mf-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: max(56px, calc(env(safe-area-inset-top, 0px) + 20px)) 16px 14px;
+    }
+    .mf-detail-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,107,138,0.6);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .mf-detail-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+    .mf-detail-time {
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      margin-top: 2px;
+    }
+
+    .mf-detail-img-wrap {
+      width: 100%;
+      aspect-ratio: 4/5;
+      overflow: hidden;
+      background: #1a1a1a;
+      flex-shrink: 0;
+    }
+    .mf-detail-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mf-detail-body {
+      padding: 14px 16px 20px;
+    }
+    .mf-detail-caption {
+      font-size: 15px;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+    .mf-detail-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px 14px;
+    }
+    .mf-detail-like-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.55);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.15s;
+    }
+    .mf-detail-like-btn .heart { font-size: 22px; transition: transform 0.2s cubic-bezier(0.36,0.07,0.19,0.97); }
+    .mf-detail-like-btn.liked { color: #FF6B8A; }
+    .mf-detail-like-btn.liked .heart { transform: scale(1.3); }
+    .mf-detail-dm-btn {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .mf-detail-dm-btn:active { opacity: 0.85; }
+
     /* ══════════════════════════════════════════
        ⑪ 하단 탭 내비게이터
     ══════════════════════════════════════════ */
@@ -5568,6 +5712,35 @@ app.get('/', (c) => {
 
     </div>
 
+  </div>
+
+  <!-- 피드 포스트 상세 뷰 모달 -->
+  <div id="mf-post-detail-backdrop" onclick="closeMfPostDetail()"></div>
+  <div id="mf-post-detail">
+    <button class="mf-detail-close" onclick="closeMfPostDetail()">✕</button>
+    <div class="mf-detail-header">
+      <img class="mf-detail-avatar" id="mfd-avatar" src="" alt=""
+           onclick="closeMfPostDetail(); openCpsSheet(window._mfdCharId, window._mfdPostId)" />
+      <div>
+        <div class="mf-detail-name" id="mfd-name"
+             onclick="closeMfPostDetail(); openCpsSheet(window._mfdCharId, window._mfdPostId)"></div>
+        <div class="mf-detail-time" id="mfd-time"></div>
+      </div>
+    </div>
+    <div class="mf-detail-img-wrap" id="mfd-img-wrap" style="display:none;">
+      <img class="mf-detail-img" id="mfd-img" src="" alt=""
+           onerror="document.getElementById('mfd-img-wrap').style.display='none'" />
+    </div>
+    <div class="mf-detail-actions">
+      <button class="mf-detail-like-btn" id="mfd-like-btn" onclick="handleMfDetailLike()">
+        <span class="heart">🤍</span>
+        <span class="mf-detail-like-count">0</span>
+      </button>
+      <button class="mf-detail-dm-btn" onclick="handleMfDetailDM()">💌 DM 보내기</button>
+    </div>
+    <div class="mf-detail-body">
+      <div class="mf-detail-caption" id="mfd-caption"></div>
+    </div>
   </div>
 
   <!-- ⑧ 인앱 그램 피드 화면 -->

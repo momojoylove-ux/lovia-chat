@@ -10034,6 +10034,11 @@
     window.openCpsSheet         = openCpsSheet;
     window.closeCpsSheet        = closeCpsSheet;
     window.cpsStartDM           = cpsStartDM;
+    // 포스트 상세 뷰
+    window.openMfPostDetail     = openMfPostDetail;
+    window.closeMfPostDetail    = closeMfPostDetail;
+    window.handleMfDetailLike   = handleMfDetailLike;
+    window.handleMfDetailDM     = handleMfDetailDM;
     // WelcomeToFeedScreen
     window.closeWelcomeFeedAndGo = closeWelcomeFeedAndGo;
 
@@ -10212,13 +10217,13 @@
       let bodyHTML = '';
       if (post.type === 'photo' && post.content?.imageUrl) {
         bodyHTML = `
-          <div class="mf-post-img-wrap">
+          <div class="mf-post-img-wrap" onclick="openMfPostDetail('${post.id}')">
             <img class="mf-post-img" src="${escapeHtml(post.content.imageUrl)}"
                  alt="${escapeHtml(persona.name)}" loading="lazy"
                  onerror="this.parentElement.style.display='none'" />
           </div>`;
         if (post.content?.text) {
-          bodyHTML += `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
+          bodyHTML += `<div class="mf-post-text" onclick="openMfPostDetail('${post.id}')" style="cursor:pointer;">${escapeHtml(post.content.text)}</div>`;
         }
       } else if (post.type === 'emotion') {
         const emojiStr = EMOTION_EMOJI[post.content?.emotion] || '💭';
@@ -10351,6 +10356,124 @@
       } catch(e) {
         startChat(characterId);
       }
+    }
+
+    // ── 포스트 상세 뷰 ──
+    // 현재 상세 뷰에 표시 중인 포스트 캐시
+    let _mfdPost = null;
+
+    function openMfPostDetail(postId) {
+      // mf-posts 내에서 해당 포스트 DOM 찾기
+      const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+      if (!postEl) return;
+
+      // 포스트 데이터는 DOM에서 추출하거나 캐시에서 가져옴
+      // DOM에서 필요한 데이터 읽기
+      const charId = postEl.dataset.charId;
+      const persona = PERSONAS.find(p => p.id === charId) || { id: charId, name: charId };
+      const avatarSrc = postEl.querySelector('.mf-post-avatar')?.src || '/images/placeholder.png';
+      const imgEl = postEl.querySelector('.mf-post-img');
+      const captionEl = postEl.querySelector('.mf-post-text');
+      const timeEl = postEl.querySelector('.mf-post-time');
+      const likeBtn = postEl.querySelector('.mf-like-btn');
+      const likeCountEl = likeBtn?.querySelector('.mf-like-count');
+
+      // 전역에 저장 (DM 버튼에서 사용)
+      window._mfdPostId = postId;
+      window._mfdCharId = charId;
+      _mfdPost = { postId, charId };
+
+      // 헤더
+      const avatarEl = document.getElementById('mfd-avatar');
+      if (avatarEl) { avatarEl.src = avatarSrc; avatarEl.alt = persona.name; }
+      const nameEl = document.getElementById('mfd-name');
+      if (nameEl) nameEl.textContent = persona.name;
+      const timeText = document.getElementById('mfd-time');
+      if (timeText) timeText.textContent = timeEl?.textContent || '';
+
+      // 이미지
+      const imgWrap = document.getElementById('mfd-img-wrap');
+      const detailImg = document.getElementById('mfd-img');
+      if (imgEl && imgWrap && detailImg) {
+        detailImg.src = imgEl.src;
+        detailImg.alt = persona.name;
+        imgWrap.style.display = 'block';
+      } else if (imgWrap) {
+        imgWrap.style.display = 'none';
+      }
+
+      // 캡션
+      const captionDest = document.getElementById('mfd-caption');
+      if (captionDest) captionDest.textContent = captionEl?.textContent || '';
+
+      // 좋아요 버튼 상태 동기화
+      const detailLikeBtn = document.getElementById('mfd-like-btn');
+      const isLiked = !!mfLikes[postId];
+      if (detailLikeBtn) {
+        detailLikeBtn.classList.toggle('liked', isLiked);
+        const heart = detailLikeBtn.querySelector('.heart');
+        const count = detailLikeBtn.querySelector('.mf-detail-like-count');
+        if (heart) heart.textContent = isLiked ? '❤️' : '🤍';
+        if (count) count.textContent = likeCountEl?.textContent || '0';
+      }
+
+      // 모달 표시
+      const backdrop = document.getElementById('mf-post-detail-backdrop');
+      const detail = document.getElementById('mf-post-detail');
+      if (backdrop) { backdrop.style.display = 'block'; requestAnimationFrame(() => backdrop.classList.add('visible')); }
+      if (detail) { detail.classList.add('visible'); }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMfPostDetail() {
+      const backdrop = document.getElementById('mf-post-detail-backdrop');
+      const detail = document.getElementById('mf-post-detail');
+      if (backdrop) { backdrop.classList.remove('visible'); setTimeout(() => { backdrop.style.display = 'none'; }, 250); }
+      if (detail) detail.classList.remove('visible');
+      document.body.style.overflow = '';
+      window._mfdPostId = null;
+      window._mfdCharId = null;
+      _mfdPost = null;
+    }
+
+    function handleMfDetailLike() {
+      if (!_mfdPost) return;
+      const { postId } = _mfdPost;
+      const wasLiked = !!mfLikes[postId];
+      mfLikes[postId] = !wasLiked;
+      saveMfLikes();
+
+      // 상세 뷰 버튼 업데이트
+      const detailLikeBtn = document.getElementById('mfd-like-btn');
+      const isLiked = !wasLiked;
+      if (detailLikeBtn) {
+        detailLikeBtn.classList.toggle('liked', isLiked);
+        const heart = detailLikeBtn.querySelector('.heart');
+        const count = detailLikeBtn.querySelector('.mf-detail-like-count');
+        if (heart) heart.textContent = isLiked ? '❤️' : '🤍';
+        if (count) {
+          const cur = parseInt(count.textContent || '0', 10);
+          count.textContent = isLiked ? cur + 1 : Math.max(0, cur - 1);
+        }
+      }
+      // 메인 피드 버튼도 동기화
+      updateMfLikeBtn(postId, isLiked);
+
+      // 서버에 반응 전송
+      const token = getAuthToken();
+      if (token) {
+        fetch(`/api/feed/${postId}/react`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ type: 'heart' })
+        }).catch(() => {});
+      }
+    }
+
+    function handleMfDetailDM() {
+      if (!_mfdPost) return;
+      closeMfPostDetail();
+      handleMfDM(_mfdPost.postId, _mfdPost.charId);
     }
 
     // 무한 스크롤 (IntersectionObserver)
