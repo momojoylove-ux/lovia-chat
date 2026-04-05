@@ -8849,6 +8849,11 @@
         if (nameEl2)   nameEl2.textContent   = '비회원';
       }
 
+      // 성인 인증 섹션 (로그인 시에만)
+      const adultSection = document.getElementById('mypage-adult-section');
+      if (adultSection) adultSection.style.display = loggedIn ? 'block' : 'none';
+      if (loggedIn) renderMypageAdultSection();
+
       // 화면 표시
       const el = document.getElementById('mypage-screen');
       if (!el) return;
@@ -8858,6 +8863,68 @@
         el.style.opacity    = '1';
         el.classList.add('visible');
       });
+    }
+
+    // 마이페이지 성인 인증 섹션 렌더링
+    async function renderMypageAdultSection() {
+      const inner = document.getElementById('mypage-adult-inner');
+      if (!inner) return;
+
+      // 로딩 상태
+      inner.innerHTML = `<div class="mypage-adult-row"><div class="mypage-adult-info"><div class="mypage-adult-title">확인 중...</div></div></div>`;
+
+      try {
+        const res = await fetch('/api/auth/adult/status', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+
+        if (data.verified) {
+          const verifiedDate = data.verifiedAt
+            ? new Date(data.verifiedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+            : '';
+          inner.innerHTML = `
+            <div class="mypage-adult-row">
+              <div class="mypage-adult-icon">✅</div>
+              <div class="mypage-adult-info">
+                <div class="mypage-adult-title">성인 인증 완료</div>
+                ${verifiedDate ? `<div class="mypage-adult-desc">인증일: ${verifiedDate}</div>` : ''}
+              </div>
+              <div class="mypage-adult-done-badge">인증 완료</div>
+            </div>`;
+          // 캐시 갱신
+          _adultVerifiedCache = true;
+        } else if (data.blocked) {
+          inner.innerHTML = `
+            <div class="mypage-adult-row">
+              <div class="mypage-adult-icon">🚫</div>
+              <div class="mypage-adult-info">
+                <div class="mypage-adult-title">성인 콘텐츠 이용 불가</div>
+                <div class="mypage-adult-desc">만 19세 미만은 성인 콘텐츠를 이용할 수 없습니다</div>
+              </div>
+            </div>`;
+        } else {
+          inner.innerHTML = `
+            <div class="mypage-adult-row">
+              <div class="mypage-adult-icon">🔞</div>
+              <div class="mypage-adult-info">
+                <div class="mypage-adult-title">성인 인증</div>
+                <div class="mypage-adult-desc">PASS 본인인증으로 성인 콘텐츠를 이용해보세요</div>
+              </div>
+              <button class="mypage-adult-btn" onclick="avgsOpen(null)">인증하기</button>
+            </div>`;
+        }
+      } catch(e) {
+        inner.innerHTML = `
+          <div class="mypage-adult-row">
+            <div class="mypage-adult-icon">🔞</div>
+            <div class="mypage-adult-info">
+              <div class="mypage-adult-title">성인 인증</div>
+              <div class="mypage-adult-desc">PASS 본인인증으로 성인 콘텐츠를 이용해보세요</div>
+            </div>
+            <button class="mypage-adult-btn" onclick="avgsOpen(null)">인증하기</button>
+          </div>`;
+      }
     }
 
     // 마이페이지 닫기
@@ -9976,15 +10043,20 @@
       // 3~5명 랜덤 추천 (최대 5명)
       const picks = [...PERSONAS].sort(() => Math.random() - 0.5).slice(0, Math.min(5, PERSONAS.length));
 
-      row.innerHTML = picks.map(p => `
+      row.innerHTML = picks.map(p => {
+        const isAdult = ADULT_PERSONA_IDS.has(p.id);
+        return `
         <div class="mf-recommend-card" onclick="openRecommendChat('${p.id}')">
-          <img class="mf-recommend-avatar" src="${getPersonaImg(p)}" alt="${p.name}"
-               onerror="this.src='/images/placeholder.png'" />
+          <div class="mf-recommend-avatar-wrap" style="position:relative;display:inline-block;">
+            <img class="mf-recommend-avatar" src="${getPersonaImg(p)}" alt="${p.name}"
+                 onerror="this.src='/images/placeholder.png'" />
+            ${isAdult ? `<span class="mf-adult-badge" title="성인 인증 필요">🔞</span>` : ''}
+          </div>
           <div class="mf-recommend-name">${p.name}</div>
           <div class="mf-recommend-job">${p.job || ''}</div>
-          <button class="mf-recommend-btn">대화하기 💬</button>
-        </div>
-      `).join('');
+          <button class="mf-recommend-btn">${isAdult ? '🔒 인증 후 대화' : '대화하기 💬'}</button>
+        </div>`;
+      }).join('');
     }
 
     function openRecommendChat(personaId) {

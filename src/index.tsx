@@ -4329,6 +4329,57 @@ app.get('/', (c) => {
     .mypage-legal-label { flex: 1; font-size: 14px; color: rgba(255,255,255,0.8); }
     .mypage-legal-arrow { font-size: 18px; color: rgba(255,255,255,0.25); }
 
+    /* 성인 인증 섹션 */
+    .mypage-adult-inner {
+      margin: 0 16px 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .mypage-adult-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      gap: 12px;
+    }
+    .mypage-adult-icon { font-size: 20px; flex-shrink: 0; }
+    .mypage-adult-info { flex: 1; min-width: 0; }
+    .mypage-adult-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .mypage-adult-desc { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .mypage-adult-btn {
+      background: linear-gradient(135deg, #ff6b8a, #ff4466);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .mypage-adult-btn:active { opacity: 0.8; }
+    .mypage-adult-done-badge {
+      background: rgba(100,220,130,0.15);
+      border: 1px solid rgba(100,220,130,0.35);
+      color: #64dc82;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    /* 추천 카드 성인 배지 */
+    .mf-adult-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      font-size: 14px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
     /* AI 콘텐츠 공시 배너 */
     .mypage-ai-disclosure {
       margin: 0 16px 12px;
@@ -5394,6 +5445,14 @@ app.get('/', (c) => {
     <div class="mypage-section-title">📋 최근 크레딧 내역</div>
     <div class="mypage-history-list" id="mypage-history-list">
       <!-- JS로 생성 -->
+    </div>
+
+    <!-- 성인 인증 섹션 (로그인 시에만 표시) -->
+    <div id="mypage-adult-section" style="display:none">
+      <div class="mypage-section-title">🔞 성인 인증</div>
+      <div class="mypage-adult-inner" id="mypage-adult-inner">
+        <!-- JS로 렌더링 -->
+      </div>
     </div>
 
     <!-- 법적 정보 & 설정 (로그인 시에만 표시) -->
@@ -9359,6 +9418,7 @@ function formatFeedPost(row: any) {
     id: row.id,
     characterId: row.character_id,
     type: row.type,
+    contentRating: (row.content_rating as string) || 'general',
     content: {
       text: row.text_content ?? undefined,
       imageUrl: row.image_url ?? undefined,
