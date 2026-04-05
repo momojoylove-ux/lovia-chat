@@ -274,11 +274,66 @@
     }
     // introVideo.src는 위에서 이미 videoFiles[randomIdx]로 설정됨
 
+    // ── Google OAuth 콜백 조기 감지 (스플래시 스킵용) ──
+    const _oauthCallbackParams = new URLSearchParams(window.location.search);
+    const _googleOAuthToken = _oauthCallbackParams.get('google_token');
+    const _googleOAuthIsNew = _oauthCallbackParams.get('is_new') === '1';
+    if (_googleOAuthToken) {
+      localStorage.setItem('lovia_auth_token', _googleOAuthToken);
+      try {
+        const _payload = JSON.parse(atob(_googleOAuthToken.split('.')[1]));
+        if (_payload.nickname) sessionStorage.setItem('lovia_nickname', _payload.nickname);
+        if (_payload.email)    sessionStorage.setItem('lovia_email',    _payload.email);
+      } catch(e) { /* ignore */ }
+      const _cleanUrl = new URL(window.location.href);
+      _cleanUrl.searchParams.delete('google_token');
+      _cleanUrl.searchParams.delete('is_new');
+      window.history.replaceState({}, '', _cleanUrl.toString());
+    }
+
     // 2.5초 후 무조건 동영상으로 전환 (단 한 번만 실행)
     let splashDone = false;
     async function goToVideo() {
       if (splashDone) return;
       splashDone = true;
+
+      // ── Google OAuth 콜백 처리 (스플래시 스킵) ──
+      if (_googleOAuthToken) {
+        const splash = document.getElementById('splash');
+        if (splash) splash.style.display = 'none';
+        const token = localStorage.getItem('lovia_auth_token');
+        try {
+          const meRes = await fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } });
+          if (meRes.ok) {
+            const meData = await meRes.json();
+            const user = meData.user;
+            sessionStorage.setItem('lovia_username', user.nickname);
+            sessionStorage.setItem('userName', user.nickname);
+            if (user.credits !== undefined) sessionStorage.setItem('lovia_credits', String(user.credits));
+          }
+        } catch(e) { /* ignore */ }
+        if (_googleOAuthIsNew) {
+          // 신규 유저: 온보딩 완료 여부 확인
+          let onboardingDone = false;
+          try {
+            const obRes = await fetch('/api/onboarding/status', { headers: { 'Authorization': `Bearer ${token}` } });
+            if (obRes.ok) {
+              const obData = await obRes.json();
+              onboardingDone = obData.completed;
+            }
+          } catch(e) { /* ignore */ }
+          if (onboardingDone) {
+            initSwipeAndGo();
+          } else {
+            showIntroVideo();
+          }
+        } else {
+          // 기존 유저 → 캐릭터 선택(스와이프)
+          initSwipeAndGo();
+        }
+        setTimeout(tryRequestPushAfterLogin, 3000);
+        return;
+      }
 
       // ── 결제 복귀 체크 (스플래시 건너뜀) ──
       const paymentResultRaw = sessionStorage.getItem('lovia_payment_result');
@@ -406,9 +461,9 @@
       setTimeout(syncUserPreferences, 500);
     }
 
-    setTimeout(goToVideo, 2500);
+    setTimeout(goToVideo, _googleOAuthToken ? 0 : 2500);
     // 혹시 첫 타이머가 막혀도 5초 후 강제 실행
-    setTimeout(goToVideo, 5000);
+    setTimeout(goToVideo, _googleOAuthToken ? 0 : 5000);
 
     // ─────────────────────────────
     // 화면 전환 헬퍼
