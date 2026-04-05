@@ -3411,6 +3411,15 @@ app.get('/', (c) => {
       flex-shrink: 0;
       cursor: pointer;
     }
+    .mf-avatar-fallback {
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .mf-post-meta {
       flex: 1;
     }

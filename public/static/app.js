@@ -10076,23 +10076,29 @@
       setupMfInfiniteScroll();
     }
 
+    // 실제 프로필 이미지가 있는 메인 캐릭터 ID 목록
+    const MAIN_PERSONA_IDS = ['minji', 'jiwoo', 'hayoung', 'eunbi', 'dahee'];
+
     // 추천 캐릭터 섹션 렌더링 (채팅 0건인 신규 유저에게 노출)
     function renderMfRecommend() {
       const section = document.getElementById('mf-recommend-section');
       const row = document.getElementById('mf-recommend-row');
       if (!section || !row) return;
 
-      // 채팅 경험이 없는 경우 추천 노출
-      const hasChatHistory = PERSONAS.some(p =>
-        (sessionStorage.getItem('chat_' + p.id) || '[]') !== '[]'
+      // 채팅 경험 확인: localStorage 우선, sessionStorage 폴백
+      const hasChatHistory = MAIN_PERSONA_IDS.some(id =>
+        (localStorage.getItem('lovia_chat_' + id) || localStorage.getItem('chat_' + id) ||
+         sessionStorage.getItem('chat_' + id) || '[]') !== '[]'
       );
 
-      if (hasChatHistory) { section.style.display = 'none'; return; }
+      // 로그인 유저는 추천 섹션 숨김 (피드 포스트만 보여줌)
+      if (hasChatHistory || isLoggedIn()) { section.style.display = 'none'; return; }
 
       section.style.display = 'block';
 
-      // 3~5명 랜덤 추천 (최대 5명)
-      const picks = [...PERSONAS].sort(() => Math.random() - 0.5).slice(0, Math.min(5, PERSONAS.length));
+      // 메인 캐릭터(이미지 있는) 중 랜덤 3~4명 추천
+      const mainPersonas = PERSONAS.filter(p => MAIN_PERSONA_IDS.includes(p.id));
+      const picks = [...mainPersonas].sort(() => Math.random() - 0.5).slice(0, 4);
 
       row.innerHTML = picks.map(p => {
         const isAdult = ADULT_PERSONA_IDS.has(p.id);
@@ -10100,7 +10106,7 @@
         <div class="mf-recommend-card" onclick="openRecommendChat('${p.id}')">
           <div class="mf-recommend-avatar-wrap" style="position:relative;display:inline-block;">
             <img class="mf-recommend-avatar" src="${getPersonaImg(p)}" alt="${p.name}"
-                 onerror="this.src='/images/placeholder.png'" />
+                 onerror="this.style.display='none'" />
             ${isAdult ? `<span class="mf-adult-badge" title="성인 인증 필요">🔞</span>` : ''}
           </div>
           <div class="mf-recommend-name">${p.name}</div>
@@ -10200,7 +10206,7 @@
         name: post.characterId,
         job: '',
       };
-      const avatarSrc = getPersonaImg(persona) || '/images/placeholder.png';
+      const avatarSrc = getPersonaImg(persona) || '';
       const isLiked = !!mfLikes[post.id];
       const heartCount = (post.reactions?.heartCount || 0) + (isLiked ? 1 : 0);
 
@@ -10236,12 +10242,20 @@
         bodyHTML = `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
       }
 
+      const nameInitial = (persona.name || '?').charAt(0);
+      const avatarHTML = avatarSrc
+        ? `<img class="mf-post-avatar" src="${avatarSrc}" alt="${escapeHtml(persona.name)}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+               onclick="openCpsSheet('${post.characterId}', '${post.id}')" />
+           <div class="mf-post-avatar mf-avatar-fallback" style="display:none"
+                onclick="openCpsSheet('${post.characterId}', '${post.id}')">${nameInitial}</div>`
+        : `<div class="mf-post-avatar mf-avatar-fallback"
+               onclick="openCpsSheet('${post.characterId}', '${post.id}')">${nameInitial}</div>`;
+
       return `
         <div class="mf-post" data-post-id="${post.id}" data-char-id="${post.characterId}">
           <div class="mf-post-header">
-            <img class="mf-post-avatar" src="${avatarSrc}" alt="${escapeHtml(persona.name)}"
-                 onerror="this.src='/images/placeholder.png'"
-                 onclick="openCpsSheet('${post.characterId}', '${post.id}')" />
+            ${avatarHTML}
             <div class="mf-post-meta">
               <div class="mf-post-name" onclick="openCpsSheet('${post.characterId}', '${post.id}')">${escapeHtml(persona.name)}</div>
               <div class="mf-post-time">${timeStr}</div>
