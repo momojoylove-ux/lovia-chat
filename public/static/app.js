@@ -8343,17 +8343,14 @@
       setTimeout(() => {
         chat.style.display = 'none';
         chat.style.opacity = '0';
-        // 하단 탭 활성 상태면 탭 허브로, 아니면 허브 화면으로
-        const nav = document.getElementById('bottom-tab-nav');
-        if (nav && nav.classList.contains('visible')) {
-          showBottomNav();
-          // 현재 탭에 맞게 돌아가기
-          if (currentBottomTab === 'chat') {
-            renderHub();
-            showScreenFade('hub-screen');
-          } else {
-            showScreenFade('main-feed-screen');
-          }
+        // 채팅에서 나갈 때 항상 탭바 복원
+        showBottomNav();
+        // 현재 탭에 맞게 돌아가기
+        if (currentBottomTab === 'chat') {
+          renderHub();
+          showScreenFade('hub-screen');
+        } else if (currentBottomTab === 'feed') {
+          showScreenFade('main-feed-screen');
         } else {
           renderHub();
           showScreenFade('hub-screen');
@@ -8498,11 +8495,17 @@
         gram.style.opacity = '0';
         // 이전 화면으로 복귀
         if (gramPrevScreen === 'hub-screen') {
+          showBottomNav();
           renderHub();
           showScreenFade('hub-screen');
         } else if (gramPrevScreen === 'profile-detail-screen') {
+          showBottomNav();
           showScreenFade('profile-detail-screen');
+        } else if (gramPrevScreen === 'chat-screen') {
+          // 채팅에서 그램으로 왔다가 돌아가는 경우 → 채팅 화면 복귀
+          showScreenFade('chat-screen');
         } else {
+          showBottomNav();
           showScreenFade('swipe-screen');
         }
       }, 300);
