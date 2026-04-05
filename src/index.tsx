@@ -3267,6 +3267,332 @@ app.get('/', (c) => {
     .gram-empty-icon { font-size: 48px; }
     .gram-empty-text { font-size: 15px; color: rgba(255,255,255,0.4); line-height: 1.6; }
 
+    /* ══════════════════════════════════════════
+       ⑩ 메인 피드 화면 (새 홈)
+    ══════════════════════════════════════════ */
+    #main-feed-screen {
+      z-index: 70;
+      background: #0d0d0d;
+      flex-direction: column;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    /* 메인 피드 헤더 */
+    .mf-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: max(48px, calc(env(safe-area-inset-top, 0px) + 12px)) 16px 12px;
+      background: linear-gradient(to bottom, #0d0d0d 70%, transparent 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    .mf-header-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      pointer-events: auto;
+    }
+    .mf-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+    .mf-credit-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,107,138,0.12);
+      border: 1px solid rgba(255,107,138,0.25);
+      border-radius: 20px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .mf-credit-badge span:first-child { font-size: 14px; }
+    .mf-credit-num { font-size: 13px; font-weight: 700; color: #FF8FA3; }
+
+    /* 피드 스크롤 컨테이너 */
+    .mf-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-top: max(96px, calc(env(safe-area-inset-top, 0px) + 60px));
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 68px);
+    }
+    .mf-scroll::-webkit-scrollbar { display: none; }
+
+    /* 추천 캐릭터 섹션 (신규 유저) */
+    .mf-recommend-section {
+      padding: 0 16px 24px;
+    }
+    .mf-recommend-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 14px;
+    }
+    .mf-recommend-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .mf-recommend-row::-webkit-scrollbar { display: none; }
+    .mf-recommend-card {
+      flex-shrink: 0;
+      width: 110px;
+      background: rgba(255,107,138,0.06);
+      border: 1px solid rgba(255,107,138,0.2);
+      border-radius: 16px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .mf-recommend-card:active { background: rgba(255,107,138,0.14); }
+    .mf-recommend-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,107,138,0.5);
+    }
+    .mf-recommend-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+    }
+    .mf-recommend-job {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      line-height: 1.3;
+    }
+    .mf-recommend-btn {
+      padding: 5px 12px;
+      background: linear-gradient(135deg, #FF6B8A, #ff4d6d);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* 피드 포스트 카드 */
+    .mf-post {
+      margin-bottom: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      animation: fadeInUp 0.35s ease both;
+    }
+    .mf-post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px 10px;
+    }
+    .mf-post-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,107,138,0.5);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .mf-post-meta {
+      flex: 1;
+    }
+    .mf-post-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+    .mf-post-time {
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      margin-top: 1px;
+    }
+    .mf-post-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255,107,138,0.1);
+      color: rgba(255,107,138,0.8);
+      border: 1px solid rgba(255,107,138,0.2);
+    }
+
+    /* 포스트 이미지 */
+    .mf-post-img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/5;
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+    .mf-post-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 텍스트 포스트 */
+    .mf-post-text {
+      padding: 0 16px 14px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .mf-post-emotion {
+      padding: 20px 16px;
+      font-size: 40px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    /* 액션 바 */
+    .mf-post-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px 14px;
+    }
+    .mf-like-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.55);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.15s;
+    }
+    .mf-like-btn .heart { font-size: 22px; transition: transform 0.2s cubic-bezier(0.36,0.07,0.19,0.97); }
+    .mf-like-btn.liked { color: #FF6B8A; }
+    .mf-like-btn.liked .heart { transform: scale(1.3); }
+    .mf-dm-btn {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 20px;
+      background: rgba(255,107,138,0.12);
+      border: 1px solid rgba(255,107,138,0.3);
+      color: #FF8FA3;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mf-dm-btn:active { background: rgba(255,107,138,0.25); }
+
+    /* 로딩 / 빈 상태 */
+    .mf-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      gap: 12px;
+    }
+    .mf-spinner {
+      width: 28px; height: 28px;
+      border: 3px solid rgba(255,107,138,0.2);
+      border-top-color: #FF6B8A;
+      border-radius: 50%;
+      animation: mfSpin 0.75s linear infinite;
+    }
+    @keyframes mfSpin { to { transform: rotate(360deg); } }
+    .mf-loading-text { font-size: 13px; color: rgba(255,255,255,0.35); }
+    .mf-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+      gap: 12px;
+      text-align: center;
+    }
+    .mf-empty-icon { font-size: 48px; }
+    .mf-empty-text { font-size: 15px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+    .mf-load-more-sentinel { height: 40px; }
+
+    /* ══════════════════════════════════════════
+       ⑪ 하단 탭 내비게이터
+    ══════════════════════════════════════════ */
+    #bottom-tab-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 95;
+      background: rgba(13,13,13,0.96);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: space-around;
+      padding: 8px 0 max(10px, calc(env(safe-area-inset-bottom, 0px) + 6px));
+      transition: opacity 0.25s ease;
+    }
+    #bottom-tab-nav.visible { display: flex; }
+    .bt-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex: 1;
+      padding: 4px 0;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bt-item:active { opacity: 0.7; }
+    .bt-icon {
+      font-size: 22px;
+      line-height: 1;
+      position: relative;
+    }
+    .bt-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.2px;
+      transition: color 0.15s;
+    }
+    .bt-item.active .bt-label { color: #FF6B8A; }
+    .bt-badge {
+      position: absolute;
+      top: -3px; right: -7px;
+      background: #FF4D6D;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+    .bt-badge.show { display: flex; }
+
     /* 회원가입 팝업 애니메이션 */
     @keyframes modalSlideUp {
       from { opacity: 0; transform: translateY(40px) scale(0.94); }
@@ -4839,6 +5165,43 @@ app.get('/', (c) => {
     </div>
   </div>
 
+  <!-- ⑩ 메인 피드 화면 (새 홈) -->
+  <div id="main-feed-screen" class="screen" style="display:none; opacity:0;">
+
+    <!-- 상단 헤더 (fixed) -->
+    <div class="mf-header">
+      <div class="mf-header-title">Lovia</div>
+      <div class="mf-header-right">
+        <div class="mf-credit-badge" onclick="openMypageScreen()">
+          <span>💎</span>
+          <span class="mf-credit-num" id="mf-credit-num">15</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 스크롤 영역 -->
+    <div class="mf-scroll" id="mf-scroll">
+
+      <!-- 신규 유저 추천 섹션 (JS로 표시/숨김) -->
+      <div class="mf-recommend-section" id="mf-recommend-section" style="display:none;">
+        <div class="mf-recommend-title">✨ 취향 맞는 파트너를 만나보세요</div>
+        <div class="mf-recommend-row" id="mf-recommend-row">
+          <!-- JS로 생성 -->
+        </div>
+      </div>
+
+      <!-- 피드 포스트 목록 -->
+      <div id="mf-posts">
+        <!-- JS로 생성 -->
+      </div>
+
+      <!-- 무한 스크롤 센티넬 -->
+      <div class="mf-load-more-sentinel" id="mf-sentinel"></div>
+
+    </div>
+
+  </div>
+
   <!-- ⑧ 인앱 그램 피드 화면 -->
   <div id="gram-screen" class="screen" style="display:none; opacity:0;">
 
@@ -5621,6 +5984,29 @@ app.get('/', (c) => {
     box-shadow:0 4px 20px rgba(255,107,138,0.5);
     white-space:nowrap;
   "></div>
+
+  <!-- ⑪ 하단 탭 내비게이터 -->
+  <nav id="bottom-tab-nav">
+    <div class="bt-item active" id="bt-feed" onclick="switchBottomTab('feed')">
+      <div class="bt-icon">🏠</div>
+      <div class="bt-label">피드</div>
+    </div>
+    <div class="bt-item" id="bt-discover" onclick="switchBottomTab('discover')">
+      <div class="bt-icon">💝</div>
+      <div class="bt-label">탐색</div>
+    </div>
+    <div class="bt-item" id="bt-chat" onclick="switchBottomTab('chat')">
+      <div class="bt-icon" style="position:relative;">
+        💌
+        <span class="bt-badge" id="bt-chat-badge">0</span>
+      </div>
+      <div class="bt-label">채팅</div>
+    </div>
+    <div class="bt-item" id="bt-me" onclick="switchBottomTab('me')">
+      <div class="bt-icon">👤</div>
+      <div class="bt-label">내 정보</div>
+    </div>
+  </nav>
 
 </body>
 </html>`)

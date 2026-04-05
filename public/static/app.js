@@ -389,15 +389,20 @@
       }, 600);
     }
 
-    // 로그인 후 또는 토큰 자동인증 후 스와이프 화면 초기화
+    // 로그인 후 또는 토큰 자동인증 후 메인 피드 화면으로 이동 (Phase 1: 피드가 홈)
     function initSwipeAndGo() {
-      // 스와이프 화면 초기화 (userName 기반)
       const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
+      // 스와이프 화면은 백그라운드 초기화만 (탭 전환 시 사용)
       const greetEl = document.getElementById('swipe-username');
       if (greetEl) greetEl.textContent = userName;
       initSwipeScreen(userName);
-      showScreen('swipe-screen');
-      // 서버에서 사용자 설정 동기화 (로그인된 경우)
+      window._swipeInitialized = true;
+      // 홈은 메인 피드 화면
+      showBottomNav();
+      setActiveBottomTab('feed');
+      showScreen('main-feed-screen');
+      initMainFeedScreen();
+      // 서버에서 사용자 설정 동기화
       setTimeout(syncUserPreferences, 500);
     }
 
@@ -6859,7 +6864,7 @@
       // 레벨 배지 복원
       const levelBadge = document.getElementById('chat-level-badge');
       if (levelBadge) levelBadge.style.display = '';
-      // 채팅 화면 → 스와이프 화면
+      // 채팅 화면 → 메인 피드 화면 (Phase 1: 온보딩 후 피드로)
       const chatScreen = document.getElementById('chat-screen');
       if (chatScreen) {
         chatScreen.style.transition = 'opacity 0.35s ease';
@@ -6868,14 +6873,23 @@
           chatScreen.style.display = 'none';
           chatScreen.style.opacity = '';
           chatScreen.style.transition = '';
+          hideBottomNav();
           const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
           initSwipeScreen(userName);
-          showScreen('swipe-screen');
+          window._swipeInitialized = true;
+          showBottomNav();
+          setActiveBottomTab('feed');
+          showScreen('main-feed-screen');
+          initMainFeedScreen();
         }, 350);
       } else {
         const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
         initSwipeScreen(userName);
-        showScreen('swipe-screen');
+        window._swipeInitialized = true;
+        showBottomNav();
+        setActiveBottomTab('feed');
+        showScreen('main-feed-screen');
+        initMainFeedScreen();
       }
     }
 
@@ -6897,12 +6911,20 @@
           chatScreen.style.transition = '';
           const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
           initSwipeScreen(userName);
-          showScreen('swipe-screen');
+          window._swipeInitialized = true;
+          showBottomNav();
+          setActiveBottomTab('feed');
+          showScreen('main-feed-screen');
+          initMainFeedScreen();
         }, 350);
       } else {
         const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
         initSwipeScreen(userName);
-        showScreen('swipe-screen');
+        window._swipeInitialized = true;
+        showBottomNav();
+        setActiveBottomTab('feed');
+        showScreen('main-feed-screen');
+        initMainFeedScreen();
       }
     }
 
@@ -7170,7 +7192,7 @@
       }
 
       // 채팅 화면 전환
-      const allScreens = ['swipe-screen', 'profile-detail-screen', 'hub-screen', 'pick-screen', 'intro-video-screen', 'name-input-screen'];
+      const allScreens = ['swipe-screen', 'profile-detail-screen', 'hub-screen', 'pick-screen', 'intro-video-screen', 'name-input-screen', 'main-feed-screen'];
       allScreens.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -7181,6 +7203,7 @@
         }
       });
 
+      hideBottomNav();
       resetChatInput();
       const inputBar = document.querySelector('.chat-input-bar');
       if (inputBar) inputBar.style.display = 'flex';
@@ -7427,7 +7450,7 @@
       });
 
       // 화면 전환: 모든 화면 닫고 채팅으로 (즉시 전환, 딜레이 없음)
-      const allScreens = ['swipe-screen','profile-detail-screen','hub-screen','pick-screen','intro-video-screen'];
+      const allScreens = ['swipe-screen','profile-detail-screen','hub-screen','pick-screen','intro-video-screen','main-feed-screen'];
       allScreens.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -7437,6 +7460,7 @@
           el.classList.remove('visible');
         }
       });
+      hideBottomNav();
       showScreenFade('chat-screen');
       resetChatInput();
       // 채팅 화면 진입 시 초기 레이아웃 조정 (키보드 내려간 상태 기준)
@@ -8256,9 +8280,21 @@
       setTimeout(() => {
         chat.style.display = 'none';
         chat.style.opacity = '0';
-        // 항상 허브(채팅 목록)로 돌아가기
-        renderHub();
-        showScreenFade('hub-screen');
+        // 하단 탭 활성 상태면 탭 허브로, 아니면 허브 화면으로
+        const nav = document.getElementById('bottom-tab-nav');
+        if (nav && nav.classList.contains('visible')) {
+          showBottomNav();
+          // 현재 탭에 맞게 돌아가기
+          if (currentBottomTab === 'chat') {
+            renderHub();
+            showScreenFade('hub-screen');
+          } else {
+            showScreenFade('main-feed-screen');
+          }
+        } else {
+          renderHub();
+          showScreenFade('hub-screen');
+        }
       }, 300);
     }
 
@@ -9856,4 +9892,445 @@
     window.startFreshOnboarding = startFreshOnboarding;
     window.loginWithGoogle       = loginWithGoogle;
     window.skipRecommendation    = skipRecommendation;
+
+    // 메인 피드 + 하단 탭 전역 등록
+    window.switchBottomTab      = switchBottomTab;
+    window.handleMfLike         = handleMfLike;
+    window.handleMfDM           = handleMfDM;
+    window.openRecommendChat    = openRecommendChat;
+
+    // ═══════════════════════════════════════════════════════
+    // ⑩ 메인 피드 화면 (MainFeedScreen)
+    // ═══════════════════════════════════════════════════════
+
+    // ── 피드 상태 ──
+    let mfNextCursor = null;
+    let mfIsLoading  = false;
+    let mfLikes      = {};  // { postId: true }
+    let mfObserver   = null;
+
+    try { mfLikes = JSON.parse(localStorage.getItem('lovia_mf_likes') || '{}'); } catch(e) {}
+
+    function saveMfLikes() {
+      try { localStorage.setItem('lovia_mf_likes', JSON.stringify(mfLikes)); } catch(e) {}
+    }
+
+    // 피드 화면 초기화
+    function initMainFeedScreen() {
+      const creditEl = document.getElementById('mf-credit-num');
+      if (creditEl) creditEl.textContent = getCredits();
+
+      // 신규 유저 추천 섹션
+      renderMfRecommend();
+
+      // 피드 초기 로드
+      mfNextCursor = null;
+      const postsEl = document.getElementById('mf-posts');
+      if (postsEl) postsEl.innerHTML = '';
+      loadMfPosts(true);
+
+      // 무한 스크롤 IntersectionObserver 설정
+      setupMfInfiniteScroll();
+    }
+
+    // 추천 캐릭터 섹션 렌더링 (채팅 0건인 신규 유저에게 노출)
+    function renderMfRecommend() {
+      const section = document.getElementById('mf-recommend-section');
+      const row = document.getElementById('mf-recommend-row');
+      if (!section || !row) return;
+
+      // 채팅 경험이 없는 경우 추천 노출
+      const hasChatHistory = PERSONAS.some(p =>
+        (sessionStorage.getItem('chat_' + p.id) || '[]') !== '[]'
+      );
+
+      if (hasChatHistory) { section.style.display = 'none'; return; }
+
+      section.style.display = 'block';
+
+      // 3~5명 랜덤 추천 (최대 5명)
+      const picks = [...PERSONAS].sort(() => Math.random() - 0.5).slice(0, Math.min(5, PERSONAS.length));
+
+      row.innerHTML = picks.map(p => `
+        <div class="mf-recommend-card" onclick="openRecommendChat('${p.id}')">
+          <img class="mf-recommend-avatar" src="${getPersonaImg(p)}" alt="${p.name}"
+               onerror="this.src='/images/placeholder.png'" />
+          <div class="mf-recommend-name">${p.name}</div>
+          <div class="mf-recommend-job">${p.job || ''}</div>
+          <button class="mf-recommend-btn">대화하기 💬</button>
+        </div>
+      `).join('');
+    }
+
+    function openRecommendChat(personaId) {
+      const persona = PERSONAS.find(p => p.id === personaId);
+      if (!persona) return;
+      sessionStorage.setItem('selectedPersona', JSON.stringify(persona));
+      startChat(personaId);
+    }
+
+    // /api/feed 호출 (커서 기반 페이지네이션)
+    async function loadMfPosts(reset) {
+      if (mfIsLoading) return;
+      if (!reset && mfNextCursor === null && document.getElementById('mf-posts')?.children.length > 0) return;
+
+      mfIsLoading = true;
+
+      const postsEl = document.getElementById('mf-posts');
+
+      if (reset) {
+        mfNextCursor = null;
+        if (postsEl) postsEl.innerHTML = renderMfLoading();
+      }
+
+      try {
+        const token = getAuthToken();
+        const url = mfNextCursor
+          ? `/api/feed?cursor=${encodeURIComponent(mfNextCursor)}&limit=10`
+          : `/api/feed?limit=10`;
+
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch(url, { headers });
+        if (!res.ok) throw new Error('피드 로드 실패');
+
+        const data = await res.json();
+        const posts = data.posts || [];
+        mfNextCursor = data.nextCursor ?? null;
+
+        if (reset) {
+          if (postsEl) postsEl.innerHTML = '';
+        }
+
+        if (posts.length === 0 && reset) {
+          if (postsEl) postsEl.innerHTML = renderMfEmpty();
+        } else {
+          renderMfPosts(posts);
+        }
+      } catch(e) {
+        if (reset && postsEl) {
+          postsEl.innerHTML = renderMfEmpty('피드를 불러오지 못했어요 😢<br>잠시 후 다시 시도해주세요');
+        }
+      } finally {
+        mfIsLoading = false;
+      }
+    }
+
+    function renderMfLoading() {
+      return `<div class="mf-loading">
+        <div class="mf-spinner"></div>
+        <div class="mf-loading-text">피드 불러오는 중...</div>
+      </div>`;
+    }
+
+    function renderMfEmpty(msg) {
+      const text = msg || '아직 피드가 없어요 💕<br>캐릭터들이 곧 소식을 올릴 거예요';
+      return `<div class="mf-empty">
+        <div class="mf-empty-icon">📭</div>
+        <div class="mf-empty-text">${text}</div>
+      </div>`;
+    }
+
+    // 포스트 목록을 DOM에 추가
+    function renderMfPosts(posts) {
+      const postsEl = document.getElementById('mf-posts');
+      if (!postsEl) return;
+
+      const fragment = document.createDocumentFragment();
+      posts.forEach(post => {
+        const el = document.createElement('div');
+        el.innerHTML = buildMfPostHTML(post);
+        const child = el.firstElementChild;
+        if (child) fragment.appendChild(child);
+      });
+      postsEl.appendChild(fragment);
+    }
+
+    // 포스트 카드 HTML 빌드
+    function buildMfPostHTML(post) {
+      const persona = PERSONAS.find(p => p.id === post.characterId) || {
+        id: post.characterId,
+        name: post.characterId,
+        job: '',
+      };
+      const avatarSrc = getPersonaImg(persona) || '/images/placeholder.png';
+      const isLiked = !!mfLikes[post.id];
+      const heartCount = (post.reactions?.heartCount || 0) + (isLiked ? 1 : 0);
+
+      // 시간 포맷
+      const timeStr = formatMfTime(post.publishedAt);
+
+      // 타입별 콘텐츠
+      let bodyHTML = '';
+      if (post.type === 'photo' && post.content?.imageUrl) {
+        bodyHTML = `
+          <div class="mf-post-img-wrap">
+            <img class="mf-post-img" src="${escapeHtml(post.content.imageUrl)}"
+                 alt="${escapeHtml(persona.name)}" loading="lazy"
+                 onerror="this.parentElement.style.display='none'" />
+          </div>`;
+        if (post.content?.text) {
+          bodyHTML += `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
+        }
+      } else if (post.type === 'emotion' && post.content?.emotion) {
+        bodyHTML = `<div class="mf-post-emotion">${escapeHtml(post.content.emotion)}</div>`;
+        if (post.content?.text) {
+          bodyHTML += `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
+        }
+      } else if (post.content?.text) {
+        bodyHTML = `<div class="mf-post-text">${escapeHtml(post.content.text)}</div>`;
+      }
+
+      return `
+        <div class="mf-post" data-post-id="${post.id}" data-char-id="${post.characterId}">
+          <div class="mf-post-header">
+            <img class="mf-post-avatar" src="${avatarSrc}" alt="${escapeHtml(persona.name)}"
+                 onerror="this.src='/images/placeholder.png'"
+                 onclick="openProfileDetail('${post.characterId}')" />
+            <div class="mf-post-meta">
+              <div class="mf-post-name" onclick="openProfileDetail('${post.characterId}')">${escapeHtml(persona.name)}</div>
+              <div class="mf-post-time">${timeStr}</div>
+            </div>
+            <div class="mf-post-tag">${getMfPostTypeLabel(post.type)}</div>
+          </div>
+          ${bodyHTML}
+          <div class="mf-post-actions">
+            <button class="mf-like-btn ${isLiked ? 'liked' : ''}" onclick="handleMfLike('${post.id}')">
+              <span class="heart">${isLiked ? '❤️' : '🤍'}</span>
+              <span class="mf-like-count">${heartCount}</span>
+            </button>
+            <button class="mf-dm-btn" onclick="handleMfDM('${post.id}', '${post.characterId}')">
+              💌 DM 보내기
+            </button>
+          </div>
+        </div>`;
+    }
+
+    function getMfPostTypeLabel(type) {
+      const map = { photo: '📸 사진', text: '💬 일상', emotion: '💭 감정', story_tease: '📖 스토리' };
+      return map[type] || '📝';
+    }
+
+    function formatMfTime(iso) {
+      if (!iso) return '';
+      try {
+        const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60) return '방금 전';
+        if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+        return `${Math.floor(diff / 86400)}일 전`;
+      } catch(e) { return ''; }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // 좋아요 토글
+    async function handleMfLike(postId) {
+      if (!isLoggedIn()) { showSignupPopup('feed_like'); return; }
+
+      const token = getAuthToken();
+      const wasLiked = !!mfLikes[postId];
+
+      // Optimistic UI
+      mfLikes[postId] = !wasLiked;
+      saveMfLikes();
+      updateMfLikeBtn(postId, !wasLiked);
+
+      try {
+        await fetch(`/api/feed/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ type: 'heart' })
+        });
+      } catch(e) {
+        // 롤백
+        mfLikes[postId] = wasLiked;
+        saveMfLikes();
+        updateMfLikeBtn(postId, wasLiked);
+      }
+    }
+
+    function updateMfLikeBtn(postId, isLiked) {
+      const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+      if (!postEl) return;
+      const btn = postEl.querySelector('.mf-like-btn');
+      const heart = btn?.querySelector('.heart');
+      const countEl = btn?.querySelector('.mf-like-count');
+      if (!btn || !heart) return;
+
+      if (isLiked) {
+        btn.classList.add('liked');
+        heart.textContent = '❤️';
+      } else {
+        btn.classList.remove('liked');
+        heart.textContent = '🤍';
+      }
+    }
+
+    // 피드에서 DM 시작
+    async function handleMfDM(postId, characterId) {
+      if (!isLoggedIn()) { showSignupPopup('feed_dm'); return; }
+
+      const token = getAuthToken();
+      try {
+        const res = await fetch(`/api/feed/${postId}/start-dm`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // 피드 컨텍스트로 채팅 시작
+          startChat(characterId);
+        } else {
+          startChat(characterId);
+        }
+      } catch(e) {
+        startChat(characterId);
+      }
+    }
+
+    // 무한 스크롤 (IntersectionObserver)
+    function setupMfInfiniteScroll() {
+      if (mfObserver) { mfObserver.disconnect(); mfObserver = null; }
+
+      const sentinel = document.getElementById('mf-sentinel');
+      if (!sentinel) return;
+
+      mfObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !mfIsLoading && mfNextCursor !== null) {
+          loadMfPosts(false);
+        }
+      }, { threshold: 0.1 });
+
+      mfObserver.observe(sentinel);
+    }
+
+    // 메인 피드 화면 열기
+    function openMainFeedScreen() {
+      showBottomNav();
+      setActiveBottomTab('feed');
+
+      const creditEl = document.getElementById('mf-credit-num');
+      if (creditEl) creditEl.textContent = getCredits();
+
+      showScreenFade('main-feed-screen');
+      initMainFeedScreen();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ⑪ 하단 탭 내비게이터 (BottomTabNav)
+    // ═══════════════════════════════════════════════════════
+
+    let currentBottomTab = 'feed';
+
+    function showBottomNav() {
+      const nav = document.getElementById('bottom-tab-nav');
+      if (nav) nav.classList.add('visible');
+    }
+
+    function hideBottomNav() {
+      const nav = document.getElementById('bottom-tab-nav');
+      if (nav) nav.classList.remove('visible');
+    }
+
+    function setActiveBottomTab(tab) {
+      currentBottomTab = tab;
+      ['feed', 'discover', 'chat', 'me'].forEach(t => {
+        const el = document.getElementById('bt-' + t);
+        if (el) el.classList.toggle('active', t === tab);
+      });
+    }
+
+    function switchBottomTab(tab) {
+      if (tab === currentBottomTab && tab !== 'me') return;
+
+      setActiveBottomTab(tab);
+
+      const MAIN_SCREENS = ['main-feed-screen', 'swipe-screen', 'hub-screen'];
+
+      if (tab === 'feed') {
+        // 메인 피드로
+        MAIN_SCREENS.forEach(id => {
+          if (id !== 'main-feed-screen') {
+            const el = document.getElementById(id);
+            if (el) { el.style.opacity = '0'; el.style.display = 'none'; }
+          }
+        });
+        const creditEl = document.getElementById('mf-credit-num');
+        if (creditEl) creditEl.textContent = getCredits();
+        showScreenFade('main-feed-screen');
+        // 피드가 비어있으면 다시 로드
+        const postsEl = document.getElementById('mf-posts');
+        if (!postsEl || postsEl.children.length === 0) initMainFeedScreen();
+
+      } else if (tab === 'discover') {
+        // 스와이프/탐색 화면
+        MAIN_SCREENS.forEach(id => {
+          if (id !== 'swipe-screen') {
+            const el = document.getElementById(id);
+            if (el) { el.style.opacity = '0'; el.style.display = 'none'; }
+          }
+        });
+        const userName = sessionStorage.getItem('lovia_username') || sessionStorage.getItem('userName') || '';
+        if (!window._swipeInitialized) {
+          initSwipeScreen(userName);
+          window._swipeInitialized = true;
+        }
+        showScreenFade('swipe-screen');
+
+      } else if (tab === 'chat') {
+        // 채팅 허브
+        MAIN_SCREENS.forEach(id => {
+          if (id !== 'hub-screen') {
+            const el = document.getElementById(id);
+            if (el) { el.style.opacity = '0'; el.style.display = 'none'; }
+          }
+        });
+        renderHub();
+        showScreenFade('hub-screen');
+
+      } else if (tab === 'me') {
+        // 마이페이지 (오버레이)
+        openMypageScreen();
+      }
+    }
+
+    // 뒤로가기 - 채팅/프로필에서 메인 피드로
+    function goBackToMainFeed() {
+      hideAllOverlayScreens();
+      showBottomNav();
+      setActiveBottomTab('feed');
+      showScreenFade('main-feed-screen');
+    }
+
+    function hideAllOverlayScreens() {
+      ['chat-screen', 'profile-detail-screen', 'gram-screen', 'pick-screen'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.style.opacity = '0'; el.style.display = 'none'; }
+      });
+    }
+
+    // hub 뒤로가기 override
+    const _origGoBackFromHub = window.goBackFromHub;
+    window.goBackFromHub = function() {
+      if (currentBottomTab === 'chat') {
+        // 탭 피드로 전환
+        switchBottomTab('feed');
+      } else if (_origGoBackFromHub) {
+        _origGoBackFromHub();
+      }
+    };
   
