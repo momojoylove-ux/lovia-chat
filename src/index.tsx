@@ -6616,20 +6616,20 @@ app.get('/', (c) => {
 
 type ContentRating = 'general' | 'adult'
 
-const PERSONA_META: Record<string, { name: string; contentRating: ContentRating }> = {
-  minji:   { name: '민지',   contentRating: 'general' },
-  jiwoo:   { name: '지우',   contentRating: 'general' },
-  hayoung: { name: '하영',   contentRating: 'general' },
-  eunbi:   { name: '은비',   contentRating: 'general' },
-  dahee:   { name: '다희',   contentRating: 'adult'   },
-  yujin:   { name: '유진',   contentRating: 'general' },
-  sea:     { name: '세아',   contentRating: 'general' },
-  nari:    { name: '나리',   contentRating: 'general' },
-  rina:    { name: '리나',   contentRating: 'general' },
-  soyul:   { name: '소율',   contentRating: 'general' },
-  hyewon:  { name: '혜원',   contentRating: 'general' },
-  sua:     { name: '수아',   contentRating: 'general' },
-  miso:    { name: '미소',   contentRating: 'general' },
+const PERSONA_META: Record<string, { name: string; contentRating: ContentRating; username: string; description: string }> = {
+  minji:   { name: '민지',   contentRating: 'general', username: 'minji_nurse',    description: '종합병원 응급실 간호사 👩‍⚕️ 야간 근무 후 먹는 편의점 도시락이 제일 맛있어요' },
+  jiwoo:   { name: '지우',   contentRating: 'general', username: 'jiwoo_campus',   description: '경영학과 20학번 과대표 🌸 캠퍼스 라이프 기록 중' },
+  hayoung: { name: '하영',   contentRating: 'general', username: 'hayoung_sec',    description: '대기업 임원 수행비서 🌹 출장이 일상인 삶. 조용히 완벽하게.' },
+  eunbi:   { name: '은비',   contentRating: 'general', username: 'eunbi_design',   description: '프리랜서 UI/UX 디자이너 🎨 밤이 깊어질수록 영감도 깊어져요' },
+  dahee:   { name: '다희',   contentRating: 'adult',   username: 'dahee_model',    description: '피팅/비키니 모델 😏 솔직하게 살고 싶어서요' },
+  yujin:   { name: '유진',   contentRating: 'general', username: 'yujin_daily',    description: '일상의 작은 순간들을 담아요 ✨' },
+  sea:     { name: '세아',   contentRating: 'general', username: 'sea_vibes',      description: '바다가 보고 싶을 때마다 여기 와요 🌊' },
+  nari:    { name: '나리',   contentRating: 'general', username: 'nari_moments',   description: '소소하지만 확실한 행복 🌿' },
+  rina:    { name: '리나',   contentRating: 'general', username: 'rina_log',       description: '오늘 하루도 나답게 💜' },
+  soyul:   { name: '소율',   contentRating: 'general', username: 'soyul_life',     description: '카페, 책, 음악 그리고 나 ☕' },
+  hyewon:  { name: '혜원',   contentRating: 'general', username: 'hyewon_style',   description: '패션과 일상 사이 어딘가 👗' },
+  sua:     { name: '수아',   contentRating: 'general', username: 'sua_friend',     description: '친한 친구처럼 편하게 이야기해요 🤍' },
+  miso:    { name: '미소',   contentRating: 'general', username: 'miso_smile',     description: '웃음이 제일 좋은 약이에요 😊' },
 }
 
 // ── GET /api/characters — 캐릭터 목록 (adult_verified 기반 필터링) ──
@@ -6656,6 +6656,190 @@ charactersApp.get('/api/characters', async (c) => {
       }))
 
     return c.json({ characters, adultVerified })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// ── GET /api/characters/:id/profile — 캐릭터 프로필 확장 정보 ──
+charactersApp.get('/api/characters/:id/profile', async (c) => {
+  try {
+    const db = c.env.DB
+    const characterId = c.req.param('id')
+    const meta = PERSONA_META[characterId]
+    if (!meta) return c.json({ error: '존재하지 않는 캐릭터' }, 404)
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+
+    // 성인 캐릭터 접근 제한
+    if (meta.contentRating === 'adult') {
+      if (!userId || !db) return c.json({ error: '성인 인증이 필요합니다' }, 403)
+      const user = await db.prepare('SELECT adult_verified FROM users WHERE id = ?').bind(userId).first<{ adult_verified: number }>()
+      if (!user?.adult_verified) return c.json({ error: '성인 인증이 필요합니다' }, 403)
+    }
+
+    let followerCount = 0
+    let followingCount = 0
+    let postCount = 0
+    let isFollowedByMe = false
+
+    if (db) {
+      const stats = await db.prepare(
+        'SELECT follower_count, following_count FROM character_stats WHERE character_id = ?'
+      ).bind(characterId).first<{ follower_count: number; following_count: number }>()
+      followerCount = stats?.follower_count ?? 0
+      followingCount = stats?.following_count ?? 0
+
+      const postRow = await db.prepare(
+        `SELECT COUNT(*) as cnt FROM feed_posts WHERE character_id = ? AND (expires_at IS NULL OR expires_at > datetime('now'))`
+      ).bind(characterId).first<{ cnt: number }>()
+      postCount = postRow?.cnt ?? 0
+
+      if (userId) {
+        const followRow = await db.prepare(
+          'SELECT id FROM user_character_follows WHERE user_id = ? AND character_id = ?'
+        ).bind(userId, characterId).first()
+        isFollowedByMe = !!followRow
+      }
+    }
+
+    return c.json({
+      id: characterId,
+      name: meta.name,
+      username: meta.username,
+      description: meta.description,
+      profileImageUrl: `/images/characters/${characterId}/profile.jpg`,
+      isAdult: meta.contentRating === 'adult',
+      stats: { postCount, followerCount, followingCount },
+      isFollowedByMe,
+    })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// ── GET /api/characters/:id/posts — 캐릭터 게시물 목록 (커서 페이지네이션) ──
+charactersApp.get('/api/characters/:id/posts', async (c) => {
+  try {
+    const db = c.env.DB
+    const characterId = c.req.param('id')
+    const meta = PERSONA_META[characterId]
+    if (!meta) return c.json({ error: '존재하지 않는 캐릭터' }, 404)
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+
+    // 성인 캐릭터 접근 제한
+    if (meta.contentRating === 'adult') {
+      if (!userId || !db) return c.json({ error: '성인 인증이 필요합니다' }, 403)
+      const user = await db.prepare('SELECT adult_verified FROM users WHERE id = ?').bind(userId).first<{ adult_verified: number }>()
+      if (!user?.adult_verified) return c.json({ error: '성인 인증이 필요합니다' }, 403)
+    }
+
+    if (!db) return c.json({ items: [], nextCursor: null, hasMore: false })
+
+    const cursor = c.req.query('cursor')
+    const limit = Math.min(parseInt(c.req.query('limit') || '18', 10), 50)
+
+    let query: string
+    let params: any[]
+    const baseWhere = `WHERE character_id = ? AND (expires_at IS NULL OR expires_at > datetime('now'))`
+
+    if (cursor) {
+      query = `SELECT id, type, text_content, image_url, published_at FROM feed_posts ${baseWhere} AND published_at < ? ORDER BY published_at DESC LIMIT ?`
+      params = [characterId, cursor, limit + 1]
+    } else {
+      query = `SELECT id, type, text_content, image_url, published_at FROM feed_posts ${baseWhere} ORDER BY published_at DESC LIMIT ?`
+      params = [characterId, limit + 1]
+    }
+
+    const rows = await db.prepare(query).bind(...params).all<{ id: string; type: string; text_content: string | null; image_url: string | null; published_at: string }>()
+    const items = rows.results ?? []
+
+    let nextCursor: string | null = null
+    let hasMore = false
+    if (items.length > limit) {
+      items.pop()
+      hasMore = true
+      nextCursor = items[items.length - 1].published_at
+    }
+
+    return c.json({
+      items: items.map(row => ({
+        id: row.id,
+        thumbnailUrl: row.image_url ?? null,
+        type: row.image_url ? 'image' : 'text',
+        textPreview: row.text_content ? row.text_content.slice(0, 60) : null,
+        createdAt: row.published_at,
+      })),
+      nextCursor,
+      hasMore,
+    })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// ── POST /api/characters/:id/follow — 팔로우 ──
+charactersApp.post('/api/characters/:id/follow', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+
+    const characterId = c.req.param('id')
+    if (!PERSONA_META[characterId]) return c.json({ error: '존재하지 않는 캐릭터' }, 404)
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '로그인이 필요합니다' }, 401)
+
+    // 팔로우 관계 삽입 (이미 팔로우 중이면 무시)
+    await db.prepare(
+      'INSERT OR IGNORE INTO user_character_follows (user_id, character_id) VALUES (?, ?)'
+    ).bind(userId, characterId).run()
+
+    // follower_count +1 (UPSERT)
+    await db.prepare(`
+      INSERT INTO character_stats (character_id, follower_count, following_count)
+      VALUES (?, 1, 0)
+      ON CONFLICT(character_id) DO UPDATE SET
+        follower_count = follower_count + 1,
+        updated_at = datetime('now')
+    `).bind(characterId).run()
+
+    const stats = await db.prepare('SELECT follower_count FROM character_stats WHERE character_id = ?').bind(characterId).first<{ follower_count: number }>()
+    return c.json({ followerCount: stats?.follower_count ?? 0 })
+  } catch (e: any) {
+    return c.json({ error: '서버 오류', detail: e.message }, 500)
+  }
+})
+
+// ── DELETE /api/characters/:id/follow — 언팔로우 ──
+charactersApp.delete('/api/characters/:id/follow', async (c) => {
+  try {
+    const db = c.env.DB
+    if (!db) return c.json({ error: 'DB 없음' }, 500)
+
+    const characterId = c.req.param('id')
+    if (!PERSONA_META[characterId]) return c.json({ error: '존재하지 않는 캐릭터' }, 404)
+
+    const userId = await getUserIdFromToken(c.req.header('Authorization'), c.env.JWT_SECRET || 'dev-secret')
+    if (!userId) return c.json({ error: '로그인이 필요합니다' }, 401)
+
+    const deleted = await db.prepare(
+      'DELETE FROM user_character_follows WHERE user_id = ? AND character_id = ?'
+    ).bind(userId, characterId).run()
+
+    // 실제로 삭제된 경우에만 follower_count 감소 (0 이하로 내려가지 않도록)
+    if (deleted.meta?.changes && deleted.meta.changes > 0) {
+      await db.prepare(`
+        UPDATE character_stats SET
+          follower_count = MAX(0, follower_count - 1),
+          updated_at = datetime('now')
+        WHERE character_id = ?
+      `).bind(characterId).run()
+    }
+
+    const stats = await db.prepare('SELECT follower_count FROM character_stats WHERE character_id = ?').bind(characterId).first<{ follower_count: number }>()
+    return c.json({ followerCount: stats?.follower_count ?? 0 })
   } catch (e: any) {
     return c.json({ error: '서버 오류', detail: e.message }, 500)
   }
