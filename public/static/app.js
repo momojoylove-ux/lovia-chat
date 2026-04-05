@@ -813,17 +813,8 @@
       // 픽 버튼: 관심/패스 이력이 있을 때만 표시
       updatePickBtn();
 
-      // 스킵 상태 확인 또는 신규/업데이트 캐릭터 없음 → 전체보기로
-      if (localStorage.getItem('lovia_skip_recommend') === '1' || SWIPE_PERSONAS.length === 0) {
-        setTimeout(() => switchView('list'), 0);
-        return;
-      }
-
-      // 튜토리얼: 첫 방문 시에만 표시 (sessionStorage로 상태 관리)
-      const tutorialSeen = sessionStorage.getItem('lovia_tutorial_seen');
-      if (!tutorialSeen) {
-        setTimeout(() => showTutorial(), 400); // 화면 전환 후 살짝 딜레이
-      }
+      // 탐색 탭은 항상 캐릭터 목록(리스트) 화면으로 바로 진입
+      setTimeout(() => switchView('list'), 0);
     }
 
     // ─────────────────────────────
@@ -1356,17 +1347,17 @@
       const counter = document.getElementById('card-counter');
 
       if (type === 'card') {
-        cardView.style.display = 'flex';
-        listView.style.display = 'none';
-        tabCard.classList.add('active');
-        tabList.classList.remove('active');
-        counter.style.display = 'flex';
+        if (cardView) cardView.style.display = 'flex';
+        if (listView) listView.style.display = 'none';
+        if (tabCard) tabCard.classList.add('active');
+        if (tabList) tabList.classList.remove('active');
+        if (counter) counter.style.display = 'flex';
       } else {
-        cardView.style.display = 'none';
-        listView.style.display = 'flex';
-        tabCard.classList.remove('active');
-        tabList.classList.add('active');
-        counter.style.display = 'none';
+        if (cardView) cardView.style.display = 'none';
+        if (listView) listView.style.display = 'flex';
+        if (tabCard) tabCard.classList.remove('active');
+        if (tabList) tabList.classList.add('active');
+        if (counter) counter.style.display = 'none';
       }
     }
 

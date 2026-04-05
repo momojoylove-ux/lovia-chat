@@ -5806,11 +5806,6 @@ app.get('/', (c) => {
             <span id="hub-btn-label">채팅 목록</span>
           </button>
         </div>
-        <div class="view-tabs">
-          <button class="view-tab active" id="tab-card" onclick="switchView('card')">💝 카드</button>
-          <button class="view-tab" id="tab-list" onclick="switchView('list')">☰ 전체보기</button>
-          <button class="view-tab" id="tab-gram" onclick="openGramScreen()">📸 그램</button>
-        </div>
       </div>
 
     </div>
