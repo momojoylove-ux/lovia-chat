@@ -7855,7 +7855,8 @@ authApp.get('/api/auth/google', async (c) => {
   const clientId = c.env.GOOGLE_CLIENT_ID
   if (!clientId) return c.json({ error: 'Google OAuth가 설정되지 않았습니다.' }, 500)
 
-  const redirectUri = new URL(c.req.url).origin + '/api/auth/google/callback'
+  // 프로덕션 도메인으로 고정 (프리뷰 URL은 Google OAuth에 미등록)
+  const redirectUri = 'https://lovia.pages.dev/api/auth/google/callback'
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -7882,7 +7883,8 @@ authApp.get('/api/auth/google/callback', async (c) => {
       return c.redirect('/?google_error=config')
     }
 
-    const redirectUri = new URL(c.req.url).origin + '/api/auth/google/callback'
+    // 프로덕션 도메인으로 고정 (Google OAuth 등록 URI와 일치해야 함)
+    const redirectUri = 'https://lovia.pages.dev/api/auth/google/callback'
 
     // authorization code → access token 교환
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
