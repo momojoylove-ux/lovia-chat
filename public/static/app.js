@@ -768,8 +768,8 @@
       job: '헬스 트레이너 (신입)',
       tags: ['#열정적인', '#서툴지만', '#귀여운'],
       quote: '잘... 잘 부탁드려요!',
-      img: '/images/profiles/profile_suah.jpg',
-      gif: null, // GIF 준비 시: '/images/profiles/profile_suah.gif'
+      img: '/images/characters/suah/onboarding/01_welcome.png',
+      gif: null,
       tutorial: true
     };
 
@@ -777,6 +777,24 @@
     // 사용법: getPersonaImg(persona) → 현재 표시할 이미지 경로 반환
     function getPersonaImg(persona) {
       return (persona && persona.gif) ? persona.gif : (persona ? persona.img : '');
+    }
+
+    // 수아 온보딩 튜토리얼 캐릭터 이미지 (턴별 감정 상태)
+    const SUAH_ONBOARDING_IMGS = {
+      start:  '/images/characters/suah/onboarding/01_welcome.png',    // 밝게 서있는 첫 인사
+      turn2:  '/images/characters/suah/onboarding/02_intro.png',      // 수줍은 자기소개
+      turn3:  '/images/characters/suah/onboarding/03_explain.png',    // 손가락 들고 설명 중
+      turn4:  '/images/characters/suah/onboarding/05_encourage.png',  // 파이팅 포즈
+      turn5:  '/images/characters/suah/onboarding/04_question.png',   // 앉아서 생각 중
+      turn6:  '/images/characters/suah/onboarding/06_celebrate.png',  // 양팔 올려 기뻐함
+      idle:   '/images/characters/suah/onboarding/07_idle.png',       // 로딩/전환 (자연스럽게 서있음)
+      empathy:'/images/characters/suah/onboarding/08_empathy.png',    // 에러/공감 (앉아서 위로)
+      selfie: '/images/characters/suah/onboarding/04_question.png',   // 셀카 (실수로 보낸 사진)
+      pose:   '/images/characters/suah/onboarding/05_encourage.png',  // 운동 자세 사진
+    };
+
+    function getSuahOnboardingImg(key) {
+      return SUAH_ONBOARDING_IMGS[key] || SUAH_ONBOARDING_IMGS.idle;
     }
 
     let currentCardIdx = 0;
@@ -6583,6 +6601,9 @@
       if (personaId === 'miso' && emotion && MISO_SPRITES[emotion]) {
         return MISO_SPRITES[emotion];
       }
+      if (tutorialMode && tutorialCurrentNode) {
+        return getSuahOnboardingImg(tutorialCurrentNode);
+      }
       return getPersonaImg(currentChatPersona);
     }
 
@@ -7000,17 +7021,13 @@
       row.style.transform = 'translateY(8px)';
       const isSelfie = photoType === 'selfie';
       const tag   = isSelfie ? '📱 셀카 (잘못 보낸 것 같아요...)' : '📸 운동 자세 사진';
-      const icon  = isSelfie ? '🤳' : '💪';
-      const label = isSelfie ? '수아의 셀카' : '스쿼트 자세 사진';
+      const imgSrc = getSuahOnboardingImg(photoType);
       row.innerHTML = `
         <img class="msg-avatar" src="${getPersonaImg(SUAH_PERSONA)}" alt="" onerror="this.style.opacity='0'" />
         <div class="msg-col">
           <div class="msg-bubble tutorial-photo-bubble">
             <div class="tutorial-photo-tag">${tag}</div>
-            <div class="tutorial-photo-placeholder">
-              <div class="tutorial-photo-icon">${icon}</div>
-              <div class="tutorial-photo-label">${label}</div>
-            </div>
+            <img class="tutorial-photo-img" src="${imgSrc}" alt="${tag}" style="width:100%;border-radius:10px;display:block;margin-top:6px;" />
           </div>
           <div class="msg-time">${getNowTime()}</div>
         </div>
@@ -7119,6 +7136,12 @@
       tutorialCurrentNode = nodeId;
       const node = SUAH_TUTORIAL[nodeId];
       if (!node) return;
+
+      // 턴별 캐릭터 이미지로 채팅 헤더 아바타 업데이트
+      const headerAvatar = document.getElementById('chat-avatar');
+      if (headerAvatar) {
+        headerAvatar.src = getSuahOnboardingImg(nodeId);
+      }
 
       const userName = sessionStorage.getItem('userName') || sessionStorage.getItem('lovia_username') || '';
 
@@ -8065,8 +8088,11 @@
       const row = document.createElement('div');
       row.className = 'msg-row from-ai';
       row.id = 'typing-row';
+      const typingAvatarSrc = tutorialMode
+        ? getSuahOnboardingImg('idle')
+        : getPersonaImg(currentChatPersona);
       row.innerHTML = `
-        <img class="msg-avatar" src="${getPersonaImg(currentChatPersona)}" alt="" />
+        <img class="msg-avatar" src="${typingAvatarSrc}" alt="" />
         <div class="typing-indicator">
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>

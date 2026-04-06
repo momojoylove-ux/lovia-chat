@@ -2440,6 +2440,7 @@ app.get('/', (c) => {
       background: rgba(255,255,255,0.05) !important;
       border: 1px solid rgba(255,255,255,0.1) !important;
       min-width: 160px;
+      max-width: 220px;
     }
     .tutorial-photo-tag {
       font-size: 11px;
@@ -2448,23 +2449,12 @@ app.get('/', (c) => {
       padding: 8px 12px 4px;
       letter-spacing: 0.3px;
     }
-    .tutorial-photo-placeholder {
-      width: 200px;
-      height: 200px;
-      background: linear-gradient(135deg, rgba(255,107,138,0.15), rgba(120,80,200,0.15));
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .tutorial-photo-icon {
-      font-size: 48px;
-    }
-    .tutorial-photo-label {
-      font-size: 12px;
-      color: rgba(255,255,255,0.4);
-      font-weight: 500;
+    .tutorial-photo-img {
+      width: 100%;
+      max-width: 220px;
+      display: block;
+      border-radius: 0 0 12px 12px;
+      object-fit: cover;
     }
 
     /* 튜토리얼 엔딩 메시지 */
