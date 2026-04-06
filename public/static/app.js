@@ -10577,6 +10577,11 @@
       // BUG-2: 탭 전환 시 탭바 항상 표시 보장 ('me' 탭 오버레이 제외)
       if (tab !== 'me') showBottomNav();
 
+      // BUG-3 (LOV-88): 'me' 탭 이외 탭으로 전환 시 마이페이지 오버레이 닫기
+      // mypage-screen(z-index:85)이 열린 채 다른 탭 화면(z-index:70)을 보여줘도
+      // mypage가 위에 덮여 탭 전환이 막히는 문제 수정
+      if (tab !== 'me') closeMypageScreen();
+
       setActiveBottomTab(tab);
 
       const MAIN_SCREENS = ['main-feed-screen', 'swipe-screen', 'hub-screen'];
